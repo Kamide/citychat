@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="199"
+   height="50"
+   viewBox="0 0 199 50"
+   version="1.1"
+   id="citychat-logotype"
+   inkscape:version="1.0.1 (c497b03c, 2020-09-10)"
+   sodipodi:docname="citychat-logotype.svg">
+  <defs
+     id="citychat-logotype-defs">
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="citychat-logotype-fillet-chamfer-letter-t"
+       is_visible="true"
+       lpeversion="1"
+       satellites_param="F,0,0,1,0,0,0,1 @ F,0,0,1,0,10,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1"
+       unit="px"
+       method="auto"
+       mode="F"
+       radius="0"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="citychat-logotype-fillet-chamfer-letter-a"
+       is_visible="true"
+       lpeversion="1"
+       satellites_param="F,0,0,1,0,9.4999966,0,1 @ F,0,0,1,0,9.4999966,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 | F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1"
+       unit="px"
+       method="auto"
+       mode="F"
+       radius="0"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="citychat-logotype-fillet-chamfer-letter-h"
+       is_visible="true"
+       lpeversion="1"
+       satellites_param="F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,10.000003,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1"
+       unit="px"
+       method="auto"
+       mode="F"
+       radius="0"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="citychat-logotype-fillet-chamfer-letter-c"
+       is_visible="true"
+       lpeversion="1"
+       satellites_param="F,0,0,1,0,10.000002,0,1 @ F,0,0,1,0,10.000002,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1"
+       unit="px"
+       method="auto"
+       mode="F"
+       radius="0"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
+    <inkscape:path-effect
+       effect="fillet_chamfer"
+       id="citychat-logotype-fillet-chamfer-letter-y"
+       is_visible="true"
+       lpeversion="1"
+       satellites_param="F,0,0,1,0,0,0,1 @ F,0,0,1,0,9.9999996,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1 @ F,0,0,1,0,0,0,1"
+       unit="px"
+       method="auto"
+       mode="F"
+       radius="0"
+       chamfer_steps="1"
+       flexible="false"
+       use_knot_distance="true"
+       apply_no_radius="true"
+       apply_with_radius="true"
+       only_selected="false"
+       hide_knots="false" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="99.5"
+     inkscape:cy="25"
+     inkscape:document-units="px"
+     inkscape:current-layer="citychat-logotype-layer"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     units="px"
+     inkscape:showpageshadow="false" />
+  <metadata
+     id="citychat-logotype-metadata">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="citychat-logotype-layer">
+    <path
+       id="citychat-logotype-letter-c-1"
+       d="M 0,12.000002 V 27.999998 A 10.000002,10.000002 45 0 0 10.000002,38 H 28.000001 V 29 H 10.000002 V 11 H 28.000001 V 2 H 10.000002 A 10.000002,10.000002 135 0 0 0,12.000002 Z"
+       sodipodi:nodetypes="ccccccccc"
+       inkscape:path-effect="#citychat-logotype-fillet-chamfer-letter-c"
+       inkscape:original-d="M 0,2 V 38 H 28.000001 V 29 H 10.000002 V 11 H 28.000001 V 2 Z" />
+    <g
+       id="citychat-logotype-letter-i">
+      <rect
+         id="citychat-logotype-letter-i-bar"
+         width="10"
+         height="22"
+         x="32"
+         y="16" />
+      <path
+         id="citychat-logotype-letter-i-dot"
+         d="m 29,6.5 c 0,0 2.460791,-2.460781 3.691188,-3.6911713 C 33.789649,1.7103736 35.214906,1.0000001 36.768596,1 c 3.037566,0 5.5,2.4624339 5.5,5.5 0,3.037566 -2.462434,5.5 -5.5,5.5 -1.55437,0 -2.979802,-0.711317 -4.078064,-1.809553 C 31.460354,8.960298 29,6.5 29,6.5 Z"
+         sodipodi:nodetypes="csszssc" />
+    </g>
+    <path
+       id="citychat-logotype-letter-t-1"
+       d="m 45,8 v 20 a 10,10 45 0 0 10,10 h 8 v -9 h -8 v -7 h 8 V 13 H 55 V 8 Z"
+       sodipodi:nodetypes="ccccccccccc"
+       inkscape:original-d="m 45,8 v 30 h 18 v -9 h -8 v -7 h 8 V 13 H 55 V 8 Z"
+       inkscape:path-effect="#citychat-logotype-fillet-chamfer-letter-t" />
+    <path
+       id="citychat-logotype-letter-y"
+       d="m 66,13 v 15 a 9.9999996,9.9999996 45 0 0 10,10 h 4 l 2,-2 V 50 H 92 V 13 H 82 V 29 H 76 V 13 Z"
+       sodipodi:nodetypes="cccccccccccc"
+       inkscape:path-effect="#citychat-logotype-fillet-chamfer-letter-y"
+       inkscape:original-d="m 66,13 v 25 h 14 l 2,-2 V 50 H 92 V 13 H 82 V 29 H 76 V 13 Z" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#citychat-logotype-letter-c-1"
+       id="citychat-logotype-letter-c-2"
+       transform="translate(95)"
+       width="100%"
+       height="100%" />
+    <path
+       id="citychat-logotype-letter-h"
+       d="m 126,0 v 38 h 10 V 22 h 6 v 16 h 10 V 23.000003 A 10.000003,10.000003 45 0 0 142,13 h -4 l -2,2 V 0 Z"
+       sodipodi:nodetypes="cccccccccccc"
+       inkscape:path-effect="#citychat-logotype-fillet-chamfer-letter-h"
+       inkscape:original-d="m 126,0 v 38 h 10 V 22 h 6 v 16 h 10 V 13 h -14 l -2,2 V 0 Z" />
+    <path
+       id="citychat-logotype-letter-a"
+       d="m 154,22.499997 v 6.000006 A 9.4999966,9.4999966 45 0 0 163.5,38 h 4 l 2,-2 2,2 h 8.5 l -2,-2 V 13 H 163.5 A 9.4999966,9.4999966 135 0 0 154,22.499997 Z M 163.5,22 h 6 v 7 h -6 z"
+       sodipodi:nodetypes="cccccccccccccc"
+       inkscape:path-effect="#citychat-logotype-fillet-chamfer-letter-a"
+       inkscape:original-d="m 154,13 v 25 h 13.5 l 2,-2 2,2 h 8.5 l -2,-2 V 13 Z m 9.5,9 h 6 v 7 h -6 z" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#citychat-logotype-letter-t-1"
+       id="citychat-logotype-letter-t-2"
+       transform="translate(136)"
+       width="100%"
+       height="100%" />
+  </g>
+</svg>

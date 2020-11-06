@@ -1,0 +1,19 @@
+.citychat svg {
+    display: block;
+    width: auto;
+    height: 2em;
+}
+
+.citychat .logomark {
+    padding: 0.5em;
+    border-radius: 50%;
+}
+
+.citychat .logomark svg {
+    height: 1.25em;
+}
+
+.citychat .logotype {
+    margin-top: 0.375em;
+    margin-left: 0.5em;
+}

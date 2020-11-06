@@ -1,0 +1,30 @@
+:root {
+    --c-fg-primary: hsl(280, 50%, 60%);
+    --c-bg-0: hsl(60, 20%, 99%);
+}
+
+body {
+    margin: 0;
+    background-color: var(--c-bg-0);
+    font-size: 16px;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.ai-center {
+    align-items: center;
+}
+
+.bg-fg-primary {
+    background-color: var(--c-fg-primary);
+}
+
+.f-bg-0 {
+    fill: var(--c-bg-0)
+}
+
+.f-fg-primary {
+    fill: var(--c-fg-primary);
+}
