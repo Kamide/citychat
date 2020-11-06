@@ -5,9 +5,9 @@ import '../styles/logo.css'
 
 export default function Logo() {
   return (
-    <div className="ai-center citychat d-flex">
-      <ReactSVG className="bg-fg-primary f-bg-0 logomark" src={logomark} />
-      <ReactSVG className="f-fg-primary logotype" src={logotype} />
+    <div aria-label="Go to home page" className="ai-center citychat d-flex">
+      <ReactSVG aria-hidden="true" className="bg-primary-3 f-bg-0 logomark" src={logomark} />
+      <ReactSVG aria-hidden="true" className="f-primary-3 logotype" src={logotype} />
     </div>
   )
 }

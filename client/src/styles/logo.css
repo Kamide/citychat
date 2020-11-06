@@ -1,3 +1,7 @@
+.citychat {
+    cursor: pointer;
+}
+
 .citychat svg {
     display: block;
     width: auto;
