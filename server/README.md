@@ -32,7 +32,7 @@ export FLASK_APP=citychat_server
 
 ### Python CLI
 
-To start the server, run:
+To start the server with the Python CLI, run:
 
 ```bash
 python app.py
