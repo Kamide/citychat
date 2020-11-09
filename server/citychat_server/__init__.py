@@ -1,10 +1,13 @@
 from flask import Flask
 
-from citychat_server.models import db, migrate, login_manager
-from citychat_server.routes import cors
-
 
 def create_app():
+    from citychat_server.models import db, migrate, login_manager
+    from citychat_server.models import (
+        user
+    )
+    from citychat_server.routes import cors
+
     app = Flask(__name__)
     app.config.from_pyfile('settings.py')
 
