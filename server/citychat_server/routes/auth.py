@@ -12,7 +12,7 @@ blueprint = Blueprint('auth', __name__)
 
 
 @blueprint.route('/signup', methods=['GET'])
-def index():
+def signup():
     fields = [
         city_label(html_for='username', value='Username'),
         city_input_required(type='text',
