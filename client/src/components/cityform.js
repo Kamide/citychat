@@ -35,7 +35,7 @@ export default function CityForm(props) {
   let label = null;
 
   return (
-    <form class="mv-3">
+    <form className="mv-3">
       {props.fields.map((field) => {
         const id = field.args.id;
 
