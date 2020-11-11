@@ -58,8 +58,8 @@ class UserProfile(db.Model):
     __tableargs__ = (
         db.CheckConstraint("email ~ '[^@]+@[^@]+\\.[^@]+'",
                            name='cc_email'),
-        db.CheckConstraint('char_length(username) > 0',
-                           name='cc_username'),
+        db.CheckConstraint("username ~ '^\\w+$'",
+                           name='cc_username')
     )
 
     @hybrid_property
@@ -89,10 +89,10 @@ class UserProfile(db.Model):
     @validates('email')
     def validate_email(self, key, value):
         if not value:
-            raise ValueError('email is empty')
+            raise ValueError('email address is empty')
 
         if not re.fullmatch(r'[^@]+@[^@]+\.[^@]+', value):
-            raise ValueError('email is invalid')
+            raise ValueError('email address format is invalid')
 
         return value
 
@@ -100,5 +100,8 @@ class UserProfile(db.Model):
     def validate_username(self, key, value):
         if not value:
             raise ValueError('username is empty')
+
+        if not re.fullmatch(r'^\w+$', value):
+            raise ValueError('username contains invalid characters')
 
         return value

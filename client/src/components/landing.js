@@ -1,8 +1,8 @@
 import { Fragment } from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
-import Login from './login';
+import Login from './auth/login';
 import Logo from './logo';
-import Signup from './signup';
+import Signup from './auth/signup';
 import USP from './usp';
 
 export default function Landing() {
