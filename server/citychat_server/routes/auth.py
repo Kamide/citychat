@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify
 
+from citychat_server.models.user import UserProfile
 from citychat_server.routes.cityform import (
     city_input,
     city_input_required,
@@ -18,7 +19,7 @@ def signup():
         city_input_required(type='text',
                             id='username',
                             args={'maxLength': 32,
-                                  'pattern': r'^\w+$'}),
+                                  'pattern': UserProfile.username_regex}),
 
         city_label(html_for='password', value='Password'),
         city_input_required(type='password', id='password'),
@@ -27,7 +28,7 @@ def signup():
         city_input_required(type='email',
                             id='email',
                             args={'maxLength': 254,
-                                  'pattern': r'[^@]+@[^@]+\.[^@]+'}),
+                                  'pattern': UserProfile.email_regex}),
 
         city_label(html_for='name', value='Name'),
         city_input(type='text', id='name', args={'maxLength': 255}),

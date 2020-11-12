@@ -55,10 +55,13 @@ class UserProfile(db.Model):
     username = db.Column(db.String(32), nullable=False, unique=True)
     name = db.Column(db.String(255), nullable=True, unique=False)
 
+    email_regex = r'[^@]+@[^@]+\.[^@]+'
+    username_regex = r'^[\p{L}\p{N}-]+$'
+
     __tableargs__ = (
-        db.CheckConstraint("email ~ '[^@]+@[^@]+\\.[^@]+'",
+        db.CheckConstraint(f"email ~ '{email_regex}'",
                            name='cc_email'),
-        db.CheckConstraint("username ~ '^\\w+$'",
+        db.CheckConstraint(f"username ~ '{username_regex}'",
                            name='cc_username')
     )
 
@@ -91,7 +94,7 @@ class UserProfile(db.Model):
         if not value:
             raise ValueError('email address is empty')
 
-        if not re.fullmatch(r'[^@]+@[^@]+\.[^@]+', value):
+        if not re.fullmatch(self.email_regex, value):
             raise ValueError('email address format is invalid')
 
         return value
@@ -101,7 +104,7 @@ class UserProfile(db.Model):
         if not value:
             raise ValueError('username is empty')
 
-        if not re.fullmatch(r'^\w+$', value):
+        if not re.fullmatch(self.username_regex, value):
             raise ValueError('username contains invalid characters')
 
         return value
