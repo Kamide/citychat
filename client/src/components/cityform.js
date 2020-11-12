@@ -11,6 +11,8 @@ export default function CityForm(props) {
     }
 
     switch (field.args.type) {
+      case 'email':
+        return <CityEmail field={field} />;
       case 'password':
         return <CityPassword field={field} />;
       default:
@@ -71,13 +73,18 @@ export default function CityForm(props) {
   );
 }
 
+function CityEmail(props) {
+  const {type, ...args} = props.field.args;
+  return <input type="text" {...args} />;
+}
+
 function CityInput(props) {
-  return <input type={props.field.args.type} id={props.field.args.id} {...props.field.args} />;
+  return <input {...props.field.args} />;
 }
 
 function CityLabel(props) {
   return (
-    <label htmlFor={props.field.htmlFor} id={props.field.args.id} {...props.field.args}>
+    <label {...props.field.args}>
       {props.field.value}
     </label>
   );

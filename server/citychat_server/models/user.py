@@ -19,6 +19,8 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(255), nullable=False, unique=False)
     date_joined = db.Column(db.DateTime(), nullable=True, unique=False)
 
+    password_minlen = 8
+
     profile = db.relationship(
         'user_profile',
         uselist=False,
@@ -36,6 +38,10 @@ class User(db.Model, UserMixin):
 
     @pwhash.setter
     def pwhash(self, password):
+        if (len(password) < self.password_minlen):
+            raise ValueError('length of password is less than '
+                             f'{self.password_minlen} characters')
+
         self.password = generate_password_hash(password)
 
     @pwhash.comparator
