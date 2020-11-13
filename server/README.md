@@ -30,18 +30,34 @@ export FLASK_APP=citychat_server
 
 ## Starting the Server
 
-### Python CLI
-
 To start the server with the Python CLI, run:
 
 ```bash
 python app.py
 ```
 
-### Flask CLI
-
 To start the server with the Flask CLI, run:
 
 ```bash
 flask run
+```
+
+## Database Migrations
+
+To autogenerate a database migration, run:
+
+```bash
+flask db migrate
+```
+
+To apply the migration to the database, run:
+
+```bash
+flask db upgrade
+```
+
+For more information, run:
+
+```
+flask db --help
 ```
