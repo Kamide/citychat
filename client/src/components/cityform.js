@@ -1,22 +1,24 @@
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 
 export default function CityForm(props) {
-  if (!Array.isArray(props.fields) || !props.fields.length) {
+  if (Object.keys(props.form).length === 0) {
     return null;
   }
 
-  const renderField = (field) => {
+  const renderField = (field, key) => {
+    const args = { field: field, key: key }
+
     if (field.tag === 'label') {
-      return <CityLabel field={field} />;
+      return <CityLabel {...args} />;
     }
 
     switch (field.args.type) {
       case 'email':
-        return <CityEmail field={field} />;
+        return <CityEmail {...args} />;
       case 'password':
-        return <CityPassword field={field} />;
+        return <CityPassword {...args} />;
       default:
-        return <CityInput field={field} />;
+        return <CityInput {...args} />;
     }
   };
 
@@ -34,40 +36,16 @@ export default function CityForm(props) {
     );
   };
 
-  let label = null;
-
   return (
-    <form className="mv-3">
-      {props.fields.map((field) => {
-        const id = field.args.id;
-
-        if (field.tag === 'label') {
-          label = field;
-          return null;
-        }
-
-        let group = (
-          <Fragment>
-            {renderField(field)}
-            {renderErrors(id)}
-          </Fragment>
-        );
-
-        if (label) {
-          group = (
-            <Fragment>
-              {renderField(label)}
-              {group}
-            </Fragment>
-          )
-          label = null;
-        }
-
+    <form className="mv-3" {...props.form.args}>
+      {Object.entries(props.form.fields).map(([key, fields]) => {
         return (
-          <div key={id}>
-            {group}
+          <div key={key}>
+            {fields.map((field, index) => {
+              return renderField(field, index);
+            })}
           </div>
-        )
+        );
       })}
     </form>
   );
@@ -105,5 +83,5 @@ function CityPassword(props) {
       <CityInput field={field} />
       <button type="button" onClick={toggle}>{visible ? 'Hide' : 'Show'}</button>
     </span>
-  )
+  );
 }
