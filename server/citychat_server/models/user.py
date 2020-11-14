@@ -58,17 +58,13 @@ class UserProfile(db.Model):
         primary_key=True
     )
     email = db.Column(db.String(254), nullable=False, unique=True)
-    username = db.Column(db.String(32), nullable=False, unique=True)
-    name = db.Column(db.String(255), nullable=True, unique=False)
+    name = db.Column(db.String(255), nullable=False, unique=False)
 
     email_regex = r'[^@]+@[^@]+\.[^@]+'
-    username_regex = r'^[\p{L}\p{N}-]+$'
 
     __tableargs__ = (
-        db.CheckConstraint(f"email ~ '{email_regex}'",
-                           name='cc_email'),
-        db.CheckConstraint(f"username ~ '{username_regex}'",
-                           name='cc_username')
+        db.CheckConstraint(f"email ~ '{email_regex}'", name='cc_email'),
+        db.CheckConstraint('char_length(name) > 0', name='cc_name')
     )
 
     @hybrid_property
@@ -77,23 +73,11 @@ class UserProfile(db.Model):
 
     @email_norm.setter
     def email_norm(self, email):
-        self.email = email
+        self.email = email.strip()
 
     @email_norm.comparator
     def email_norm(self, email):
         return CasefoldComparator(email)
-
-    @hybrid_property
-    def username_norm(self):
-        return self.username
-
-    @username_norm.setter
-    def username_norm(self, username):
-        self.username = username
-
-    @username_norm.comparator
-    def username_norm(self, username):
-        return CasefoldComparator(username)
 
     @validates('email')
     def validate_email(self, key, value):
@@ -105,12 +89,17 @@ class UserProfile(db.Model):
 
         return value
 
-    @validates('username')
-    def validate_username(self, key, value):
-        if not value:
-            raise ValueError('username is empty')
+    @hybrid_property
+    def name_norm(self):
+        return self.name
 
-        if not re.fullmatch(self.username_regex, value):
-            raise ValueError('username contains invalid characters')
+    @name_norm.setter
+    def name_norm(self, name):
+        if not name or not name.strip():
+            raise ValueError('name is empty')
 
-        return value
+        self.name = name.strip()
+
+    @name_norm.comparator
+    def name_norm(self, name):
+        return CasefoldComparator(name)
