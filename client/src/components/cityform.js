@@ -6,7 +6,7 @@ export default function CityForm(props) {
   }
 
   const renderField = (field) => {
-    if (field.type === 'label') {
+    if (field.tag === 'label') {
       return <CityLabel field={field} />;
     }
 
@@ -41,7 +41,7 @@ export default function CityForm(props) {
       {props.fields.map((field) => {
         const id = field.args.id;
 
-        if (field.type === 'label') {
+        if (field.tag === 'label') {
           label = field;
           return null;
         }

@@ -1,6 +1,6 @@
 def city_input(type, id, args={}):
     return {
-        'type': 'input',
+        'tag': 'input',
         'args': {
             'type': type,
             'id': id,
@@ -22,7 +22,7 @@ def city_input_required(type, id, args={}):
 
 def city_label(html_for, value, args={}):
     return {
-        'type': 'label',
+        'tag': 'label',
         'value': value,
         'args': {
             'id': html_for + 'Label',
@@ -49,7 +49,7 @@ def capitalize(s):
 
 def prefix_id(fields, prefix):
     for field in fields:
-        if field['type'] == 'label':
+        if field['tag'] == 'label':
             html_for = prefix + capitalize(field['args']['htmlFor'])
             field['args']['htmlFor'] = html_for
 
