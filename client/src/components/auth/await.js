@@ -1,16 +1,17 @@
-import { Fragment } from 'react';
-
 export default function Await() {
   return (
-    <Fragment>
-      <h1>You're almost there!</h1>
-      <p>
-        Please check your email for the confirmation link.
+    <div className="margin-x--auto max-width--400 text-align--center">
+      <h1>Registration Successful</h1>
+      <p className="padding-bottom--m stroke-bottom">
+        Before you can start using your new CityChat account,
+        you must verify your email address.
+        A confirmation link has been sent to your email box.
       </p>
       <p>
-        Didn't get an email?{' '}
-        Please check your please check your <em>spam</em> or <em>junk mail</em> folder.
+        Didn't get an email?
+        <br />
+        Please check your <em>spam</em> or <em>junk mail</em> folder.
       </p>
-    </Fragment>
+    </div>
   );
 }

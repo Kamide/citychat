@@ -4,7 +4,11 @@ import blinkingEllipsis from '../images/blinking-ellipsis.svg';
 
 export default function CityForm(props) {
   if (Object.keys(props.form).length === 0) {
-    return <ReactSVG aria-label="Loading form" className="f-fg-0 mv-3" src={blinkingEllipsis} />;
+    return (
+      <div aria-label="Go to home page" className="text-align--center">
+        <ReactSVG aria-hidden="true" src={blinkingEllipsis} />
+      </div>
+    );
   }
 
   const renderField = (field, key, processing) => {
@@ -58,10 +62,10 @@ export default function CityForm(props) {
   };
 
   return (
-    <form className="mv-3" onSubmit={handleSubmit} {...props.form.args}>
+    <form onSubmit={handleSubmit} {...props.form.args}>
       {props.form.fields.map(([key, fields]) => {
         return (
-          <div key={key}>
+          <div className="display--flex field-group flex-direction--column margin-y--m" key={key}>
             {fields.map((field, index) => {
               return renderField(field, index, props.processing);
             })}
@@ -79,7 +83,7 @@ function CityEmail(props) {
 }
 
 function CityInput(props) {
-  return <input {...props.field.args} />;
+  return <input className={props.className} {...props.field.args} />;
 }
 
 function CityLabel(props) {
@@ -101,9 +105,11 @@ function CityPassword(props) {
   field.args.type = visible ? 'text' : 'password';
 
   return (
-    <span>
-      <CityInput field={field} />
-      <button type="button" onClick={toggle}>{visible ? 'Hide' : 'Show'}</button>
+    <span className="display--flex">
+      <CityInput className="flex--fill" field={field} />
+      <button className="btn inline" type="button" onClick={toggle}>
+        {visible ? 'Hide' : 'Show'}
+      </button>
     </span>
   );
 }
@@ -112,8 +118,12 @@ function CitySubmit(props) {
   const {processing, ...args} = props;
 
   if (processing) {
-    return <ReactSVG aria-label="Your form data is being processed" className="f-fg-0" src={blinkingEllipsis} />;
+    return (
+      <div aria-label="Your form data is being processed" className="btn margin-top--s text-align--center">
+        <ReactSVG aria-hidden="true" src={blinkingEllipsis} />
+      </div>
+    );
   }
 
-  return <input {...args.field.args} />;
+  return <input className="btn margin-top--s" {...args.field.args} />;
 }

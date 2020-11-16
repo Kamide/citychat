@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import CityForm from '../cityform';
 import { POST_REQUEST, route } from '../api';
@@ -37,14 +37,14 @@ export default function Signup() {
   }
 
   return (
-    <Fragment>
-      <h1>Sign Up</h1>
+    <div className="margin-x--auto max-width--400">
+      <h1 className="text-align--center">Sign Up</h1>
       <CityForm
         form={form}
         setForm={setForm}
         processing={processing}
         setProcessing={setProcessing}
         onSubmit={handleSubmit} />
-    </Fragment>
+    </div>
   );
 }

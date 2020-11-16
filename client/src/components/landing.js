@@ -9,12 +9,12 @@ import USP from './usp';
 export default function Landing() {
   return (
     <Fragment>
-      <div className="bg-1 p-6">
-        <div className="m-auto mw-1024">
-          <nav className="ai-center d-flex jc-between n-m-3 r-m-3">
+      <div className="stroke-bottom bg-1 padding--l">
+        <div className="margin-x--auto max-width--1024">
+          <nav className="align-items--center display--flex justify-content--space-between margin--m-n margin--m-r">
             <Link to="/"><Logo /></Link>
 
-            <ul className="d-flex r-btn r-mr-1 zero-ls zero-m zero-p">
+            <ul className="display--flex r-btn margin-right--s-r zero--list-style zero--margin zero--padding">
               <li>
                 <Link to="/login">Log In</Link>
               </li>
@@ -26,7 +26,7 @@ export default function Landing() {
         </div>
       </div>
 
-      <main className="m-auto mw-1024 p-6">
+      <main className="margin-x--auto max-width--1024 padding--l">
         <Switch>
           <Route exact path="/">
             <USP />
