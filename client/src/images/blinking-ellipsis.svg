@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="32"
+   height="8"
+   viewBox="0 0 32 8"
+   version="1.1"
+   id="blinking-ellipsis"
+   inkscape:version="1.0.1 (c497b03c, 2020-09-10)"
+   sodipodi:docname="blinking-ellipsis.svg">
+  <style
+     id="blinking-ellipsis-style">
+      @keyframes blinking-ellipsis-circle-blink {
+         from {
+            r: 3px;
+            opacity: 0.25;
+         }
+         to {
+            r: 4px;
+            opacity: 1;
+         }
+      }
+
+      #blinking-ellipsis-layer circle {
+         r: 3px;
+         opacity: 0.25;
+
+         animation-name: blinking-ellipsis-circle-blink;
+         animation-duration: 0.5s;
+         animation-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1.000); /* easeInOutCubic */
+         animation-iteration-count: infinite;
+         animation-direction: alternate;
+      }
+
+      #blinking-ellipsis-dot-2 {
+         animation-delay: 0.25s;
+      }
+
+      #blinking-ellipsis-dot-3 {
+         animation-delay: 0.5s;
+      }
+  </style>
+  <defs
+     id="blinking-ellipsis-defs" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="16"
+     inkscape:cy="4"
+     inkscape:document-units="px"
+     inkscape:current-layer="blinking-ellipsis-layer"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     units="px"
+     inkscape:showpageshadow="false" />
+  <metadata
+     id="blinking-ellipsis-metadata">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="blinking-ellipsis-layer">
+    <circle
+       id="blinking-ellipsis-dot-1"
+       cx="4"
+       cy="4"
+       r="4" />
+    <circle
+       id="blinking-ellipsis-dot-2"
+       cx="16"
+       cy="4"
+       r="4" />
+    <circle
+       id="blinking-ellipsis-dot-3"
+       cx="28"
+       cy="4"
+       r="4" />
+  </g>
+</svg>

@@ -1,55 +1,36 @@
 import re
 
 from flask_login import UserMixin
-from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import validates
-from werkzeug.security import generate_password_hash
 
-from citychat_server.models import db
-from citychat_server.models.comparators import (
-    CasefoldComparator,
-    PasswordComparator
-)
+from citychat_server.models import CRUDMixin, db
 
 
-class User(db.Model, UserMixin):
+class User(db.Model, UserMixin, CRUDMixin):
     __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     password = db.Column(db.String(255), nullable=False, unique=False)
     date_joined = db.Column(db.DateTime(), nullable=True, unique=False)
 
-    password_minlen = 8
+    PASSWORD_MINLEN = 8
 
     profile = db.relationship(
-        'user_profile',
+        'UserProfile',
         uselist=False,
         backref='user',
         cascade='all, delete'
     )
 
+    def __str__(self):
+        return f'(User {self.id}, Date Joined: {self.date_joined})'
+
     @property
     def is_active(self):
         return self.date_joined is not None
 
-    @hybrid_property
-    def pwhash(self):
-        return self.password
 
-    @pwhash.setter
-    def pwhash(self, password):
-        if (len(password) < self.password_minlen):
-            raise ValueError('length of password is less than '
-                             f'{self.password_minlen} characters')
-
-        self.password = generate_password_hash(password)
-
-    @pwhash.comparator
-    def pwhash(self, password):
-        return PasswordComparator(password)
-
-
-class UserProfile(db.Model):
+class UserProfile(db.Model, CRUDMixin):
     __tablename__ = 'user_profile'
 
     id = db.Column(
@@ -67,39 +48,12 @@ class UserProfile(db.Model):
         db.CheckConstraint('char_length(name) > 0', name='cc_name')
     )
 
-    @hybrid_property
-    def email_norm(self):
-        return self.email.casefold()
-
-    @email_norm.setter
-    def email_norm(self, email):
-        self.email = email.strip()
-
-    @email_norm.comparator
-    def email_norm(self, email):
-        return CasefoldComparator(email)
+    def __str__(self):
+        return f'(Profile {self.id}, {self.email}, Name: {self.name})'
 
     @validates('email')
     def validate_email(self, key, value):
-        if not value:
-            raise ValueError('email address is empty')
-
-        if not re.fullmatch(self.email_regex, value):
-            raise ValueError('email address format is invalid')
+        if not value or not re.fullmatch(self.email_regex, value):
+            raise ValueError('Please enter a valid email address')
 
         return value
-
-    @hybrid_property
-    def name_norm(self):
-        return self.name
-
-    @name_norm.setter
-    def name_norm(self, name):
-        if not name or not name.strip():
-            raise ValueError('name is empty')
-
-        self.name = name.strip()
-
-    @name_norm.comparator
-    def name_norm(self, name):
-        return CasefoldComparator(name)

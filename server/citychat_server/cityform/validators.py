@@ -1,8 +1,6 @@
 import re
 from abc import ABC, abstractmethod
 
-import citychat_server.cityform.fields as fields
-
 
 class Validator(ABC):
     def __init__(self, _attributes=None):
@@ -13,8 +11,12 @@ class Validator(ABC):
         return self._attributes
 
     @abstractmethod
-    def validate(self, field):
+    def validate(self, label=None, value=None):
         return NotImplemented
+
+    @classmethod
+    def field(cls, label):
+        return label or 'This field'
 
 
 class Required(Validator):
@@ -22,10 +24,12 @@ class Required(Validator):
     def attributes(self):
         return super().attributes | {'required': 'required'}
 
-    def validate(self, field):
-        if field.value is None \
-           or isinstance(field, fields.StringField) and not field.value:
-            field.errors.append(field.label + ' cannot be empty.')
+    def validate(self, label=None, value=None):
+        if value is None \
+           or isinstance(value, str) and not value:
+            return [self.field(label) + ' cannot be left blank']
+
+        return []
 
 
 class Length(Validator):
@@ -54,17 +58,18 @@ class Length(Validator):
 
         return super().attributes | attr
 
-    def validate(self, field):
-        if not field.value:
-            return
+    def validate(self, label=None, value=None):
+        if not value:
+            return []
 
-        if len(field.value) < self.min:
-            field.errors.append(f'{field.label}  must have at least '
-                                f'{self.min} characters.')
+        f = self.field(label)
 
-        if self.has_max and len(field.value) > self.max:
-            field.errors.append(f'{field.label} cannot have more than '
-                                f'{self.max} characters.')
+        if len(value) < self.min:
+            return [f'{f} must have at least {self.min} characters.']
+        elif self.has_max and len(value) > self.max:
+            return [f'{f} cannot have more than {self.max} characters.']
+        else:
+            return []
 
 
 class Pattern(Validator):
@@ -82,6 +87,6 @@ class Pattern(Validator):
 
         return super().attributes | attr
 
-    def validate(self, field):
-        if not re.fullmatch(self.pattern, field.value or ''):
-            field.errors.append(self.title)
+    def validate(self, label=None, value=None):
+        if not re.fullmatch(self.pattern, value or ''):
+            return [self.title]

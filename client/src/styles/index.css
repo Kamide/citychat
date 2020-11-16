@@ -71,7 +71,7 @@ body {
     margin: var(--spacing-3);
 }
 
-.mv-3 {
+.mv-3, p {
     margin-top: var(--spacing-3);
     margin-bottom: var(--spacing-3);
 }
@@ -97,7 +97,11 @@ body {
 }
 
 .f-bg-0 {
-    fill: var(--c-bg-0)
+    fill: var(--c-bg-0);
+}
+
+.f-fg-0 {
+    fill: var(--c-fg-0);
 }
 
 .f-primary-3 {

@@ -6,6 +6,8 @@ class Form:
         self.method = method
         self.id_prefix = id_prefix
         self.attributes = attributes or {}
+        self.values = {k: None for k in self.fields.keys()}
+        self.errors = {k: [] for k in self.fields.keys()}
 
     @property
     def _fields(self):
@@ -20,20 +22,44 @@ class Form:
         return {field[0]: field[1] for field in self._fields}
 
     @property
-    def values(self):
-        return {k: f.value for k, f in self.fields.items()}
+    def placeholder_values(self):
+        return {k: '' for k in self.values.keys()}
 
     @property
-    def errors(self):
-        return {k: f.errors for k, f in self.fields.items()}
+    def placeholder_errors(self):
+        return {k: '' for k in self.errors.keys()}
 
     def populate(self, values):
         for k, v in values.items():
-            if k in self.fields:
-                self.fields[k].value = v
+            if k in self.values:
+                self.values[k] = v
+
+    def pre_filter(self):
+        for k, f in self.fields.items():
+            for p in f.pre_filters:
+                self.values[k] = p(self.values[k])
+
+    def post_filter(self):
+        for k, f in self.fields.items():
+            for p in f.post_filters:
+                self.values[k] = p(self.values[k])
 
     def validate(self):
-        return sum(len(f.validate()) for f in self.fields.values())
+        valid = True
+        self.pre_filter()
+
+        for k, f in self.fields.items():
+            for v in f.validators:
+                errors = v.validate(label=f.label, value=self.values[k])
+
+                if errors:
+                    valid = False
+                    self.errors[k] = errors
+
+        if valid:
+            self.post_filter()
+
+        return valid
 
     def to_json(self):
         return {
@@ -42,8 +68,10 @@ class Form:
                 'id': self.id_prefix + 'Form',
                 **self.attributes
             },
-            'fields': {
-                k: f.to_list(self.id_prefix)
-                for k, f in self.fields.items()
-            }
+            'fields': [
+                (f[0], f[1].to_list(self.id_prefix, f[0]))
+                for f in self._fields
+            ],
+            'values': self.placeholder_values,
+            'errors': self.placeholder_errors
         }

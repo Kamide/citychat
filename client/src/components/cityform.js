@@ -1,12 +1,14 @@
 import { useState } from 'react';
+import { ReactSVG } from 'react-svg';
+import blinkingEllipsis from '../images/blinking-ellipsis.svg';
 
 export default function CityForm(props) {
   if (Object.keys(props.form).length === 0) {
-    return null;
+    return <ReactSVG aria-label="Loading form" className="f-fg-0 mv-3" src={blinkingEllipsis} />;
   }
 
-  const renderField = (field, key) => {
-    const args = { field: field, key: key }
+  const renderField = (field, key, processing) => {
+    const args = { field: field, key: key , processing: processing}
 
     if (field.tag === 'label') {
       return <CityLabel {...args} />;
@@ -17,33 +19,53 @@ export default function CityForm(props) {
         return <CityEmail {...args} />;
       case 'password':
         return <CityPassword {...args} />;
+      case 'submit':
+        return <CitySubmit {...args} />;
       default:
         return <CityInput {...args} />;
     }
   };
 
-  const renderErrors = (id) => {
-    if (!props.errors[id]) {
+  const renderErrors = (key) => {
+    if (!props.form.errors[key].length) {
       return null;
     }
 
     return (
       <ul>
-        {props.errors[id].map((error, index) => {
-          return <li key={id + index}>{error}</li>
+        {props.form.errors[key].map((error, index) => {
+          return <li key={key + index}>{error}</li>
         })}
       </ul>
     );
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const values = Object.keys(props.form.values).reduce((values, key) => {
+      values[key] = event.target[key].value;
+      return values;
+    }, {});
+
+    props.setForm({
+      ...props.form,
+      values: values
+    });
+
+    props.setProcessing(true);
+    props.onSubmit(values);
+  };
+
   return (
-    <form className="mv-3" {...props.form.args}>
-      {Object.entries(props.form.fields).map(([key, fields]) => {
+    <form className="mv-3" onSubmit={handleSubmit} {...props.form.args}>
+      {props.form.fields.map(([key, fields]) => {
         return (
           <div key={key}>
             {fields.map((field, index) => {
-              return renderField(field, index);
+              return renderField(field, index, props.processing);
             })}
+            {renderErrors(key)}
           </div>
         );
       })}
@@ -84,4 +106,14 @@ function CityPassword(props) {
       <button type="button" onClick={toggle}>{visible ? 'Hide' : 'Show'}</button>
     </span>
   );
+}
+
+function CitySubmit(props) {
+  const {processing, ...args} = props;
+
+  if (processing) {
+    return <ReactSVG aria-label="Your form data is being processed" className="f-fg-0" src={blinkingEllipsis} />;
+  }
+
+  return <input {...args.field.args} />;
 }

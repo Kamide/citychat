@@ -5,14 +5,16 @@ from citychat_server.models.user import User, UserProfile
 
 
 class Field(ABC):
-    def __init__(self, label=None, validators=None,
-                 _attributes=None, _id=None, _value=None,
-                 **kwargs):
+    def __init__(self, label=None,
+                 validators=None, pre_filters=None, post_filters=None,
+                 _attributes=None, _id=None, **kwargs):
         self.label = label
         self.validators = validators or []
+        self.pre_filters = pre_filters or []
+        self.post_filters = post_filters or []
         self._attributes = _attributes or {}
 
-        if label:
+        if self.label:
             self._id = _id or ''.join(
                 c
                 for c in self.label.title()
@@ -21,8 +23,6 @@ class Field(ABC):
         else:
             self._id = None
 
-        self.value = _value
-        self.errors = []
         self.__dict__.update(kwargs)
 
     @property
@@ -39,24 +39,20 @@ class Field(ABC):
 
         return attr
 
-    def validate(self):
-        self.errors = []
-
-        for v in self.validators:
-            v.validate(self)
-
-        return self.errors
-
-    def id(self, id_prefix):
+    def id(self, id_prefix=None):
         return (id_prefix or '') + (self._id or '')
 
-    def to_json(self, id_prefix):
+    def to_json(self, id_prefix=None, name=None):
         return {
             'tag': self.tag,
-            'args': {'id': self.id(id_prefix)} | self.attributes
+            'args': {
+                'id': self.id(id_prefix),
+                'name': name,
+                **self.attributes
+            }
         }
 
-    def to_list(self, id_prefix):
+    def to_list(self, id_prefix=None, name=None):
         if self.label:
             label = {
                 'tag': 'label',
@@ -66,7 +62,7 @@ class Field(ABC):
                 }
             }
 
-            return [label, self.to_json(id_prefix)]
+            return [label, self.to_json(id_prefix, name)]
 
         return [self.to_json(id_prefix)]
 
@@ -98,7 +94,7 @@ class EmailField(InputField):
             validators.Pattern(
                 pattern=UserProfile.email_regex,
                 title='Email address must follow the format '
-                      '"local-part@domain", e.g. "jsmith@example.com".'
+                      '"local-part@domain", e.g. "jsmith@example.com"'
             )
         ]
 
@@ -106,7 +102,7 @@ class EmailField(InputField):
 class PasswordField(InputField):
     def __init__(self, **kwargs):
         super().__init__(type='password', **kwargs)
-        self.validators.append(validators.Length(min=User.password_minlen))
+        self.validators.append(validators.Length(min=User.PASSWORD_MINLEN))
 
 
 class SubmitField(InputField):
@@ -117,5 +113,5 @@ class SubmitField(InputField):
     def attributes(self):
         return super().attributes | {'value': self.label}
 
-    def to_list(self, id_prefix):
-        return [self.to_json(id_prefix)]
+    def to_list(self, id_prefix=None, name=None):
+        return [self.to_json(id_prefix, name)]
