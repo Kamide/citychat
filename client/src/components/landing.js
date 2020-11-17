@@ -1,8 +1,8 @@
 import { Fragment } from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
-import Await from './auth/await';
 import Login from './auth/login';
 import Logo from './logo';
+import NextStep from './auth/nextstep';
 import Signup from './auth/signup';
 import USP from './usp';
 
@@ -37,8 +37,8 @@ export default function Landing() {
           <Route exact path="/signup">
             <Signup />
           </Route>
-          <Route exact path="/signup/await">
-            <Await />
+          <Route exact path="/signup/next-step">
+            <NextStep />
           </Route>
         </Switch>
       </main>

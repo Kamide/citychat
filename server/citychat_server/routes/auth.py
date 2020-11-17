@@ -1,6 +1,8 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, current_app, jsonify, request
+from flask_mail import Message
 
 from citychat_server.forms import UserForm
+from citychat_server.mail import debug_message, mail
 from citychat_server.models import db
 from citychat_server.models.user import User, UserProfile
 
@@ -31,8 +33,17 @@ def signup():
             )
             db.session.add(user_profile)
             db.session.commit()
-            return jsonify(redirect='/signup/await'), 202
+            return jsonify(redirect='/signup/next-step'), 202
         else:
             return jsonify(errors=form.errors), 400
 
     return jsonify(form=form.to_json()), 200
+
+
+@blueprint.route('/signup/verify', methods=['GET'])
+def signup_verify():
+    msg = Message('Flask-Mail', recipients=['testing@example.com'])
+    msg.body = 'Hello, world!'
+    mail.send(msg)
+    debug_message(msg, current_app)
+    return jsonify(), 200

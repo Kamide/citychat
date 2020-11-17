@@ -1,4 +1,4 @@
-export default function Await() {
+export default function NextStep() {
   return (
     <div className="margin-x--auto max-width--400 text-align--center">
       <h1>Registration Successful</h1>
