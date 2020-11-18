@@ -26,5 +26,9 @@ class CRUDMixin:
             }
 
     @classmethod
+    def get_first(cls, **kwargs):
+        return cls.query.filter_by(**kwargs).first()
+
+    @classmethod
     def has_row(cls, **kwargs):
         return cls.query.filter_by(**kwargs).scalar() is not None

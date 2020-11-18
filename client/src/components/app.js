@@ -1,10 +1,10 @@
 import { BrowserRouter } from 'react-router-dom';
-import Landing from './landing';
+import Public from './public/app';
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Landing />
+      <Public />
     </BrowserRouter>
   );
 }

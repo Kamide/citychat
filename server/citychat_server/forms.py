@@ -15,17 +15,20 @@ def strip(s):
     return s.strip()
 
 
+email = EmailField(
+    label='Email Address',
+    validators=[Required()],
+    pre_filters=[strip]
+)
+
+
 class UserForm(Form):
     name = StringField(
         label='Name',
         validators=[Required(), Length(max=UserProfile.name.type.length)],
         pre_filters=[strip]
     )
-    email = EmailField(
-        label='Email Address',
-        validators=[Required()],
-        pre_filters=[strip]
-    )
+    email = email
     password = PasswordField(
         label='Password',
         validators=[Required()],
@@ -35,3 +38,11 @@ class UserForm(Form):
 
     def __init__(self):
         super().__init__(method='post', id_prefix='user')
+
+
+class EmailForm(Form):
+    email = email
+    submit = SubmitField(label='Send')
+
+    def __init__(self):
+        super().__init__(method='post', id_prefix='email')

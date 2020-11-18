@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import CityForm from '../cityform';
-import { POST_REQUEST, route } from '../api';
+import CityForm from './cityform';
+import { POST_REQUEST, route } from './api';
 
-export default function Signup() {
+export default function Form(props) {
   const [form, setForm] = useState({});
   const [processing, setProcessing] = useState(false);
   const [redirect, setRedirect] = useState('');
 
   useEffect(() => {
-    fetch(route('/signup'))
+    fetch(route(props.endpoint))
       .then(response => response.json())
       .then(data => setForm(data.form));
   }, []);
 
   const handleSubmit = (values) => {
-    fetch(route('/signup'), { ...POST_REQUEST, body: JSON.stringify(values) })
+    fetch(route(props.endpoint), { ...POST_REQUEST, body: JSON.stringify(values) })
       .then(response => response.json())
       .then(data => {
         if (data.redirect) {
@@ -37,14 +37,11 @@ export default function Signup() {
   }
 
   return (
-    <div className="margin-x--auto max-width--400">
-      <h1 className="text-align--center">Sign Up</h1>
-      <CityForm
-        form={form}
-        setForm={setForm}
-        processing={processing}
-        setProcessing={setProcessing}
-        onSubmit={handleSubmit} />
-    </div>
+    <CityForm
+      form={form}
+      setForm={setForm}
+      processing={processing}
+      setProcessing={setProcessing}
+      onSubmit={handleSubmit} />
   );
 }

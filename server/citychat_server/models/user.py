@@ -2,6 +2,7 @@ import re
 
 from flask_login import UserMixin
 from sqlalchemy.orm import validates
+from sqlalchemy.sql import func
 
 from citychat_server.models import CRUDMixin, db
 
@@ -11,7 +12,13 @@ class User(db.Model, UserMixin, CRUDMixin):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     password = db.Column(db.String(255), nullable=False, unique=False)
-    date_joined = db.Column(db.DateTime(), nullable=True, unique=False)
+    date_registered = db.Column(
+        db.DateTime(),
+        nullable=False,
+        unique=False,
+        server_default=func.now()
+    )
+    date_activated = db.Column(db.DateTime(), nullable=True, unique=False)
 
     PASSWORD_MINLEN = 8
 
@@ -23,11 +30,12 @@ class User(db.Model, UserMixin, CRUDMixin):
     )
 
     def __str__(self):
-        return f'(User {self.id}, Date Joined: {self.date_joined})'
+        return f'(User {self.id}, Date Registered: {self.date_registered}), ' \
+               f'Date Activated: {self.date_activated}'
 
     @property
     def is_active(self):
-        return self.date_joined is not None
+        return self.date_activated is not None
 
 
 class UserProfile(db.Model, CRUDMixin):

@@ -1,12 +1,13 @@
 import { Fragment } from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
+import Activate from './auth/activate';
+import AuthForm from './auth/form';
+import Landing from './landing';
 import Login from './auth/login';
-import Logo from './logo';
-import NextStep from './auth/nextstep';
-import Signup from './auth/signup';
-import USP from './usp';
+import Logo from '../logo';
+import Pending from './auth/pending';
 
-export default function Landing() {
+export default function Public() {
   return (
     <Fragment>
       <div className="stroke-bottom bg-1 padding--l">
@@ -28,18 +29,17 @@ export default function Landing() {
 
       <main className="margin-x--auto max-width--1024 padding--l">
         <Switch>
-          <Route exact path="/">
-            <USP />
+          <Route exact path="/" component={Landing} />
+          <Route exact path="/login" component={Login} />
+          <Route key="signup" exact path="/signup">
+            <AuthForm Auth heading="Sign Up" endpoint="/signup" />
           </Route>
-          <Route exact path="/login">
-            <Login />
+          <Route exact path="/signup/pending" component={Pending} />
+          <Route path="/signup/activate/:token" component={Activate} />
+          <Route key="resend" exact path="/signup/resend">
+            <AuthForm heading="Resend Confirmation Email" endpoint="/signup/resend" />
           </Route>
-          <Route exact path="/signup">
-            <Signup />
-          </Route>
-          <Route exact path="/signup/next-step">
-            <NextStep />
-          </Route>
+          <Route component={Landing} />
         </Switch>
       </main>
     </Fragment>

@@ -36,7 +36,7 @@ export default function CityForm(props) {
     }
 
     return (
-      <ul>
+      <ul className="padding-left--l">
         {props.form.errors[key].map((error, index) => {
           return <li key={key + index}>{error}</li>
         })}
@@ -58,6 +58,7 @@ export default function CityForm(props) {
     });
 
     props.setProcessing(true);
+    setTimeout(() => props.setProcessing(false), 5000);
     props.onSubmit(values);
   };
 
