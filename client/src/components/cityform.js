@@ -1,11 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ReactSVG } from 'react-svg';
 import blinkingEllipsis from '../images/blinking-ellipsis.svg';
 
 export default function CityForm(props) {
+  const [processingTimer, setProcessingTimer] = useState(0);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(processingTimer);
+    };
+  }, [processingTimer]);
+
+  if (props.networkError) {
+    return (
+      <div className="text-align--center">
+        Sorry, something went wrong.
+        Please refresh the page and try again.
+      </div>
+    )
+  }
+
   if (Object.keys(props.form).length === 0) {
     return (
-      <div aria-label="Go to home page" className="text-align--center">
+      <div aria-label="Loading form" className="text-align--center">
         <ReactSVG aria-hidden="true" src={blinkingEllipsis} />
       </div>
     );
@@ -58,7 +75,7 @@ export default function CityForm(props) {
     });
 
     props.setProcessing(true);
-    setTimeout(() => props.setProcessing(false), 5000);
+    setProcessingTimer(setTimeout(() => props.setProcessing(false), 5000));
     props.onSubmit(values);
   };
 

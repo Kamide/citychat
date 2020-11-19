@@ -46,3 +46,12 @@ class EmailForm(Form):
 
     def __init__(self):
         super().__init__(method='post', id_prefix='email')
+
+
+class LoginForm(Form):
+    email = email
+    password = PasswordField(label='Password', validators=[Required()])
+    submit = SubmitField(label='Log In')
+
+    def __init__(self):
+        super().__init__(method='post', id_prefix='login')

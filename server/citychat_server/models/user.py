@@ -1,13 +1,13 @@
 import re
 
-from flask_login import UserMixin
 from sqlalchemy.orm import validates
 from sqlalchemy.sql import func
+from werkzeug.security import check_password_hash
 
 from citychat_server.models import CRUDMixin, db
 
 
-class User(db.Model, UserMixin, CRUDMixin):
+class User(db.Model, CRUDMixin):
     __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -36,6 +36,9 @@ class User(db.Model, UserMixin, CRUDMixin):
     @property
     def is_active(self):
         return self.date_activated is not None
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
 
 class UserProfile(db.Model, CRUDMixin):

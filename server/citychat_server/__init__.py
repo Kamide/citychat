@@ -3,8 +3,8 @@ from flask import Flask
 
 def create_app():
     from citychat_server.mail import mail
-    from citychat_server.models import db, migrate, login_manager
-    from citychat_server.models import (
+    from citychat_server.models import db, migrate
+    from citychat_server.models import (  # noqa: F401
         user
     )
     from citychat_server.routes import cors
@@ -14,7 +14,6 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app, db, render_as_batch=True)
-    login_manager.init_app(app)
     cors.init_app(app)
     mail.init_app(app)
 

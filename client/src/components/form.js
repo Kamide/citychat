@@ -1,21 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import CityForm from './cityform';
-import { POST_REQUEST, route } from './api';
+import { GET_REQUEST, fetchRetry, postRequest, route } from './api';
 
 export default function Form(props) {
   const [form, setForm] = useState({});
+  const [networkError, setNetworkError] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [redirect, setRedirect] = useState('');
 
   useEffect(() => {
-    fetch(route(props.endpoint))
-      .then(response => response.json())
-      .then(data => setForm(data.form));
-  }, []);
+    fetchRetry(route(props.endpoint), GET_REQUEST, 10, 1000)
+      .then(data => setForm(data.form))
+      .catch(error => setNetworkError(true));
+  }, [props.endpoint]);
 
   const handleSubmit = (values) => {
-    fetch(route(props.endpoint), { ...POST_REQUEST, body: JSON.stringify(values) })
+    fetch(route(props.endpoint), postRequest(JSON.stringify(values)))
       .then(response => response.json())
       .then(data => {
         if (data.redirect) {
@@ -40,6 +41,7 @@ export default function Form(props) {
     <CityForm
       form={form}
       setForm={setForm}
+      networkError={networkError}
       processing={processing}
       setProcessing={setProcessing}
       onSubmit={handleSubmit} />

@@ -3,7 +3,6 @@ import { Link, Route, Switch } from 'react-router-dom';
 import Activate from './auth/activate';
 import AuthForm from './auth/form';
 import Landing from './landing';
-import Login from './auth/login';
 import Logo from '../logo';
 import Pending from './auth/pending';
 
@@ -30,7 +29,9 @@ export default function Public() {
       <main className="margin-x--auto max-width--1024 padding--l">
         <Switch>
           <Route exact path="/" component={Landing} />
-          <Route exact path="/login" component={Login} />
+          <Route key="login" exact path="/login">
+            <AuthForm Auth heading="Log In" endpoint="/login" />
+          </Route>
           <Route key="signup" exact path="/signup">
             <AuthForm Auth heading="Sign Up" endpoint="/signup" />
           </Route>

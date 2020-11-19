@@ -1,17 +1,19 @@
 from flask import Blueprint, current_app, jsonify, request
+from flask_api import status
 from flask_mail import Message
 from itsdangerous import BadSignature, SignatureExpired
 from sqlalchemy.sql import func
 
-from citychat_server.forms import EmailForm, UserForm
+from citychat_server.forms import EmailForm, LoginForm, UserForm
 from citychat_server.mail import debug_email, mail
 from citychat_server.models import db
 from citychat_server.models.user import User, UserProfile
 from citychat_server.routes import client_url_for
 from citychat_server.token import encode_token, decode_token
 
-blueprint = Blueprint('auth', __name__)
 HOUR = 3600
+
+blueprint = Blueprint('auth', __name__)
 
 
 def send_confirmation(email_address):
@@ -43,7 +45,7 @@ def signup():
                                                              **form.values)):
                 form.errors['email'].append('This email address '
                                             'is already in use')
-                return jsonify(errors=form.errors), 409
+                return jsonify(errors=form.errors), status.HTTP_409_CONFLICT
 
             user = User(**User.filter_dict(**form.values))
             db.session.add(user)
@@ -57,11 +59,12 @@ def signup():
             db.session.commit()
 
             send_confirmation(user_profile.email)
-            return jsonify(redirect='/signup/pending'), 202
+            return jsonify(redirect='/signup/pending'), \
+                status.HTTP_202_ACCEPTED
         else:
-            return jsonify(errors=form.errors), 400
+            return jsonify(errors=form.errors), status.HTTP_400_BAD_REQUEST
 
-    return jsonify(form=form.to_json()), 200
+    return jsonify(form=form.to_json()), status.HTTP_200_OK
 
 
 @blueprint.route('/signup/activate/<token>', methods=['GET'])
@@ -79,9 +82,9 @@ def signup_activate(token):
 
         user_profile.user.date_activated = func.now()
         db.session.commit()
-        return jsonify(redirect=''), 200
+        return jsonify(redirect=''), status.HTTP_201_CREATED
     except (BadSignature, SignatureExpired, ValueError):
-        return jsonify(redirect='/signup/resend'), 404
+        return jsonify(redirect='/signup/resend'), status.HTTP_400_BAD_REQUEST
 
 
 @blueprint.route('/signup/resend', methods=['GET', 'POST'])
@@ -98,8 +101,32 @@ def signup_resend():
             if user_profile and not user_profile.user.is_active:
                 send_confirmation(email)
 
-            return jsonify(redirect='/signup/pending'), 400
+            return jsonify(redirect='/signup/pending'), \
+                status.HTTP_202_ACCEPTED
         else:
-            return jsonify(errors=form.errors), 400
+            return jsonify(errors=form.errors), status.HTTP_400_BAD_REQUEST
 
-    return jsonify(form=form.to_json()), 200
+    return jsonify(form=form.to_json()), status.HTTP_200_OK
+
+
+@blueprint.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+
+    if request.method == 'POST':
+        form.populate(request.get_json())
+
+        if form.validate():
+            user_profile = UserProfile.get_first(email=form.values['email'])
+
+            if user_profile and user_profile.user.is_active \
+               and user_profile.user.check_password(form.values['password']):
+                return jsonify(redirect='/'), status.HTTP_200_OK
+
+            form.errors['password'].append('You have entered an invalid '
+                                           'username or password')
+            return jsonify(errors=form.errors), status.HTTP_401_UNAUTHORIZED
+        else:
+            return jsonify(errors=form.errors), status.HTTP_400_BAD_REQUEST
+
+    return jsonify(form=form.to_json()), status.HTTP_200_OK
