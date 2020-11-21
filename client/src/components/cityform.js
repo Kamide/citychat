@@ -101,7 +101,7 @@ function CityEmail(props) {
 }
 
 function CityInput(props) {
-  return <input className={props.className} {...props.field.args} />;
+  return <input {...props.field.args} />;
 }
 
 function CityLabel(props) {
@@ -119,12 +119,18 @@ function CityPassword(props) {
     setVisible(!visible);
   };
 
-  const field = props.field;
-  field.args.type = visible ? 'text' : 'password';
+  const field = {
+    ...props.field,
+    args: {
+      ...props.field.args,
+      className: 'flex--fill',
+      type: visible ? 'text' : 'password'
+    }
+  }
 
   return (
     <span className="display--flex">
-      <CityInput className="flex--fill" field={field} />
+      <CityInput field={field} />
       <button className="btn inline" type="button" onClick={toggle}>
         {visible ? 'Hide' : 'Show'}
       </button>

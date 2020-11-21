@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { route } from '../../api';
+import { publicRoute } from '../../api';
 
 export default function Activate(props) {
   const [redirect, setRedirect] = useState('');
 
   useEffect(() => {
-    fetch(route('/signup/activate/' + props.match.params.token))
+    fetch(publicRoute('/signup/activate/' + props.match.params.token))
       .then(response => response.json())
       .then(data => setRedirect(data.redirect));
   }, [props.match.params.token]);

@@ -36,8 +36,8 @@ class UserForm(Form):
     )
     submit = SubmitField(label='Submit')
 
-    def __init__(self):
-        super().__init__(method='post', id_prefix='user')
+    def __init__(self, id_prefix):
+        super().__init__(method='post', id_prefix=id_prefix)
 
 
 class EmailForm(Form):

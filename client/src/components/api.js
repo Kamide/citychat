@@ -6,20 +6,58 @@ export function route(path) {
   return API_URL + path;
 }
 
-export const GET_REQUEST = {
+export function publicRoute(path) {
+  return route('/public' + path);
+}
+
+export function protectedRoute(path) {
+  return route('/protected' + path);
+}
+
+export const GET_REQ = {
   method: 'GET',
   headers: { 'Content-Type': 'application/json' }
 }
 
-export const POST_REQUEST = {
+export const POST_REQ = {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' }
 }
 
-export function postRequest(body) {
+export function postReq(body) {
   return {
-    ...POST_REQUEST,
-    body: body
+    ...POST_REQ,
+    body: JSON.stringify(body)
+  };
+}
+
+export function postReqCred(body) {
+  return {
+    ...postReq(body),
+    credentials: 'include'
+  };
+}
+
+function getCSRFToken(refresh = false) {
+  const token = document.cookie.split('; ')
+    .find(pair => pair.startsWith(refresh ? 'csrf_refresh_token' : 'csrf_access_token'))
+
+  if (token) {
+    return token.split('=')[1];
+  }
+
+  return '';
+}
+
+export function postReqCSRF(body, refresh = false) {
+  return {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': getCSRFToken(refresh)
+    },
+    body: JSON.stringify(body),
+    credentials: 'include'
   }
 }
 

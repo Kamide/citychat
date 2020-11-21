@@ -25,8 +25,10 @@ class Required(Validator):
         return super().attributes | {'required': 'required'}
 
     def validate(self, label=None, value=None):
-        if value is None \
-           or isinstance(value, str) and not value:
+        if (
+            value is None
+            or isinstance(value, str) and not value
+        ):
             return [self.field(label) + ' cannot be left blank']
 
         return []

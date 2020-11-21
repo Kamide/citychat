@@ -6,7 +6,7 @@ import Landing from './landing';
 import Logo from '../logo';
 import Pending from './auth/pending';
 
-export default function Public() {
+export default function PublicApp() {
   return (
     <Fragment>
       <div className="stroke-bottom bg-1 padding--l">
@@ -30,10 +30,10 @@ export default function Public() {
         <Switch>
           <Route exact path="/" component={Landing} />
           <Route key="login" exact path="/login">
-            <AuthForm Auth heading="Log In" endpoint="/login" />
+            <AuthForm heading="Log In" endpoint="/login" includeCredentials={true}  />
           </Route>
           <Route key="signup" exact path="/signup">
-            <AuthForm Auth heading="Sign Up" endpoint="/signup" />
+            <AuthForm heading="Sign Up" endpoint="/signup" />
           </Route>
           <Route exact path="/signup/pending" component={Pending} />
           <Route path="/signup/activate/:token" component={Activate} />

@@ -30,8 +30,10 @@ class User(db.Model, CRUDMixin):
     )
 
     def __str__(self):
-        return f'(User {self.id}, Date Registered: {self.date_registered}), ' \
-               f'Date Activated: {self.date_activated}'
+        return (
+            f'(User {self.id}, Date Registered: {self.date_registered}), '
+            f'Date Activated: {self.date_activated}'
+        )
 
     @property
     def is_active(self):

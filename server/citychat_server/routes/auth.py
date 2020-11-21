@@ -1,6 +1,14 @@
 from flask import Blueprint, current_app, jsonify, request
 from flask_api import status
 from flask_mail import Message
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    get_jwt_identity,
+    jwt_refresh_token_required,
+    set_access_cookies,
+    set_refresh_cookies
+)
 from itsdangerous import BadSignature, SignatureExpired
 from sqlalchemy.sql import func
 
@@ -8,7 +16,6 @@ from citychat_server.forms import EmailForm, LoginForm, UserForm
 from citychat_server.mail import debug_email, mail
 from citychat_server.models import db
 from citychat_server.models.user import User, UserProfile
-from citychat_server.routes import client_url_for
 from citychat_server.token import encode_token, decode_token
 
 HOUR = 3600
@@ -21,21 +28,23 @@ def send_confirmation(email_address):
         subject='Please confirm your email address',
         recipients=[email_address]
     )
-    message.body = client_url_for(
-        'auth.signup_activate',
-        token=encode_token(
-            obj=email_address,
-            salt='auth.signup_activate',
-            expires_in=HOUR
-        )
+    token = encode_token(
+        obj=email_address,
+        salt='auth.signup_activate',
+        expires_in=HOUR
+    )
+    message.body = (
+        current_app.config['CLIENT_URL']
+        + '/signup/activate/'
+        + token.decode('utf-8')
     )
     mail.send(message)
     debug_email(message, current_app)
 
 
-@blueprint.route('/signup', methods=['GET', 'POST'])
+@blueprint.route('/public/signup', methods=['GET', 'POST'])
 def signup():
-    form = UserForm()
+    form = UserForm(id_prefix='signup')
 
     if request.method == 'POST':
         form.populate(request.get_json())
@@ -59,15 +68,17 @@ def signup():
             db.session.commit()
 
             send_confirmation(user_profile.email)
-            return jsonify(redirect='/signup/pending'), \
+            return (
+                jsonify(redirect='/signup/pending'),
                 status.HTTP_202_ACCEPTED
+            )
         else:
             return jsonify(errors=form.errors), status.HTTP_400_BAD_REQUEST
 
     return jsonify(form=form.to_json()), status.HTTP_200_OK
 
 
-@blueprint.route('/signup/activate/<token>', methods=['GET'])
+@blueprint.route('/public/signup/activate/<token>', methods=['GET'])
 def signup_activate(token):
     try:
         email = decode_token(
@@ -87,7 +98,7 @@ def signup_activate(token):
         return jsonify(redirect='/signup/resend'), status.HTTP_400_BAD_REQUEST
 
 
-@blueprint.route('/signup/resend', methods=['GET', 'POST'])
+@blueprint.route('/public/signup/resend', methods=['GET', 'POST'])
 def signup_resend():
     form = EmailForm()
 
@@ -101,15 +112,17 @@ def signup_resend():
             if user_profile and not user_profile.user.is_active:
                 send_confirmation(email)
 
-            return jsonify(redirect='/signup/pending'), \
+            return (
+                jsonify(redirect='/signup/pending'),
                 status.HTTP_202_ACCEPTED
+            )
         else:
             return jsonify(errors=form.errors), status.HTTP_400_BAD_REQUEST
 
     return jsonify(form=form.to_json()), status.HTTP_200_OK
 
 
-@blueprint.route('/login', methods=['GET', 'POST'])
+@blueprint.route('/public/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
 
@@ -119,9 +132,19 @@ def login():
         if form.validate():
             user_profile = UserProfile.get_first(email=form.values['email'])
 
-            if user_profile and user_profile.user.is_active \
-               and user_profile.user.check_password(form.values['password']):
-                return jsonify(redirect='/'), status.HTTP_200_OK
+            if user_profile:
+                user = user_profile.user
+
+                if (
+                    user.is_active
+                    and user.check_password(form.values['password'])
+                ):
+                    access_token = create_access_token(identity=user.id)
+                    refresh_token = create_refresh_token(identity=user.id)
+                    response = jsonify(redirect='/app')
+                    set_access_cookies(response, access_token)
+                    set_refresh_cookies(response, refresh_token)
+                    return response, status.HTTP_200_OK
 
             form.errors['password'].append('You have entered an invalid '
                                            'username or password')
@@ -130,3 +153,13 @@ def login():
             return jsonify(errors=form.errors), status.HTTP_400_BAD_REQUEST
 
     return jsonify(form=form.to_json()), status.HTTP_200_OK
+
+
+@blueprint.route('/protected/refresh', methods=['POST'])
+@jwt_refresh_token_required
+def refresh():
+    user_id = get_jwt_identity()
+    access_token = create_access_token(identity=user_id)
+    response = jsonify(status=200)
+    set_access_cookies(response, access_token)
+    return response, status.HTTP_200_OK
