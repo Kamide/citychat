@@ -5,6 +5,7 @@ import AuthForm from './auth/form';
 import Landing from './landing';
 import Logo from '../logo';
 import Pending from './auth/pending';
+import { postOptJWT } from '../api';
 
 export default function PublicApp() {
   return (
@@ -30,7 +31,7 @@ export default function PublicApp() {
         <Switch>
           <Route exact path="/" component={Landing} />
           <Route key="login" exact path="/login">
-            <AuthForm heading="Log In" endpoint="/login" includeCredentials={true}  />
+            <AuthForm heading="Log In" endpoint="/login" options={postOptJWT}  />
           </Route>
           <Route key="signup" exact path="/signup">
             <AuthForm heading="Sign Up" endpoint="/signup" />

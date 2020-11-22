@@ -1,22 +1,22 @@
-import { useEffect } from 'react';
-import { useHistory } from 'react-router';
-import { fetchRetry, postReqCSRF, protectedRoute } from '../api';
+import { useState, useEffect } from 'react';
+import { GET_OPT_JWT, apiFetch, protectedRoute } from '../api';
 
 export default function ProtectedApp() {
-  let history = useHistory();
+  const [name, setName] = useState('CityChat User');
 
   useEffect(() => {
-    fetchRetry(protectedRoute('/refresh'), postReqCSRF('', true), 10, 1000)
+    apiFetch(protectedRoute('/user/self'), GET_OPT_JWT)
       .then(data => {
-        if (data.status !== 200) {
-          return history.push('/login');
+        if (data) {
+          setName(data.name);
         }
       });
-  }, [history]);
+  }, []);
 
   return (
     <div>
-      <h1>Protected</h1>
+      <h1>Dashboard</h1>
+      <p>Welcome back, {name}!</p>
     </div>
   );
 }

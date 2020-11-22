@@ -30,9 +30,10 @@ class Form:
         return {k: '' for k in self.errors.keys()}
 
     def populate(self, values):
-        for k, v in values.items():
-            if k in self.values:
-                self.values[k] = v
+        if isinstance(values, dict):
+            for k, v in values.items():
+                if k in self.values:
+                    self.values[k] = v
 
     def pre_filter(self):
         for k, f in self.fields.items():

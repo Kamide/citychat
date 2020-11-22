@@ -1,3 +1,5 @@
+import history from './history';
+
 const API_URL = (process.env['REACT_APP_API_URL'])
   ? process.env['REACT_APP_API_URL'].replace(/\/+$/, "")
   : 'http://localhost:5000';
@@ -14,33 +16,47 @@ export function protectedRoute(path) {
   return route('/protected' + path);
 }
 
-export const GET_REQ = {
+const JSON_CONTENT_TYPE = { 'Content-Type': 'application/json' };
+const JSON_HEADER = { headers: {...JSON_CONTENT_TYPE} };
+const INCLUDE_CREDENTIALS = { credentials: 'include' };
+
+export const GET_OPT = {
   method: 'GET',
-  headers: { 'Content-Type': 'application/json' }
+  ...JSON_HEADER
 }
 
-export const POST_REQ = {
+export const GET_OPT_JWT = {
+  ...GET_OPT,
+  ...INCLUDE_CREDENTIALS
+}
+
+export const POST_OPT = {
   method: 'POST',
-  headers: { 'Content-Type': 'application/json' }
+  ...JSON_HEADER
 }
 
-export function postReq(body) {
+export const PATCH_OPT = {
+  method: 'PATCH',
+  ...JSON_HEADER
+}
+
+export function postOpt(body) {
   return {
-    ...POST_REQ,
+    ...POST_OPT,
     body: JSON.stringify(body)
   };
 }
 
-export function postReqCred(body) {
+export function postOptJWT(body) {
   return {
-    ...postReq(body),
-    credentials: 'include'
+    ...postOpt(body),
+    ...INCLUDE_CREDENTIALS
   };
 }
 
-function getCSRFToken(refresh = false) {
+function getCSRFToken(refreshToken = false) {
   const token = document.cookie.split('; ')
-    .find(pair => pair.startsWith(refresh ? 'csrf_refresh_token' : 'csrf_access_token'))
+    .find(pair => pair.startsWith(refreshToken ? 'csrf_refresh_token' : 'csrf_access_token'))
 
   if (token) {
     return token.split('=')[1];
@@ -49,15 +65,15 @@ function getCSRFToken(refresh = false) {
   return '';
 }
 
-export function postReqCSRF(body, refresh = false) {
+export function postOptCSRF({body, refreshToken = false}) {
   return {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': getCSRFToken(refresh)
+      ...JSON_CONTENT_TYPE,
+      'X-CSRF-TOKEN': getCSRFToken(refreshToken)
     },
     body: JSON.stringify(body),
-    credentials: 'include'
+    ...INCLUDE_CREDENTIALS
   }
 }
 
@@ -65,16 +81,33 @@ export async function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export async function fetchRetry(url, request, limit, delay) {
+export async function fetchRetry({url, options, limit, delay}) {
   try {
-    return await (await fetch(url, request)).json();
+    return await apiFetch(url, options);
   }
   catch(e) {
-    if (limit <= 0) {
+    if (limit <= 1) {
       throw e;
     }
 
     await sleep(delay);
-    return await fetchRetry(url, request, limit - 1, delay);
+    return await fetchRetry(url, options, limit - 1, delay);
   }
+}
+
+export async function apiFetch(url, options) {
+  let data = await (await fetch(url, options)).json();
+
+  if (data.jwt && data.jwt.status === 401) {
+    const retry = await (await fetch(protectedRoute('/refresh'), postOptCSRF({body: '', refreshToken: true}))).json();
+
+    if (retry.jwt && retry.jwt.status === 401) {
+      history.push('/login');
+      return null;
+    }
+
+    data = await (await fetch(url, options)).json();
+  }
+
+  return await data;
 }

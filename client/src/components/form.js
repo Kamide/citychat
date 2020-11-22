@@ -1,32 +1,31 @@
 import { useEffect, useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { GET_OPT, fetchRetry, postOpt } from './api';
 import CityForm from './cityform';
-import { GET_REQ, fetchRetry, postReq, postReqCred } from './api';
+import history from './history';
 
 export default function Form(props) {
   const [form, setForm] = useState({});
   const [networkError, setNetworkError] = useState(false);
   const [processing, setProcessing] = useState(false);
-  const [redirect, setRedirect] = useState('');
 
   useEffect(() => {
-    fetchRetry(props.endpoint, GET_REQ, 10, 1000)
+    fetchRetry({url: props.endpoint, request: GET_OPT, limit: 10, delay: 1000})
       .then(data => setForm(data.form))
       .catch(() => setNetworkError(true));
   }, [props.endpoint]);
 
   const handleSubmit = (values) => {
-    const params = props.includeCredentials ? postReqCred : postReq;
+    const options = props.options || postOpt;
 
-    fetch(props.endpoint, params(values))
-    .then(response => response.json())
-    .then(data => {
+    fetch(props.endpoint, options(values))
+      .then(response => response.json())
+      .then(data => {
         if (props.setData) {
           props.setData(data);
         }
 
         if (data.redirect) {
-          setRedirect(data.redirect);
+          history.push(data.redirect);
         }
         else {
           setForm({
@@ -38,10 +37,6 @@ export default function Form(props) {
         }
       });
   };
-
-  if (redirect) {
-    return <Redirect to={redirect} />
-  }
 
   return (
     <CityForm

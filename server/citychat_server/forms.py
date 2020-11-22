@@ -12,7 +12,7 @@ from citychat_server.models.user import UserProfile
 
 
 def strip(s):
-    return s.strip()
+    return s.strip() if isinstance(s, str) else ''
 
 
 email = EmailField(

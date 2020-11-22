@@ -1,19 +1,14 @@
-import { useEffect, useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
-import { publicRoute } from '../../api';
+import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { PATCH_OPT, publicRoute } from '../../api';
+import history from '../../history';
 
 export default function Activate(props) {
-  const [redirect, setRedirect] = useState('');
-
   useEffect(() => {
-    fetch(publicRoute('/signup/activate/' + props.match.params.token))
+    fetch(publicRoute('/signup/activate/' + props.match.params.token), PATCH_OPT)
       .then(response => response.json())
-      .then(data => setRedirect(data.redirect));
+      .then(data => history.push(data.redirect));
   }, [props.match.params.token]);
-
-  if (redirect) {
-    return <Redirect to={redirect} />
-  }
 
   return (
     <div className="margin-x--auto max-width--400 text-align--center">

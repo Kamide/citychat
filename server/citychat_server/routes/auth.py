@@ -50,8 +50,7 @@ def signup():
         form.populate(request.get_json())
 
         if form.validate():
-            if UserProfile.has_row(**UserProfile.filter_dict(c=['email'],
-                                                             **form.values)):
+            if UserProfile.has_row(email=form.values['email']):
                 form.errors['email'].append('This email address '
                                             'is already in use')
                 return jsonify(errors=form.errors), status.HTTP_409_CONFLICT
@@ -78,7 +77,7 @@ def signup():
     return jsonify(form=form.to_json()), status.HTTP_200_OK
 
 
-@blueprint.route('/public/signup/activate/<token>', methods=['GET'])
+@blueprint.route('/public/signup/activate/<token>', methods=['PATCH'])
 def signup_activate(token):
     try:
         email = decode_token(
@@ -93,7 +92,7 @@ def signup_activate(token):
 
         user_profile.user.date_activated = func.now()
         db.session.commit()
-        return jsonify(redirect=''), status.HTTP_201_CREATED
+        return jsonify(), status.HTTP_201_CREATED
     except (BadSignature, SignatureExpired, ValueError):
         return jsonify(redirect='/signup/resend'), status.HTTP_400_BAD_REQUEST
 

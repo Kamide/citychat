@@ -8,19 +8,12 @@ migrate = Migrate(compare_type=True)
 
 class CRUDMixin:
     @classmethod
-    def filter_dict(cls, c=None, **kwargs):
-        if c:
-            return {
-                k: v
-                for k, v in kwargs.items()
-                if k in (inspect(cls).c and c)
-            }
-        else:
-            return {
-                k: v
-                for k, v in kwargs.items()
-                if k in inspect(cls).c
-            }
+    def filter_dict(cls, **kwargs):
+        return {
+            k: v
+            for k, v in kwargs.items()
+            if k in inspect(cls).c
+        }
 
     @classmethod
     def get_first(cls, **kwargs):
