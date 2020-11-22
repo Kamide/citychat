@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import { GET_OPT, fetchRetry, postOpt } from './api';
 import CityForm from './cityform';
 import history from './history';

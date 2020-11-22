@@ -1,5 +1,5 @@
-import Form from '../../form';
 import { publicRoute } from '../../api';
+import Form from '../../form';
 
 export default function AuthForm(props) {
   let {heading, endpoint, ...args} = props;

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ReactSVG } from 'react-svg';
+
 import blinkingEllipsis from '../images/blinking-ellipsis.svg';
 
 export default function CityForm(props) {

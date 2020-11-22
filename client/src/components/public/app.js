@@ -1,11 +1,12 @@
 import { Fragment } from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
+
+import { postOptJWT } from '../api';
 import Activate from './auth/activate';
 import AuthForm from './auth/form';
 import Landing from './landing';
 import Logo from '../logo';
 import Pending from './auth/pending';
-import { postOptJWT } from '../api';
 
 export default function PublicApp() {
   return (
