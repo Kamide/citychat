@@ -22,3 +22,9 @@ class CRUDMixin:
     @classmethod
     def has_row(cls, **kwargs):
         return cls.query.filter_by(**kwargs).scalar() is not None
+
+    def to_json(self):
+        return {
+            c.key: getattr(self, c.key)
+            for c in inspect(self).mapper.column_attrs
+        }

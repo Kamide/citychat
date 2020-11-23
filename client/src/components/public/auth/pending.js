@@ -17,7 +17,7 @@ export default function Pending() {
         Please check your <em>spam</em> or <em>junk mail</em> folder.
       </p>
       <p>
-        <Link to='/signup/resend' className="btn">Resend Confirmation Email</Link>
+        <Link to='/signup/resend' className="button">Resend Confirmation Email</Link>
       </p>
     </div>
   );

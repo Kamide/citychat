@@ -80,6 +80,10 @@ p {
     line-height: 1.5;
 }
 
+.line-height--1 {
+    line-height: 1;
+}
+
 input {
     -webkit-appearance: none;
 }
@@ -105,6 +109,10 @@ input {
     justify-content: space-between;
 }
 
+.height--2 {
+    height: 2em;
+}
+
 .margin-x--auto {
     margin-left: auto;
     margin-right: auto;
@@ -114,15 +122,15 @@ input {
     margin-top: var(--gap-s);
 }
 
-.margin-right--s-r > *:not(:last-child) {
+.margin-right--s--child-universal > *:not(:last-child) {
     margin-right: var(--gap-s);
 }
 
-.margin--m-r > * {
+.margin--m--child-universal > * {
     margin: var(--gap-m);
 }
 
-.margin--m-n {
+.margin--m--negative {
     margin: calc(-1 * var(--gap-m));
 }
 
@@ -176,54 +184,54 @@ input {
     text-align: center;
 }
 
-.btn, .r-btn > * {
+.button, .button--child-universal > * {
     display: inline-block;
     background-color: var(--c-secondary-2);
     color: var(--c-fg-0);
     border: var(--border-thin);
 }
 
-.btn, .r-btn > *, .r-btn a {
+.button, .button--child-universal > *, .button--child-universal a {
     border-radius: 1.5em;
 }
 
-.btn, .r-btn a {
+.button, .button--child-universal a {
     padding: 0.75em 1.5em;
 }
 
-.btn.inline {
+.button.inline {
     padding: 0;
     border-radius: 0;
     font-size: 1em;
 }
 
-.btn:hover, .r-btn > *:hover {
+.button:hover, .button--child-universal > *:hover {
     background-color: var(--c-secondary-1);
 }
 
-.btn:active, .r-btn > *:active {
+.button:active, .button--child-universal > *:active {
     background-color: var(--c-secondary-0);
 }
 
-.btn:focus, .r-btn a:focus {
+.button:focus, .button--child-universal a:focus {
     outline: 0;
     box-shadow: 0 0 var(--gap-l) var(--c-shadow);
 }
 
-.btn.inverse, .r-btn > *.inverse {
+.button.inverse, .button--child-universal > *.inverse {
     background-color: var(--c-primary-2);
     color: var(--c-fg-6);
 }
 
-.btn.inverse:hover, .r-btn > *.inverse:hover {
+.button.inverse:hover, .button--child-universal > *.inverse:hover {
     background-color: var(--c-primary-1);
 }
 
-.btn.inverse:active, .r-btn > *.inverse:active {
+.button.inverse:active, .button--child-universal > *.inverse:active {
     background-color: var(--c-primary-0);
 }
 
-a.btn, .r-btn a {
+a.button, .button--child-universal a {
     display: inline-block;
     color: inherit;
     text-decoration: none;
@@ -251,7 +259,7 @@ a.btn, .r-btn a {
     border-color: var(--c-primary-3);
 }
 
-.field-group button.btn {
+.field-group button.button {
     display: inline-block;
     padding: var(--gap-s);
     border-bottom: var(--border-medium);

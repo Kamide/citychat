@@ -10,4 +10,4 @@ blueprint = Blueprint('user', __name__)
 @jwt_required
 def user_self():
     user = UserProfile.get_first(id=get_jwt_identity())
-    return jsonify(name=user.name)
+    return jsonify(user=user.to_json())

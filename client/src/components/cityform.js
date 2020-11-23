@@ -132,7 +132,7 @@ function CityPassword(props) {
   return (
     <span className="display--flex">
       <CityInput field={field} />
-      <button className="btn inline" type="button" onClick={toggle}>
+      <button className="button inline" type="button" onClick={toggle}>
         {visible ? 'Hide' : 'Show'}
       </button>
     </span>
@@ -144,11 +144,11 @@ function CitySubmit(props) {
 
   if (processing) {
     return (
-      <div aria-label="Your form data is being processed" className="btn margin-top--s text-align--center">
+      <div aria-label="Your form data is being processed" className="button margin-top--s text-align--center">
         <ReactSVG aria-hidden="true" src={blinkingEllipsis} />
       </div>
     );
   }
 
-  return <input className="btn margin-top--s" {...args.field.args} />;
+  return <input className="button margin-top--s" {...args.field.args} />;
 }

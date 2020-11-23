@@ -21,7 +21,7 @@ export default function Activate(props) {
         You may now log in to your new CityChat account with your email address.
       </p>
       <p>
-        <Link to='/login' className="btn">Log In</Link>
+        <Link to='/login' className="button">Log In</Link>
       </p>
     </div>
   );
