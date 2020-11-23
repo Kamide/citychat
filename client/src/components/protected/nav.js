@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 import { GET_OPT_JWT, apiFetch, protectedRoute } from '../api';
 import User from './user';
+import Search from './search';
 
 export default function Nav() {
   const [user, setUser] = useState({});
@@ -10,21 +12,21 @@ export default function Nav() {
     apiFetch(protectedRoute('/user/self'), GET_OPT_JWT)
       .then(data => {
         if (data) {
-          console.log(JSON.stringify(data));
           setUser(data.user);
         }
       });
   }, []);
 
   return (
-    <div className="display--flex justify-content--space-between ">
+    <div className="align-items--center display--flex justify-content--space-between">
       <nav>
         <ul className="display--flex margin-right--s--child-universal zero--list-style zero--margin zero--padding">
-          <li>Dashboard</li>
-          <li>Friends</li>
+          <li><Link to='/app/dashboard'>Dashboard</Link></li>
+          <li>Messages</li>
           <li>Groups</li>
         </ul>
       </nav>
+      <Search />
       <div>
         <User user={user} />
       </div>

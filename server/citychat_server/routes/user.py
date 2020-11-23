@@ -11,3 +11,11 @@ blueprint = Blueprint('user', __name__)
 def user_self():
     user = UserProfile.get_first(id=get_jwt_identity())
     return jsonify(user=user.to_json())
+
+
+@blueprint.route('/protected/user/id/<id>', methods=['GET'])
+@jwt_required
+def user_from_id(id):
+    user = UserProfile.get_first(id=id)
+    user_json = user.to_json() if user else None
+    return jsonify(user=user_json)

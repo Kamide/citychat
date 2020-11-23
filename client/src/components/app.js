@@ -8,9 +8,8 @@ export default function App() {
   return (
     <Router history={history}>
       <Switch>
-        <Route exact path="/" component={PublicApp} />
-        <Route exact path="/app" component={ProtectedApp} />
-        <Route component={PublicApp} />
+        <Route path="/app" component={ProtectedApp} />
+        <Route path="/" component={PublicApp} />
       </Switch>
     </Router>
   );

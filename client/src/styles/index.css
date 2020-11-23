@@ -24,9 +24,11 @@
     --border-thin: var(--stroke-thin) solid var(--c-stroke);
     --border-medium: var(--stroke-medium) solid var(--c-stroke);
 
-    --c-shadow: hsl(280, 90%, 20%, 30%);
+    /* --c-shadow: hsla(280, 90%, 20%, 30%); */
+    --c-shadow: hsla(300, 50%, 60%, 50%);
 
     --gap-unit: 1rem;
+    --gap-xs: calc(1/4 * var(--gap-unit));
     --gap-s: calc(1/2 * var(--gap-unit));
     --gap-m: var(--gap-unit);
     --gap-l: calc(2 * var(--gap-unit));
@@ -201,7 +203,7 @@ input {
 
 .button.inline {
     padding: 0;
-    border-radius: 0;
+    border-radius: 0.25em;
     font-size: 1em;
 }
 
@@ -213,9 +215,12 @@ input {
     background-color: var(--c-secondary-0);
 }
 
-.button:focus, .button--child-universal a:focus {
+.button:active, .button--child-universal a:active,
+.button:focus, .button--child-universal a:focus,
+.field-group input:focus {
     outline: 0;
-    box-shadow: 0 0 var(--gap-l) var(--c-shadow);
+    box-shadow: 0 0 0 var(--gap-xs) var(--c-shadow);
+    z-index: 0;
 }
 
 .button.inverse, .button--child-universal > *.inverse {
@@ -247,7 +252,7 @@ a.button, .button--child-universal a {
     background-color: var(--c-bg-1);
     border: var(--border-thin);
     border-bottom: var(--border-medium);
-    border-radius: 0;
+    border-radius: 0.25em;
 }
 
 .field-group input:not([type=submit]):hover {

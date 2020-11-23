@@ -11,12 +11,12 @@ import Pending from './auth/pending';
 export default function PublicApp() {
   return (
     <Fragment>
-      <div className="stroke-bottom bg-1 padding--l">
+      <div className="bg-1 padding--l stroke-bottom">
         <div className="margin-x--auto max-width--1024">
-          <nav className="align-items--center display--flex justify-content--space-between margin--m--negative margin--m--child-universal">
+          <nav className="align-items--center display--flex justify-content--space-between margin--m--negative margin--m-r">
             <Link to="/"><Logo /></Link>
 
-            <ul className="display--flex button--child-universal margin-right--s--child-universal zero--list-style zero--margin zero--padding">
+            <ul className="button--child-universal display--flex margin-right--s--child-universal zero--list-style zero--margin zero--padding">
               <li>
                 <Link to="/login">Log In</Link>
               </li>
