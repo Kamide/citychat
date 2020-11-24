@@ -37,9 +37,9 @@ export default function SearchResults(props) {
 
   const renderResults = () => {
     if (results.length) {
-      return results.map((r) => {
+      return results.map((r, index) => {
         return (
-          <User user={r} showID={true} />
+          <User key={index} user={r} showID={true} />
         );
       })
     }

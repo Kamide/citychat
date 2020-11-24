@@ -1,14 +1,25 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
 
-import { postOptJWT } from '../api';
+import { GET_OPT_JWT, postOptJWT, protectedRoute } from '../api';
 import Activate from './auth/activate';
 import AuthForm from './auth/form';
 import Landing from './landing';
 import Logo from '../logo';
 import Pending from './auth/pending';
+import history from '../history';
 
 export default function PublicApp() {
+  useEffect(() => {
+    fetch(protectedRoute('/login/check'), GET_OPT_JWT)
+      .then(response => response.json())
+      .then(data => {
+        if (data.active) {
+          history.push('/app');
+        }
+      });
+  }, []);
+
   return (
     <Fragment>
       <div className="bg-1 padding--l stroke-bottom">
