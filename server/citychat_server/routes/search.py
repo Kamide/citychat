@@ -15,7 +15,7 @@ def search():
     if not q:
         return jsonify(), status.HTTP_400_BAD_REQUEST
 
-    users = UserProfile.query.filter(UserProfile.name.ilike(f'%{q}%'))
+    users = UserProfile.get_active().filter(UserProfile.name.ilike(f'%{q}%'))
 
     return jsonify(results=[
         u.to_json(columns=['id', 'name'])

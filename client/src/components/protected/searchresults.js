@@ -55,5 +55,5 @@ export default function SearchResults(props) {
         ? (processing ? loading : renderResults())
         : <p>Please enter a search term.</p>}
     </div>
-  )
+  );
 }

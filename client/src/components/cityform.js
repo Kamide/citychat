@@ -18,7 +18,7 @@ export default function CityForm(props) {
         Sorry, something went wrong.
         Please refresh the page and try again.
       </div>
-    )
+    );
   }
 
   if (Object.keys(props.form).length === 0) {

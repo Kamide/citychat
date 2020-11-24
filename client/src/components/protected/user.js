@@ -14,5 +14,5 @@ export default function User(props) {
     <p>
       {props.user ? renderUser() : userDNE}
     </p>
-  )
+  );
 }

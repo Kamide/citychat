@@ -11,12 +11,17 @@ blueprint = Blueprint('user', __name__)
 @jwt_required
 def user_self():
     user = UserProfile.get_first(id=get_jwt_identity())
-    return jsonify(user=user.to_json(columns=['id', 'name'])), status.HTTP_200_OK
+    return jsonify(
+        user=user.to_json(columns=['id', 'name'])
+    ), status.HTTP_200_OK
 
 
 @blueprint.route('/protected/user/id/<id>', methods=['GET'])
 @jwt_required
 def user_from_id(id):
-    user = UserProfile.get_first(id=id)
-    user_json = user.to_json(columns=['id', 'name']) if user else None
-    return jsonify(user=user_json), status.HTTP_200_OK
+    try:
+        user = UserProfile.get_first_active(id=int(id))
+        user_json = user.to_json(columns=['id', 'name']) if user else None
+        return jsonify(user=user_json), status.HTTP_200_OK
+    except ValueError:
+        return jsonify(), status.HTTP_400_BAD_REQUEST

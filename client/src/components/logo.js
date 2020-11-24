@@ -11,5 +11,5 @@ export default function Logo() {
       <ReactSVG aria-hidden="true" className="bg-primary-3 fill--bg-0 logomark" src={logomark} />
       <ReactSVG aria-hidden="true" className="fill--primary-3 logotype" src={logotype} />
     </div>
-  )
+  );
 }

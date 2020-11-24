@@ -70,3 +70,12 @@ class UserProfile(db.Model, CRUDMixin):
             raise ValueError('Please enter a valid email address')
 
         return value
+
+    @classmethod
+    def get_active(cls, **kwargs):
+        return cls.query.join(User).filter(User.date_activated.isnot(None))
+
+    @classmethod
+    def get_first_active(cls, **kwargs):
+        first = cls.get_first(**kwargs)
+        return first if (first and first.user.is_active) else None
