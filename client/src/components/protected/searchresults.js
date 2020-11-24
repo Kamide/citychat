@@ -36,18 +36,24 @@ export default function SearchResults(props) {
   );
 
   const renderResults = () => {
-    return results.map((r) => {
-      return (
-        <User user={r} showID={true} />
-      );
-    })
+    if (results.length) {
+      return results.map((r) => {
+        return (
+          <User user={r} showID={true} />
+        );
+      })
+    }
+    else {
+      return <p>No results found.</p>;
+    }
   };
 
   return (
     <div>
       <h1>Search Results</h1>
-      {processing ? loading : renderResults()}
-      {queryValid || <p>Please enter a search term.</p>}
+      {queryValid
+        ? (processing ? loading : renderResults())
+        : <p>Please enter a search term.</p>}
     </div>
   )
 }
