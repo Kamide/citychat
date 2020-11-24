@@ -248,7 +248,7 @@ a.button, .button--child-universal a {
 }
 
 .field-group input:not([type=submit]) {
-    padding: var(--gap-s);
+    padding: 0.5em;
     background-color: var(--c-bg-1);
     border: var(--border-thin);
     border-bottom: var(--border-medium);
@@ -266,7 +266,7 @@ a.button, .button--child-universal a {
 
 .field-group button.button {
     display: inline-block;
-    padding: var(--gap-s);
+    padding: 0.5em;
     border-bottom: var(--border-medium);
 }
 

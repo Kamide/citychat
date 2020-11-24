@@ -117,7 +117,7 @@ function CityPassword(props) {
   const [visible, setVisible] = useState(false);
 
   const toggle = () => {
-    setVisible(!visible);
+    setVisible(prevVisible => !prevVisible);
   };
 
   const field = {

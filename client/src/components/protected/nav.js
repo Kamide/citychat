@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Route } from 'react-router-dom';
 
 import { GET_OPT_JWT, apiFetch, protectedRoute } from '../api';
 import User from './user';
@@ -24,9 +24,10 @@ export default function Nav() {
           <li><Link to='/app/dashboard'>Dashboard</Link></li>
           <li>Messages</li>
           <li>Groups</li>
+          <li>Organizations</li>
         </ul>
       </nav>
-      <Search />
+      <Route component={Search} />
       <div>
         <User user={user} />
       </div>

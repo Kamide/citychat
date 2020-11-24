@@ -5,12 +5,13 @@ export default function User(props) {
 
   const renderUser = () => (
     <Link to={'/app/user/' + props.user.id}>
-        {props.user.name}
-      </Link>
+      {props.user.name}{' '}
+      {props.showID && <span>@{props.user.id}</span>}
+    </Link>
   );
 
   return (
-    <p className="line-height--1 zero--margin">
+    <p>
       {props.user ? renderUser() : userDNE}
     </p>
   )

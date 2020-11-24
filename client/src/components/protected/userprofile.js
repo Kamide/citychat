@@ -23,7 +23,7 @@ export default function UserProfile(props) {
   const renderUser = () => (
     <div>
       <h1>{user.name}</h1>
-      <p>{user.email}</p>
+      <p>@{user.id}</p>
     </div>
   );
 
