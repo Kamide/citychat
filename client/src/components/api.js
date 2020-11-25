@@ -16,6 +16,21 @@ export function protectedRoute(path) {
   return route('/protected' + path);
 }
 
+export function privateRoute(path) {
+  return route('/private' + path);
+}
+
+function getCSRFToken(refreshToken = false) {
+  const token = document.cookie.split('; ')
+    .find(pair => pair.startsWith(refreshToken ? 'csrf_refresh_token' : 'csrf_access_token'))
+
+  if (token) {
+    return token.split('=')[1];
+  }
+
+  return '';
+}
+
 const JSON_CONTENT_TYPE = { 'Content-Type': 'application/json' };
 const JSON_HEADER = { headers: {...JSON_CONTENT_TYPE} };
 const INCLUDE_CREDENTIALS = { credentials: 'include' };
@@ -40,6 +55,17 @@ export const PATCH_OPT = {
   ...JSON_HEADER
 }
 
+export function deleteOptCSRF(refreshToken = false) {
+  return {
+    method: 'DELETE',
+    headers: {
+      ...JSON_CONTENT_TYPE,
+      'X-CSRF-TOKEN': getCSRFToken(refreshToken)
+    },
+    ...INCLUDE_CREDENTIALS
+  };
+}
+
 export function postOpt(body) {
   return {
     ...POST_OPT,
@@ -54,17 +80,6 @@ export function postOptJWT(body) {
   };
 }
 
-function getCSRFToken(refreshToken = false) {
-  const token = document.cookie.split('; ')
-    .find(pair => pair.startsWith(refreshToken ? 'csrf_refresh_token' : 'csrf_access_token'))
-
-  if (token) {
-    return token.split('=')[1];
-  }
-
-  return '';
-}
-
 export function postOptCSRF({body, refreshToken = false}) {
   return {
     method: 'POST',
@@ -74,11 +89,31 @@ export function postOptCSRF({body, refreshToken = false}) {
     },
     body: JSON.stringify(body),
     ...INCLUDE_CREDENTIALS
-  }
+  };
 }
 
 export async function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export async function apiFetch(url, options) {
+  let response = await fetch(url, options);
+  let data = await response.json();
+
+  if (response.status === 401 && data.expired) {
+    if (data.expired.accessToken && !data.expired.refreshToken) {
+      response = await fetch(privateRoute('/refresh-token'), postOptCSRF({body: '', refreshToken: true}));
+    }
+
+    if (response.status === 401) {
+      history.push('/login');
+      return null;
+    }
+
+    data = await (await fetch(url, options)).json();
+  }
+
+  return await data;
 }
 
 export async function fetchRetry({url, options, limit, delay}) {
@@ -93,21 +128,4 @@ export async function fetchRetry({url, options, limit, delay}) {
     await sleep(delay);
     return await fetchRetry(url, options, limit - 1, delay);
   }
-}
-
-export async function apiFetch(url, options) {
-  let data = await (await fetch(url, options)).json();
-
-  if (data.jwt && data.jwt.status === 401) {
-    const retry = await (await fetch(protectedRoute('/refresh'), postOptCSRF({body: '', refreshToken: true}))).json();
-
-    if (retry.jwt && retry.jwt.status === 401) {
-      history.push('/login');
-      return null;
-    }
-
-    data = await (await fetch(url, options)).json();
-  }
-
-  return await data;
 }

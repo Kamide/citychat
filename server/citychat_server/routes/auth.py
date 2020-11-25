@@ -5,8 +5,10 @@ from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
     get_jwt_identity,
+    get_raw_jwt,
     jwt_optional,
     jwt_refresh_token_required,
+    jwt_required,
     set_access_cookies,
     set_refresh_cookies
 )
@@ -16,6 +18,7 @@ from sqlalchemy.sql import func
 from citychat_server.forms import EmailForm, LoginForm, UserForm
 from citychat_server.mail import debug_email, mail
 from citychat_server.models import db
+from citychat_server.models.jwt import JWTBlacklist
 from citychat_server.models.user import User, UserProfile
 from citychat_server.token import encode_token, decode_token
 
@@ -162,9 +165,23 @@ def login_check():
     return jsonify(active=active), status.HTTP_200_OK
 
 
-@blueprint.route('/protected/refresh', methods=['POST'])
+@blueprint.route('/protected/logout', methods=['DELETE'])
+@jwt_required
+def logout_access_token():
+    JWTBlacklist.insert_commit(get_raw_jwt())
+    return jsonify(blacklisted=True), status.HTTP_200_OK
+
+
+@blueprint.route('/private/logout', methods=['DELETE'])
 @jwt_refresh_token_required
-def refresh():
+def logout_refresh_token():
+    JWTBlacklist.insert_commit(get_raw_jwt())
+    return jsonify(blacklisted=True), status.HTTP_200_OK
+
+
+@blueprint.route('/private/refresh-token', methods=['POST'])
+@jwt_refresh_token_required
+def refresh_token():
     user_id = get_jwt_identity()
     access_token = create_access_token(identity=user_id)
     response = jsonify(status=200)

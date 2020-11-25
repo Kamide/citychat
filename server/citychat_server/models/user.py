@@ -13,12 +13,12 @@ class User(db.Model, CRUDMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     password = db.Column(db.String(255), nullable=False, unique=False)
     date_registered = db.Column(
-        db.DateTime(),
+        db.DateTime,
         nullable=False,
         unique=False,
         server_default=func.now()
     )
-    date_activated = db.Column(db.DateTime(), nullable=True, unique=False)
+    date_activated = db.Column(db.DateTime, nullable=True, unique=False)
 
     PASSWORD_MINLEN = 8
 
@@ -26,7 +26,8 @@ class User(db.Model, CRUDMixin):
         'UserProfile',
         uselist=False,
         backref='user',
-        cascade='all, delete'
+        cascade='all, delete',
+        passive_deletes=True
     )
 
     def __str__(self):
