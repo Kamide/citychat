@@ -82,11 +82,12 @@ class InputField(Field):
 
 
 class StringField(InputField):
-    def __init__(self, **kwargs):
-        super().__init__(type='text', **kwargs)
+    def __init__(self, type=None, **kwargs):
+        super().__init__(type=type or 'text', **kwargs)
+        self.pre_filters.insert(0, lambda s: '' if s is None else str(s))
 
 
-class EmailField(InputField):
+class EmailField(StringField):
     def __init__(self, **kwargs):
         super().__init__(type='email', **kwargs)
         self.validators += [
@@ -99,10 +100,10 @@ class EmailField(InputField):
         ]
 
 
-class PasswordField(InputField):
+class PasswordField(StringField):
     def __init__(self, **kwargs):
         super().__init__(type='password', **kwargs)
-        self.validators.append(validators.Length(min=User.PASSWORD_MINLEN))
+        self.validators.insert(0, validators.Length(min=User.PASSWORD_MINLEN))
 
 
 class SubmitField(InputField):

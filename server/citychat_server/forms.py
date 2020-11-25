@@ -12,7 +12,7 @@ from citychat_server.models.user import UserProfile
 
 
 def strip(s):
-    return s.strip() if isinstance(s, str) else ''
+    return s.strip()
 
 
 email = EmailField(
@@ -34,10 +34,11 @@ class UserForm(Form):
         validators=[Required()],
         post_filters=[generate_password_hash]
     )
-    submit = SubmitField(label='Submit')
+    submit = SubmitField()
 
-    def __init__(self, id_prefix):
+    def __init__(self, id_prefix, submit_label=None):
         super().__init__(method='post', id_prefix=id_prefix)
+        self.submit.label = submit_label or 'Submit'
 
 
 class EmailForm(Form):
@@ -55,3 +56,14 @@ class LoginForm(Form):
 
     def __init__(self):
         super().__init__(method='post', id_prefix='login')
+
+
+class SearchForm(Form):
+    q = StringField(
+        label='Search',
+        validators=[Required()],
+        pre_filters=[strip]
+    )
+
+    def __init__(self):
+        super().__init__(method='get', id_prefix='search')

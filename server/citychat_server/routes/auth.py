@@ -48,7 +48,7 @@ def send_confirmation(email_address):
 
 @blueprint.route('/public/signup', methods=['GET', 'POST'])
 def signup():
-    form = UserForm(id_prefix='signup')
+    form = UserForm(id_prefix='signup', submit_label='Register')
 
     if request.method == 'POST':
         form.populate(request.get_json())
