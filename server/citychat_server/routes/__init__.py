@@ -1,3 +1,5 @@
+from flask import jsonify
+from flask_api import status
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
@@ -9,13 +11,9 @@ jwt = JWTManager()
 
 @jwt.expired_token_loader
 def expired_token_callback(expired_token):
-    expired_access_token = expired_token['type'] == 'access'
-    return {
-        'expired': {
-            'accessToken': expired_access_token,
-            'refreshToken': not expired_access_token
-        }
-    }
+    return jsonify(expired_token={
+        'type': expired_token['type']
+    }), status.HTTP_401_UNAUTHORIZED
 
 
 @jwt.token_in_blacklist_loader

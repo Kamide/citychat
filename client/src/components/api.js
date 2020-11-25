@@ -100,8 +100,8 @@ export async function apiFetch(url, options) {
   let response = await fetch(url, options);
   let data = await response.json();
 
-  if (response.status === 401 && data.expired) {
-    if (data.expired.accessToken && !data.expired.refreshToken) {
+  if (response.status === 401 && data.expired_token) {
+    if (data.expired_token.type.toLowerCase() === 'access') {
       response = await fetch(privateRoute('/refresh-token'), postOptCSRF({body: '', refreshToken: true}));
     }
 
