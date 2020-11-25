@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ReactSVG } from 'react-svg';
 
-import { GET_OPT_JWT, apiFetch, protectedRoute } from '../api';
+import { GET_OPT_JWT, fetchRetry, protectedRoute } from '../api';
 import { queryArrayHasParam, splitQuery, toQueryString } from '../../utils/query';
 import User from './user';
 
@@ -19,7 +19,7 @@ export default function SearchResults(props) {
 
     if (valid) {
       setProcessing(true);
-      apiFetch(protectedRoute('/search' + toQueryString(q)), GET_OPT_JWT)
+      fetchRetry(protectedRoute('/search' + toQueryString(q)), GET_OPT_JWT)
         .then(data => {
           if (data) {
             setResults(data.results);

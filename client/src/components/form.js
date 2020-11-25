@@ -5,12 +5,12 @@ import CityForm from './cityform';
 import history from './history';
 
 export default function Form(props) {
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState();
   const [networkError, setNetworkError] = useState(false);
   const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
-    fetchRetry({url: props.endpoint, request: GET_OPT, limit: 10, delay: 1000})
+    fetchRetry(props.endpoint, GET_OPT)
       .then(data => setForm(data.form))
       .catch(() => setNetworkError(true));
   }, [props.endpoint]);

@@ -116,7 +116,7 @@ export async function apiFetch(url, options) {
   return await data;
 }
 
-export async function fetchRetry({url, options, limit, delay}) {
+export async function fetchRetry(url, options, limit = 6, delay = 100, backoff = 2.5) {
   try {
     return await apiFetch(url, options);
   }
@@ -126,6 +126,6 @@ export async function fetchRetry({url, options, limit, delay}) {
     }
 
     await sleep(delay);
-    return await fetchRetry(url, options, limit - 1, delay);
+    return await fetchRetry(url, options, limit - 1, delay * backoff, backoff);
   }
 }

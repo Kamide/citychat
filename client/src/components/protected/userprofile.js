@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 
-import { GET_OPT_JWT, apiFetch, protectedRoute } from '../api';
+import { GET_OPT_JWT, fetchRetry, protectedRoute } from '../api';
 
 export default function UserProfile(props) {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState();
 
   useEffect(() => {
-    apiFetch(protectedRoute('/user/id/' + props.match.params.id), GET_OPT_JWT)
+    fetchRetry(protectedRoute('/user/id/' + props.match.params.id), GET_OPT_JWT)
       .then(data => {
         if (data) {
           setUser(data.user);

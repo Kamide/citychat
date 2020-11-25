@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link, Route } from 'react-router-dom';
 
-import { GET_OPT_JWT, apiFetch, deleteOptCSRF, protectedRoute, privateRoute } from '../api';
+import { GET_OPT_JWT, apiFetch, deleteOptCSRF, fetchRetry, protectedRoute, privateRoute } from '../api';
 import User from './user';
 import Search from './search';
 import history from '../history';
 
 export default function Nav() {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState();
 
   useEffect(() => {
     apiFetch(protectedRoute('/user/self'), GET_OPT_JWT)
@@ -19,8 +19,8 @@ export default function Nav() {
   }, []);
 
   const logout = () => {
-    apiFetch(protectedRoute('/logout'), deleteOptCSRF());
-    apiFetch(privateRoute('/logout'), deleteOptCSRF(true))
+    fetchRetry(protectedRoute('/logout'), deleteOptCSRF());
+    fetchRetry(privateRoute('/logout'), deleteOptCSRF(true))
       .then(data => {
         if (data.blacklisted) {
           history.push('/');
