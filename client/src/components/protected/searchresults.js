@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ReactSVG } from 'react-svg';
 
-import { GET_OPT_JWT, fetchRetry, protectedRoute } from '../api';
+import { fetchRetry, options, protectedRoute } from '../api';
 import { queryArrayHasParam, splitQuery, toQueryString } from '../../utils/query';
 import User from './user';
 
@@ -13,13 +13,14 @@ export default function SearchResults(props) {
   const [results, setResults] = useState([]);
 
   useEffect(() => {
+    const abortController = new AbortController();
     const q = splitQuery(props.location.search);
     const valid = queryArrayHasParam(q, 'q');
     setQueryValid(valid);
 
     if (valid) {
       setProcessing(true);
-      fetchRetry(protectedRoute('/search' + toQueryString(q)), GET_OPT_JWT)
+      fetchRetry(protectedRoute('/search' + toQueryString(q)), options({method: 'GET', credentials: true, signal: abortController.signal}))
         .then(data => {
           if (data) {
             setResults(data.results);
@@ -27,6 +28,10 @@ export default function SearchResults(props) {
           setProcessing(false);
         });
     }
+
+    return () => {
+      abortController.abort();
+    };
   }, [props.location.search]);
 
   const loading = (

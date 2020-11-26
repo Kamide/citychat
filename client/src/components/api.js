@@ -1,95 +1,54 @@
+import getCookie from '../utils/cookie';
 import history from './history';
 
 const API_URL = (process.env['REACT_APP_API_URL'])
   ? process.env['REACT_APP_API_URL'].replace(/\/+$/, "")
   : 'http://localhost:5000';
 
-export function route(path) {
-  return API_URL + path;
+export function route(...path) {
+  return API_URL + path.join('');
 }
 
-export function publicRoute(path) {
-  return route('/public' + path);
+export function publicRoute(...path) {
+  return route('/public', path);
 }
 
-export function protectedRoute(path) {
-  return route('/protected' + path);
+export function protectedRoute(...path) {
+  return route('/protected', path);
 }
 
-export function privateRoute(path) {
-  return route('/private' + path);
+export function privateRoute(...path) {
+  return route('/private', path);
 }
 
-function getCSRFToken(refreshToken = false) {
-  const token = document.cookie.split('; ')
-    .find(pair => pair.startsWith(refreshToken ? 'csrf_refresh_token' : 'csrf_access_token'))
+export function options({method, credentials, csrfToken, body, signal}) {
+  let xCsrfToken;
 
-  if (token) {
-    return token.split('=')[1];
+  if (csrfToken) {
+    csrfToken = csrfToken.toLowerCase();
   }
 
-  return '';
-}
+  switch (csrfToken) {
+    case 'access':
+      xCsrfToken = { 'X-CSRF-TOKEN': getCookie('csrf_access_token') };
+      break;
+    case 'refresh':
+      xCsrfToken = { 'X-CSRF-TOKEN': getCookie('csrf_refresh_token') };
+      break;
+    default:
+      xCsrfToken = {};
+  }
 
-const JSON_CONTENT_TYPE = { 'Content-Type': 'application/json' };
-const JSON_HEADER = { headers: {...JSON_CONTENT_TYPE} };
-const INCLUDE_CREDENTIALS = { credentials: 'include' };
-
-export const GET_OPT = {
-  method: 'GET',
-  ...JSON_HEADER
-}
-
-export const GET_OPT_JWT = {
-  ...GET_OPT,
-  ...INCLUDE_CREDENTIALS
-}
-
-export const POST_OPT = {
-  method: 'POST',
-  ...JSON_HEADER
-}
-
-export const PATCH_OPT = {
-  method: 'PATCH',
-  ...JSON_HEADER
-}
-
-export function deleteOptCSRF(refreshToken = false) {
   return {
-    method: 'DELETE',
+    method: method,
     headers: {
-      ...JSON_CONTENT_TYPE,
-      'X-CSRF-TOKEN': getCSRFToken(refreshToken)
+      'Content-Type': 'application/json',
+      ...xCsrfToken
     },
-    ...INCLUDE_CREDENTIALS
-  };
-}
-
-export function postOpt(body) {
-  return {
-    ...POST_OPT,
-    body: JSON.stringify(body)
-  };
-}
-
-export function postOptJWT(body) {
-  return {
-    ...postOpt(body),
-    ...INCLUDE_CREDENTIALS
-  };
-}
-
-export function postOptCSRF({body, refreshToken = false}) {
-  return {
-    method: 'POST',
-    headers: {
-      ...JSON_CONTENT_TYPE,
-      'X-CSRF-TOKEN': getCSRFToken(refreshToken)
-    },
-    body: JSON.stringify(body),
-    ...INCLUDE_CREDENTIALS
-  };
+    ...(credentials ? { credentials: 'include' } : {}),
+    ...(body ? { body: JSON.stringify(body) } : {}),
+    ...(signal ? { signal: signal } : {})
+  }
 }
 
 export async function sleep(ms) {
@@ -100,9 +59,10 @@ export async function apiFetch(url, options) {
   let response = await fetch(url, options);
   let data = await response.json();
 
+
   if (response.status === 401) {
     if (data.expired_token && data.expired_token.type.toLowerCase() === 'access') {
-      response = await fetch(privateRoute('/refresh-token'), postOptCSRF({body: '', refreshToken: true}));
+      response = await fetch(privateRoute('/refresh-token'), options({method: 'POST', credentials: true, csrfToken: 'refresh'}));
     }
 
     if (response.status === 401) {
@@ -120,7 +80,11 @@ export async function fetchRetry(url, options, limit = 6, delay = 100, backoff =
   try {
     return await apiFetch(url, options);
   }
-  catch(e) {
+  catch (e) {
+    if (e.name === 'AbortError') {
+      return null;
+    }
+
     if (limit <= 1) {
       throw e;
     }

@@ -18,6 +18,9 @@ class JWTBlacklist(db.Model, CRUDMixin):
     issue_date = db.Column(db.DateTime, nullable=False, unique=False)
     expiration_date = db.Column(db.DateTime, nullable=False, unique=False)
 
+    def __str__(self):
+        return str(self.to_json())
+
     @classmethod
     def insert_commit(cls, decoded_token):
         return super().insert_commit(
