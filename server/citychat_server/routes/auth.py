@@ -59,13 +59,13 @@ def signup():
                                             'is already in use')
                 return jsonify(errors=form.errors), status.HTTP_409_CONFLICT
 
-            user = User(**User.filter_dict(**form.values))
+            user = User(**User.dict_intersect(**form.values))
             db.session.add(user)
             db.session.flush()
 
             user_profile = UserProfile(
                 id=user.id,
-                **UserProfile.filter_dict(**form.values)
+                **UserProfile.dict_intersect(**form.values)
             )
             db.session.add(user_profile)
             db.session.commit()

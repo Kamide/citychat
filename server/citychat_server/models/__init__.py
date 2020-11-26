@@ -8,7 +8,7 @@ migrate = Migrate(compare_type=True)
 
 class CRUDMixin:
     @classmethod
-    def filter_dict(cls, **kwargs):
+    def dict_intersect(cls, **kwargs):
         return {
             k: v
             for k, v in kwargs.items()
@@ -16,12 +16,16 @@ class CRUDMixin:
         }
 
     @classmethod
+    def get_filtered(cls, **kwargs):
+        return cls.query.filter_by(**kwargs)
+
+    @classmethod
     def get_first(cls, **kwargs):
-        return cls.query.filter_by(**kwargs).first()
+        return cls.get_filtered(**kwargs).first()
 
     @classmethod
     def has_row(cls, **kwargs):
-        return cls.query.filter_by(**kwargs).scalar() is not None
+        return cls.get_filtered(**kwargs).scalar() is not None
 
     @classmethod
     def insert_commit(cls, **kwargs):
