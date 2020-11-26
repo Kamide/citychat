@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ReactSVG } from 'react-svg';
 
-import { fetchRetry, options, protectedRoute } from '../api';
+import { fetchRetry, request, protectedRoute } from '../api';
 import { queryArrayHasParam, splitQuery, toQueryString } from '../../utils/query';
 import User from './user';
 
@@ -20,7 +20,7 @@ export default function SearchResults(props) {
 
     if (valid) {
       setProcessing(true);
-      fetchRetry(protectedRoute('/search' + toQueryString(q)), options({method: 'GET', credentials: true, signal: abortController.signal}))
+      fetchRetry(protectedRoute('/search' + toQueryString(q)), request({method: 'GET', credentials: true, signal: abortController.signal}))
         .then(data => {
           if (data) {
             setResults(data.results);

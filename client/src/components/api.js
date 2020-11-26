@@ -21,7 +21,7 @@ export function privateRoute(...path) {
   return route('/private', path);
 }
 
-export function options({method, credentials, csrfToken, body, signal}) {
+export function request({method, credentials, csrfToken, body, signal}) {
   let xCsrfToken;
 
   if (csrfToken) {
@@ -62,7 +62,7 @@ export async function apiFetch(url, options) {
 
   if (response.status === 401) {
     if (data.expired_token && data.expired_token.type.toLowerCase() === 'access') {
-      response = await fetch(privateRoute('/refresh-token'), options({method: 'POST', credentials: true, csrfToken: 'refresh'}));
+      response = await fetch(privateRoute('/refresh-token'), request({method: 'POST', credentials: true, csrfToken: 'refresh'}));
     }
 
     if (response.status === 401) {

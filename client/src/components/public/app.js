@@ -1,7 +1,7 @@
 import { Fragment, useEffect } from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
 
-import { options, protectedRoute } from '../api';
+import { request,protectedRoute } from '../api';
 import Activate from './auth/activate';
 import AuthForm from './auth/form';
 import Landing from './landing';
@@ -11,7 +11,7 @@ import history from '../history';
 
 export default function PublicApp() {
   useEffect(() => {
-    fetch(protectedRoute('/login/check'), options({method: 'GET', credentials: 'include'}))
+    fetch(protectedRoute('/login/check'), request({method: 'GET', credentials: 'include'}))
       .then(response => response.json())
       .then(data => {
         if (data.active) {
@@ -43,7 +43,7 @@ export default function PublicApp() {
         <Switch>
           <Route exact path="/" component={Landing} />
           <Route key="login" exact path="/login">
-            <AuthForm heading="Log In" endpoint="/login" options={options({method: 'POST', credentials: 'include'})} />
+            <AuthForm heading="Log In" endpoint="/login" request={request({method: 'POST', credentials: 'include'})} />
           </Route>
           <Route key="signup" exact path="/signup">
             <AuthForm heading="Sign Up" endpoint="/signup" />

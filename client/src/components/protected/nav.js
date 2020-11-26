@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, Route } from 'react-router-dom';
 
-import { apiFetch, fetchRetry, options, protectedRoute, privateRoute } from '../api';
+import { apiFetch, fetchRetry, request, protectedRoute, privateRoute } from '../api';
 import User from './user';
 import Search from './search';
 import history from '../history';
@@ -10,7 +10,7 @@ export default function Nav() {
   const [user, setUser] = useState();
 
   useEffect(() => {
-    apiFetch(protectedRoute('/user/self'), options({method: 'GET', credentials: true}))
+    apiFetch(protectedRoute('/user/self'), request({method: 'GET', credentials: true}))
       .then(data => {
         if (data) {
           setUser(data.user);
@@ -19,8 +19,8 @@ export default function Nav() {
   }, []);
 
   const logout = () => {
-    fetchRetry(protectedRoute('/logout'), options({method: 'DELETE', credentials: true, csrfToken: 'access'}));
-    fetchRetry(privateRoute('/logout'), options({method: 'DELETE', credentials: true, csrfToken: 'refresh'}))
+    fetchRetry(protectedRoute('/logout'), request({method: 'DELETE', credentials: true, csrfToken: 'access'}));
+    fetchRetry(privateRoute('/logout'), request({method: 'DELETE', credentials: true, csrfToken: 'refresh'}))
       .then(data => {
         if (data) {
           history.push('/');

@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-import { options, publicRoute } from '../../api';
+import { request,publicRoute } from '../../api';
 import history from '../../history';
 
 export default function Activate(props) {
   useEffect(() => {
-    fetch(publicRoute('/signup/activate/' + props.match.params.token), options({method: 'PATCH'}))
+    fetch(publicRoute('/signup/activate/' + props.match.params.token), request({method: 'PATCH'}))
       .then(response => response.json())
       .then(data => history.push(data.redirect));
   }, [props.match.params.token]);

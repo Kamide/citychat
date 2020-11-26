@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 
-import { fetchRetry, options, protectedRoute } from '../api';
+import { fetchRetry, request, protectedRoute } from '../api';
 
 export default function UserProfile(props) {
   const [user, setUser] = useState();
 
   useEffect(() => {
-    fetchRetry(protectedRoute('/user/id/' + props.match.params.id), options({method: 'GET', credentials: true}))
+    fetchRetry(protectedRoute('/user/id/' + props.match.params.id), request({method: 'GET', credentials: true}))
       .then(data => {
         if (data) {
           setUser(data.user);
