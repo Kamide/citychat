@@ -27,6 +27,7 @@ class User(db.Model, CRUDMixin):
         uselist=False,
         backref='user',
         cascade='all, delete',
+        passive_updates=True,
         passive_deletes=True
     )
 
@@ -49,7 +50,12 @@ class UserProfile(db.Model, CRUDMixin):
 
     id = db.Column(
         db.Integer,
-        db.ForeignKey('user.id', ondelete='CASCADE'),
+        db.ForeignKey(
+            column='user.id',
+            name='fk_user_profile_id',
+            onupdate='CASCADE',
+            ondelete='CASCADE'
+        ),
         primary_key=True
     )
     email = db.Column(db.String(254), nullable=False, unique=True)

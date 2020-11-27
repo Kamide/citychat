@@ -9,7 +9,12 @@ class JWTBlacklist(db.Model, CRUDMixin):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     audience = db.Column(
         db.Integer,
-        db.ForeignKey('user.id', ondelete='SET NULL'),
+        db.ForeignKey(
+            column='user.id',
+            name='fk_jwt_blacklist_audience',
+            onupdate='CASCADE',
+            ondelete='SET NULL'
+        ),
         nullable=True,
         unique=False
     )
