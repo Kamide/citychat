@@ -1,3 +1,4 @@
+from enum import IntEnum
 import re
 
 from sqlalchemy.orm import validates
@@ -63,9 +64,11 @@ class UserProfile(db.Model, CRUDMixin):
 
     email_regex = r'[^@]+@[^@]+\.[^@]+'
 
-    __tableargs__ = (
-        db.CheckConstraint(f"email ~ '{email_regex}'", name='cc_email'),
-        db.CheckConstraint('char_length(name) > 0', name='cc_name')
+    __table_args__ = (
+        db.CheckConstraint(f"email ~ '{email_regex}'",
+                           name='cc_user_profile_email'),
+        db.CheckConstraint('char_length(name) > 0',
+                           name='cc_user_profile_name')
     )
 
     def __str__(self):
@@ -97,3 +100,59 @@ class UserProfile(db.Model, CRUDMixin):
     @classmethod
     def get_active(cls):
         return cls.query.join(User).filter(User.date_activated.isnot(None))
+
+
+class UserRelation(IntEnum):
+    friend_request_pending = 0
+    friend = 1
+
+
+class UserRelationship(db.Model, CRUDMixin):
+    __tablename__ = 'user_relationship'
+
+    user_a = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            column='user.id',
+            name='fk_user_relationship_user_a',
+            onupdate='CASCADE',
+            ondelete='CASCADE'
+        ),
+        primary_key=True
+    )
+    user_b = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            column='user.id',
+            name='fk_user_relationship_user_b',
+            onupdate='CASCADE',
+            ondelete='CASCADE'
+        ),
+        primary_key=True
+    )
+    relation = db.Column(
+        db.Enum(UserRelation, name='user_relation'),
+        nullable=False,
+        unique=False
+    )
+    since = db.Column(
+        db.DateTime,
+        nullable=False,
+        unique=False,
+        server_default=func.now()
+    )
+
+    __table_args__ = (
+        db.PrimaryKeyConstraint('user_a', 'user_b', name='pk_user_relation'),
+        db.CheckConstraint('user_a < user_b', name='cc_user_relation_pk')
+    )
+
+    @validates('user_a', 'user_b')
+    def validates_users(self, key, value):
+        lhs = value if key == 'user_a' else self.user_a
+        rhs = value if key == 'user_b' else self.user_b
+
+        if lhs is not None and rhs is not None and not lhs < rhs:
+            raise ValueError('Value of user_a must be less than user_b')
+
+        return value
