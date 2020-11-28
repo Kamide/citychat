@@ -1,27 +1,28 @@
 from flask import Blueprint, jsonify
 from flask_api import status
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import jwt_required
 
-from citychat_server.models.user import UserProfile
+from citychat_server.routes.decorators import (
+    get_current_user,
+    get_user
+)
 
 blueprint = Blueprint('user', __name__)
 
 
 @blueprint.route('/protected/user/self', methods=['GET'])
 @jwt_required
-def user_self():
-    user = UserProfile.get_first(id=get_jwt_identity())
+@get_current_user
+def user_self(current_user):
     return jsonify(
-        user=user.to_json(columns=['id', 'name'])
+        user=current_user.to_json(columns=['id', 'name'])
     ), status.HTTP_200_OK
 
 
 @blueprint.route('/protected/user/id/<id>', methods=['GET'])
 @jwt_required
-def user_from_id(id):
-    try:
-        user = UserProfile.get_first_active(id=int(id))
-        user_json = user.to_json(columns=['id', 'name']) if user else None
-        return jsonify(user=user_json), status.HTTP_200_OK
-    except ValueError:
-        return jsonify(), status.HTTP_400_BAD_REQUEST
+@get_user
+def user_from_id(id, user):
+    return jsonify(user=user.to_json(
+        columns=['id', 'name']
+    )), status.HTTP_200_OK
