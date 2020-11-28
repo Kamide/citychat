@@ -89,9 +89,9 @@ def signup_activate(token):
             salt='auth.signup_activate',
             expires_in=HOUR
         )
-        user_profile = UserProfile.get_first(email=email)
+        user_profile = UserProfile.get_first_inactive(email=email)
 
-        if not user_profile or user_profile.user.is_active:
+        if not user_profile:
             raise ValueError
 
         user_profile.user.date_activated = func.now()
@@ -110,9 +110,9 @@ def signup_resend():
 
         if form.validate():
             email = form.values['email']
-            user_profile = UserProfile.get_first(email=email)
+            user_profile = UserProfile.get_first_inactive(email=email)
 
-            if user_profile and not user_profile.user.is_active:
+            if user_profile:
                 send_confirmation(email)
 
             return (

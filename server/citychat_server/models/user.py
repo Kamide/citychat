@@ -98,6 +98,11 @@ class UserProfile(db.Model, CRUDMixin):
         return first if (first and first.user.is_active) else None
 
     @classmethod
+    def get_first_inactive(cls, **kwargs):
+        first = cls.get_first(**kwargs)
+        return first if (first and not first.user.is_active) else None
+
+    @classmethod
     def get_active(cls):
         return cls.query.join(User).filter(User.date_activated.isnot(None))
 
