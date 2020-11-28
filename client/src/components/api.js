@@ -61,7 +61,7 @@ export async function apiFetch(url, options) {
 
 
   if (response.status === 401) {
-    if (data.expired_token && data.expired_token.type.toLowerCase() === 'access') {
+    if (data.expired_token && data.expired_token.toLowerCase() === 'access') {
       response = await fetch(privateRoute('/refresh-token'), request({method: 'POST', credentials: true, csrfToken: 'refresh'}));
     }
 

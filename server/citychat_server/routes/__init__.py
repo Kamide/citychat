@@ -11,9 +11,9 @@ jwt = JWTManager()
 
 @jwt.expired_token_loader
 def expired_token_callback(expired_token):
-    return jsonify(expired_token={
-        'type': expired_token['type']
-    }), status.HTTP_401_UNAUTHORIZED
+    return jsonify(
+        expired_token=expired_token['type']
+    ), status.HTTP_401_UNAUTHORIZED
 
 
 @jwt.token_in_blacklist_loader

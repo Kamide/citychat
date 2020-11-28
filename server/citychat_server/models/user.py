@@ -1,14 +1,15 @@
-from enum import IntEnum
+from enum import Enum
 import re
 
 from sqlalchemy.orm import validates
 from sqlalchemy.sql import func
 from werkzeug.security import check_password_hash
 
+from citychat_server.enum import EnumMixin
 from citychat_server.models import CRUDMixin, db
 
 
-class User(db.Model, CRUDMixin):
+class User(CRUDMixin, db.Model):
     __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -46,7 +47,7 @@ class User(db.Model, CRUDMixin):
         return check_password_hash(self.password, password)
 
 
-class UserProfile(db.Model, CRUDMixin):
+class UserProfile(CRUDMixin, db.Model):
     __tablename__ = 'user_profile'
 
     id = db.Column(
@@ -107,12 +108,13 @@ class UserProfile(db.Model, CRUDMixin):
         return cls.query.join(User).filter(User.date_activated.isnot(None))
 
 
-class UserRelation(IntEnum):
-    friend_request_pending = 0
-    friend = 1
+class UserRelation(EnumMixin, Enum):
+    FRIEND_REQUEST_FROM_A_TO_B = 'FX'
+    FRIEND_REQUEST_FROM_B_TO_A = 'XF'
+    FRIEND = 'F'
 
 
-class UserRelationship(db.Model, CRUDMixin):
+class UserRelationship(CRUDMixin, db.Model):
     __tablename__ = 'user_relationship'
 
     user_a = db.Column(
@@ -136,20 +138,21 @@ class UserRelationship(db.Model, CRUDMixin):
         primary_key=True
     )
     relation = db.Column(
-        db.Enum(UserRelation, name='user_relation'),
-        nullable=False,
+        db.String(2),
+        nullable=True,
         unique=False
     )
     since = db.Column(
         db.DateTime,
-        nullable=False,
-        unique=False,
-        server_default=func.now()
+        nullable=True,
+        unique=False
     )
 
     __table_args__ = (
         db.PrimaryKeyConstraint('user_a', 'user_b', name='pk_user_relation'),
-        db.CheckConstraint('user_a < user_b', name='cc_user_relation_pk')
+        db.CheckConstraint('user_a < user_b', name='cc_user_relation_pk'),
+        db.CheckConstraint(f'relation IN ({UserRelation.to_quoted_csv_str()})',
+                           name='cc_user_relation_relation')
     )
 
     @validates('user_a', 'user_b')
@@ -159,5 +162,15 @@ class UserRelationship(db.Model, CRUDMixin):
 
         if lhs is not None and rhs is not None and not lhs < rhs:
             raise ValueError('Value of user_a must be less than user_b')
+
+        return value
+
+    @validates('relation')
+    def validates(self, key, value):
+        if value not in UserRelation.to_list():
+            raise ValueError(
+                'Relation must be one of the following values: '
+                + UserRelation.to_csv_str()
+            )
 
         return value

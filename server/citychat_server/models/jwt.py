@@ -3,7 +3,7 @@ from datetime import datetime as dt
 from citychat_server.models import CRUDMixin, db
 
 
-class JWTBlacklist(db.Model, CRUDMixin):
+class JWTBlacklist(CRUDMixin, db.Model):
     __tablename__ = 'jwt_blacklist'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
