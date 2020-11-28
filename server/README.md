@@ -1,5 +1,13 @@
 # CityChat Server
 
+## Environment Variables
+
+To use the default environment variables, run:
+
+```bash
+cp .env.example .env
+```
+
 ## First-Time Initialization
 
 To create and start a virtual environment with Python 3.9.0 and the required packages, run:
