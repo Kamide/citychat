@@ -24,8 +24,8 @@ def get_user(route):
     @wraps(route)
     def decorated_route(*args, **kwargs):
         try:
-            kwargs['id'] = int(kwargs['id'])
-            user = UserProfile.get_first_active(id=kwargs['id'])
+            kwargs['user_id'] = int(kwargs['user_id'])
+            user = UserProfile.get_first_active(id=kwargs['user_id'])
 
             if user:
                 return route(user=user, *args, **kwargs)
