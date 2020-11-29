@@ -35,3 +35,17 @@ def get_user(route):
             return jsonify(), status.HTTP_400_BAD_REQUEST
 
     return decorated_route
+
+
+def distinct_users_required(route):
+    @wraps(route)
+    def decorated_route(*args, **kwargs):
+        try:
+            if kwargs['user'].id == kwargs['current_user'].id:
+                raise ValueError
+            else:
+                return route(*args, **kwargs)
+        except (KeyError, ValueError):
+            return jsonify(), status.HTTP_400_BAD_REQUEST
+
+    return decorated_route

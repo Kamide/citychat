@@ -10,11 +10,11 @@ export function route(...path) {
 }
 
 export function publicRoute(...path) {
-  return route('/public', path);
+  return route('/public', ...path);
 }
 
 export function protectedRoute(...path) {
-  return route('/protected', path);
+  return route('/protected', ...path);
 }
 
 export function privateRoute(...path) {
@@ -93,3 +93,10 @@ export async function fetchRetry(url, options, limit = 6, delay = 100, backoff =
     return await fetchRetry(url, options, limit - 1, delay * backoff, backoff);
   }
 }
+
+export const UserRelation = {
+  STRANGER: 'S',
+  FRIEND_REQUEST_FROM_A_TO_B: 'FX',
+  FRIEND_REQUEST_FROM_B_TO_A: 'XF',
+  FRIEND: 'F'
+};

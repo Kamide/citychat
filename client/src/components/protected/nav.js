@@ -33,6 +33,7 @@ export default function Nav() {
       <nav>
         <ul className="display--flex margin-right--s--child-universal zero--list-style zero--margin zero--padding">
           <li><Link to='/app/dashboard'>Dashboard</Link></li>
+          <li><Link to='/app/friends'>Friends</Link></li>
           <li>Messages</li>
           <li>Groups</li>
           <li>Organizations</li>

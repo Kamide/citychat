@@ -20,7 +20,7 @@ export default function SearchResults(props) {
 
     if (valid) {
       setProcessing(true);
-      fetchRetry(protectedRoute('/search' + toQueryString(q)), request({method: 'GET', credentials: true, signal: abortController.signal}))
+      fetchRetry(protectedRoute('/search', toQueryString(q)), request({method: 'GET', credentials: true, signal: abortController.signal}))
         .then(data => {
           if (data) {
             setResults(data.results);

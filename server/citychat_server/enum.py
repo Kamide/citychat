@@ -1,7 +1,7 @@
 class EnumMixin:
     @classmethod
     def to_list(cls):
-        return [key.value for key in cls]
+        return [name.value for name in cls]
 
     @classmethod
     def to_csv_str(cls):

@@ -1,3 +1,4 @@
+from collections import deque
 from enum import Enum
 import re
 
@@ -113,6 +114,10 @@ class UserRelation(EnumMixin, Enum):
     FRIEND_REQUEST_FROM_B_TO_A = 'XF'
     FRIEND = 'F'
 
+    @classmethod
+    def STRANGER(self):
+        return 'S'
+
 
 class UserRelationship(CRUDMixin, db.Model):
     __tablename__ = 'user_relationship'
@@ -156,7 +161,7 @@ class UserRelationship(CRUDMixin, db.Model):
     )
 
     @validates('user_a', 'user_b')
-    def validates_users(self, key, value):
+    def validates_user_ids(self, key, value):
         lhs = value if key == 'user_a' else self.user_a
         rhs = value if key == 'user_b' else self.user_b
 
@@ -174,3 +179,75 @@ class UserRelationship(CRUDMixin, db.Model):
             )
 
         return value
+
+    @classmethod
+    def sort_user_ids(cls, user_ids):
+        return {
+            'user_a': min(user_ids[0], user_ids[1]),
+            'user_b': max(user_ids[0], user_ids[1])
+        }
+
+    @classmethod
+    def resolve_friend_requester(cls, sorted_user_ids, current_user_id):
+        if sorted_user_ids['user_a'] == current_user_id:
+            return UserRelation.FRIEND_REQUEST_FROM_A_TO_B.value
+        else:
+            return UserRelation.FRIEND_REQUEST_FROM_B_TO_A.value
+
+    @classmethod
+    def resolve_friend_requestee(cls, sorted_user_ids, current_user_id):
+        if sorted_user_ids['user_a'] == current_user_id:
+            return UserRelation.FRIEND_REQUEST_FROM_B_TO_A.value
+        else:
+            return UserRelation.FRIEND_REQUEST_FROM_A_TO_B.value
+
+    @classmethod
+    def get_filtered(cls, user_ids=None, status=None, **kwargs):
+        values = deque()
+
+        if user_ids:
+            sorted_user_ids = cls.sort_user_ids(user_ids)
+
+            if status:
+                current_user_id = status.get('current_user_id')
+                assert isinstance(current_user_id, int)
+
+                if status.get('requester'):
+                    relation = cls.resolve_friend_requester(
+                        sorted_user_ids, current_user_id
+                    )
+                else:
+                    relation = cls.resolve_friend_requestee(
+                        sorted_user_ids, current_user_id
+                    )
+
+                if status.get('insert'):
+                    kwargs['relation'] = relation
+
+                values.appendleft(relation)
+
+            values.appendleft(sorted_user_ids)
+
+        values.appendleft(cls.query.filter_by(**kwargs))
+        return values
+
+    @classmethod
+    def get_first(cls, user_ids=None, status=None, **kwargs):
+        filtered, *args = cls.get_filtered(user_ids, status, **kwargs)
+        return (filtered.first(), *args)
+
+    @classmethod
+    def has_row(cls, user_ids=None, status=None, **kwargs):
+        filtered, *args = cls.get_filtered(user_ids, status, **kwargs)
+        return (filtered.scalar() is not None, *args)
+
+    @classmethod
+    def insert_commit(cls, **kwargs):
+        row = cls(**kwargs)
+
+        if cls.has_row(**kwargs)[0]:
+            return None
+
+        db.session.add(row)
+        db.session.commit()
+        return row
