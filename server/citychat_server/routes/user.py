@@ -23,6 +23,35 @@ def get_self(current_user):
     ), status.HTTP_200_OK
 
 
+@blueprint.route('/protected/user/self/relationships', methods=['GET'])
+@jwt_required
+@get_current_user
+def get_relationships(current_user):
+    relationships = UserRelationship.get_filtered(user_id=current_user.id)[0]
+    friends = relationships.filter_by(relation=UserRelation.FRIEND.value)
+    pending = relationships.filter(or_(
+        UserRelationship.relation
+        == UserRelation.FRIEND_REQUEST_FROM_A_TO_B.value,
+        UserRelationship.relation
+        == UserRelation.FRIEND_REQUEST_FROM_B_TO_A.value
+    ))
+    return jsonify(
+        friends=[row.other_user_to_json(current_user.id) for row in friends],
+        pending={
+            'incoming': [
+                row.other_user_to_json(current_user.id)
+                for row in pending
+                if row.user_is_requestee(current_user.id)
+            ],
+            'outgoing': [
+                row.other_user_to_json(current_user.id)
+                for row in pending
+                if row.user_is_requester(current_user.id)
+            ]
+        }
+    ), status.HTTP_200_OK
+
+
 @blueprint.route('/protected/user/id/<user_id>', methods=['GET'])
 @jwt_required
 @get_user

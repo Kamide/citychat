@@ -263,6 +263,16 @@ class UserRelationship(CRUDMixin, db.Model):
         db.session.commit()
         return row
 
-    def get_other_user(cls, current_user_id):
-        id = cls.user_a if cls.user_a != current_user_id else cls.user_b
+    def other_user_to_json(self, user_id):
+        id = self.user_a if self.user_a != user_id else self.user_b
         return UserProfile.get_first(id=id).to_json(columns=['id', 'name'])
+
+    def user_is_requester(self, user_id):
+        return (
+            self.user_a == user_id
+            and UserRelation(self.relation)
+            is UserRelation.FRIEND_REQUEST_FROM_A_TO_B
+        )
+
+    def user_is_requestee(self, user_id):
+        return not self.user_is_requester(user_id)
