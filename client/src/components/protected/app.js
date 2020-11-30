@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import { apiFetch, request, protectedRoute } from '../api';
 import Dashboard from './dashboard';
-import Friends from './friends';
+import Relationships from './user/relationships';
 import Nav from './nav';
 import SearchResults from './search/results';
 import UserProfile from './user/profile';
@@ -26,7 +26,7 @@ export default function ProtectedApp() {
       <main>
         <Switch>
           <Route exact path="/app/dashboard" component={Dashboard} />
-          <Route exact path="/app/friends" component={Friends} />
+          <Route exact path="/app/friends" component={Relationships} />
           <Route path="/app/search" component={SearchResults} />
           <Route path="/app/user/:id" component={UserProfile} />
           <Route component={Dashboard} />
