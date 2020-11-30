@@ -3,7 +3,7 @@ from enum import Enum
 import re
 
 from sqlalchemy.orm import validates
-from sqlalchemy.sql import func
+from sqlalchemy.sql import func, or_
 from werkzeug.security import check_password_hash
 
 from citychat_server.enum import EnumMixin
@@ -161,7 +161,7 @@ class UserRelationship(CRUDMixin, db.Model):
     )
 
     @validates('user_a', 'user_b')
-    def validates_user_ids(self, key, value):
+    def validates_user_id_pair(self, key, value):
         lhs = value if key == 'user_a' else self.user_a
         rhs = value if key == 'user_b' else self.user_b
 
@@ -181,32 +181,43 @@ class UserRelationship(CRUDMixin, db.Model):
         return value
 
     @classmethod
-    def sort_user_ids(cls, user_ids):
+    def sort_user_id_pair(cls, user_id_pair):
         return {
-            'user_a': min(user_ids[0], user_ids[1]),
-            'user_b': max(user_ids[0], user_ids[1])
+            'user_a': min(user_id_pair[0], user_id_pair[1]),
+            'user_b': max(user_id_pair[0], user_id_pair[1])
         }
 
     @classmethod
-    def resolve_friend_requester(cls, sorted_user_ids, current_user_id):
-        if sorted_user_ids['user_a'] == current_user_id:
+    def resolve_friend_requester(cls, sorted_user_id_pair, current_user_id):
+        if sorted_user_id_pair['user_a'] == current_user_id:
             return UserRelation.FRIEND_REQUEST_FROM_A_TO_B.value
         else:
             return UserRelation.FRIEND_REQUEST_FROM_B_TO_A.value
 
     @classmethod
-    def resolve_friend_requestee(cls, sorted_user_ids, current_user_id):
-        if sorted_user_ids['user_a'] == current_user_id:
+    def resolve_friend_requestee(cls, sorted_user_id_pair, current_user_id):
+        if sorted_user_id_pair['user_a'] == current_user_id:
             return UserRelation.FRIEND_REQUEST_FROM_B_TO_A.value
         else:
             return UserRelation.FRIEND_REQUEST_FROM_A_TO_B.value
 
     @classmethod
-    def get_filtered(cls, user_ids=None, status=None, **kwargs):
+    def get_filtered(cls, **kwargs):
+        user_id = kwargs.pop('user_id', None)
+        user_id_pair = kwargs.pop('user_id_pair', None)
+        status = kwargs.pop('status', None)
         values = deque()
 
-        if user_ids:
-            sorted_user_ids = cls.sort_user_ids(user_ids)
+        if user_id:
+            values.appendleft(
+                cls.query.filter(
+                    or_(cls.user_a == user_id, cls.user_b == user_id)
+                ).filter_by(**kwargs)
+            )
+            return values
+        elif user_id_pair:
+            sorted_user_id_pair = cls.sort_user_id_pair(user_id_pair)
+            kwargs |= sorted_user_id_pair
 
             if status:
                 current_user_id = status.get('current_user_id')
@@ -214,11 +225,11 @@ class UserRelationship(CRUDMixin, db.Model):
 
                 if status.get('requester'):
                     relation = cls.resolve_friend_requester(
-                        sorted_user_ids, current_user_id
+                        sorted_user_id_pair, current_user_id
                     )
                 else:
                     relation = cls.resolve_friend_requestee(
-                        sorted_user_ids, current_user_id
+                        sorted_user_id_pair, current_user_id
                     )
 
                 if status.get('insert'):
@@ -226,19 +237,19 @@ class UserRelationship(CRUDMixin, db.Model):
 
                 values.appendleft(relation)
 
-            values.appendleft(sorted_user_ids)
+            values.appendleft(sorted_user_id_pair)
 
         values.appendleft(cls.query.filter_by(**kwargs))
         return values
 
     @classmethod
-    def get_first(cls, user_ids=None, status=None, **kwargs):
-        filtered, *args = cls.get_filtered(user_ids, status, **kwargs)
+    def get_first(cls, **kwargs):
+        filtered, *args = cls.get_filtered(**kwargs)
         return (filtered.first(), *args)
 
     @classmethod
-    def has_row(cls, user_ids=None, status=None, **kwargs):
-        filtered, *args = cls.get_filtered(user_ids, status, **kwargs)
+    def has_row(cls, **kwargs):
+        filtered, *args = cls.get_filtered(**kwargs)
         return (filtered.scalar() is not None, *args)
 
     @classmethod
@@ -251,3 +262,7 @@ class UserRelationship(CRUDMixin, db.Model):
         db.session.add(row)
         db.session.commit()
         return row
+
+    def get_other_user(cls, current_user_id):
+        id = cls.user_a if cls.user_a != current_user_id else cls.user_b
+        return UserProfile.get_first(id=id).to_json(columns=['id', 'name'])

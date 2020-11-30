@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_api import status
 from flask_jwt_extended import jwt_required
-from sqlalchemy.sql import func
+from sqlalchemy.sql import func, or_
 
 from citychat_server.models import db
 from citychat_server.models.user import UserRelation, UserRelationship
@@ -39,7 +39,7 @@ def get_user_by_id(user_id, user):
 @distinct_users_required
 def get_relationship(user_id, user, current_user):
     relationship, sorted_users = UserRelationship.get_first(
-        user_ids=[user_id, current_user.id]
+        user_id_pair=[user_id, current_user.id]
     )
     return jsonify(
         relationship=(
@@ -58,7 +58,7 @@ def get_relationship(user_id, user, current_user):
 @distinct_users_required
 def send_friend_request(user_id, user, current_user):
     relationship, sorted_users, relation = UserRelationship.has_row(
-        user_ids=[user_id, current_user.id],
+        user_id_pair=[user_id, current_user.id],
         status={
             'current_user_id': current_user.id,
             'requester': True
@@ -104,7 +104,7 @@ def unfriend(user_id, user, current_user):
         }}
 
     relationship, *args = UserRelationship.get_first(
-        user_ids=[user_id, current_user.id],
+        user_id_pair=[user_id, current_user.id],
         **kwargs
     )
 
@@ -126,7 +126,7 @@ def unfriend(user_id, user, current_user):
 @distinct_users_required
 def accept_user_friend_request(user_id, user, current_user):
     relationship, *args = UserRelationship.get_first(
-        user_ids=[user_id, current_user.id]
+        user_id_pair=[user_id, current_user.id]
     )
 
     if relationship:
