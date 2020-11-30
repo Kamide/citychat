@@ -71,11 +71,11 @@ def get_relationship(user_id, user, current_user):
         user_id_pair=[user_id, current_user.id]
     )
     return jsonify(
+        is_user_a=sorted_users['user_a'] == current_user.id,
         relationship=(
             relationship.relation if relationship
             else UserRelation.STRANGER()
-        ),
-        is_user_a=sorted_users['user_a'] == current_user.id
+        )
     ), status.HTTP_200_OK
 
 

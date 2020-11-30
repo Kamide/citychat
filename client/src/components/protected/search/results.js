@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { ReactSVG } from 'react-svg';
 
-import { fetchRetry, request, protectedRoute } from '../api';
-import { queryArrayHasParam, splitQuery, toQueryString } from '../../utils/query';
-import User from './user';
+import { queryArrayHasParam, splitQuery, toQueryString } from '../../../utils/query';
+import { fetchRetry, request, protectedRoute } from '../../api';
+import User from '../user/user';
 
-import blinkingEllipsis from '../../images/blinking-ellipsis.svg';
+import blinkingEllipsis from '../../../images/blinking-ellipsis.svg';
 
 export default function SearchResults(props) {
   const [queryValid, setQueryValid] = useState(false);
@@ -44,7 +44,7 @@ export default function SearchResults(props) {
     if (results && results.length) {
       return results.map((r, index) => {
         return (
-          <User key={index} user={r} showID={true} />
+          <User key={index} user={r} />
         );
       })
     }

@@ -1,23 +1,11 @@
-import { useState, useEffect } from 'react';
 import { Link, Route } from 'react-router-dom';
 
-import { apiFetch, fetchRetry, request, protectedRoute, privateRoute } from '../api';
-import User from './user';
-import Search from './search';
+import { fetchRetry, request, protectedRoute, privateRoute } from '../api';
+import User from './user/user';
+import Search from './search/search';
 import history from '../history';
 
-export default function Nav() {
-  const [user, setUser] = useState();
-
-  useEffect(() => {
-    apiFetch(protectedRoute('/user/self'), request({method: 'GET', credentials: true}))
-      .then(data => {
-        if (data) {
-          setUser(data.user);
-        }
-      });
-  }, []);
-
+export default function Nav(props) {
   const logout = () => {
     fetchRetry(protectedRoute('/logout'), request({method: 'DELETE', credentials: true, csrfToken: 'access'}));
     fetchRetry(privateRoute('/logout'), request({method: 'DELETE', credentials: true, csrfToken: 'refresh'}))
@@ -41,7 +29,7 @@ export default function Nav() {
       </nav>
       <Route component={Search} />
       <div>
-        <User user={user} />
+        <User user={props.user} />
         <button className="button" type="button" onClick={logout}>Log Out</button>
       </div>
     </div>

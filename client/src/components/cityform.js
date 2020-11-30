@@ -21,7 +21,7 @@ export default function CityForm(props) {
     );
   }
 
-  if (!props.form) {
+  if (!Object.keys(props.form).length) {
     return (
       <div aria-label="Loading form" className="text-align--center">
         <ReactSVG aria-hidden="true" src={blinkingEllipsis} />
