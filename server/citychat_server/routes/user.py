@@ -41,12 +41,12 @@ def get_relationships(current_user):
             'incoming': [
                 row.other_user_to_json(current_user.id)
                 for row in pending
-                if row.user_is_requester(current_user.id)
+                if row.user_is_requestee(current_user.id)
             ],
             'outgoing': [
                 row.other_user_to_json(current_user.id)
                 for row in pending
-                if row.user_is_requestee(current_user.id)
+                if row.user_is_requester(current_user.id)
             ]
         }
     ), status.HTTP_200_OK

@@ -272,7 +272,7 @@ class UserRelationship(CRUDMixin, db.Model):
         return UserProfile.get_first(id=id).to_json(columns=['id', 'name'])
 
     def user_is_requester(self, user_id):
-        p = 0b01 if self.user_a == user_id else 0b10
+        p = 0b10 if self.user_a == user_id else 0b01
         q = UserRelation.to_binary(self.relation)
         return p & q
 
