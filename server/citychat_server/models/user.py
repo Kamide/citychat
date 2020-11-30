@@ -118,6 +118,10 @@ class UserRelation(EnumMixin, Enum):
     def STRANGER(self):
         return 'S'
 
+    @classmethod
+    def to_binary(cls, value):
+        return int(''.join('0' if c == 'X' else '1' for c in value), 2)
+
 
 class UserRelationship(CRUDMixin, db.Model):
     __tablename__ = 'user_relationship'
@@ -268,11 +272,9 @@ class UserRelationship(CRUDMixin, db.Model):
         return UserProfile.get_first(id=id).to_json(columns=['id', 'name'])
 
     def user_is_requester(self, user_id):
-        return (
-            self.user_a == user_id
-            and UserRelation(self.relation)
-            is UserRelation.FRIEND_REQUEST_FROM_A_TO_B
-        )
+        p = 0b01 if self.user_a == user_id else 0b10
+        q = UserRelation.to_binary(self.relation)
+        return p & q
 
     def user_is_requestee(self, user_id):
         return not self.user_is_requester(user_id)
