@@ -20,6 +20,8 @@ export default function ProtectedApp() {
           setUser(data.user);
         }
       });
+
+    return () => socket.disconnect();
   }, []);
 
   return (
