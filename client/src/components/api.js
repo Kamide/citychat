@@ -1,9 +1,18 @@
+import io from 'socket.io-client';
+
 import getCookie from '../utils/cookie';
 import history from './history';
 
 const API_URL = (process.env['REACT_APP_API_URL'])
   ? process.env['REACT_APP_API_URL'].replace(/\/+$/, "")
   : 'http://localhost:5000';
+
+export const socket = io(API_URL, {
+  autoConnect: false,
+  reconnection: true,
+  transports: ['websocket', 'polling'],
+  withCredentials: true
+});
 
 export function route(...path) {
   return API_URL + path.join('');

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import { apiFetch, request, protectedRoute } from '../api';
+import { apiFetch, request, socket, protectedRoute } from '../api';
 import Dashboard from './dashboard';
 import Relationships from './user/relationships';
 import Nav from './nav';
@@ -12,6 +12,8 @@ export default function ProtectedApp() {
   const [user, setUser] = useState({});
 
   useEffect(() => {
+    socket.open();
+
     apiFetch(protectedRoute('/user/self'), request({method: 'GET', credentials: true}))
       .then(data => {
         if (data) {

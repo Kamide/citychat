@@ -5,7 +5,7 @@ def create_app():
     from citychat_server.models import db, migrate
     from citychat_server.models import models  # noqa: F401
     from citychat_server.mail import mail
-    from citychat_server.routes import cors, jwt
+    from citychat_server.routes import cors, jwt, socketio
 
     app = Flask(__name__)
     app.config.from_pyfile('settings.py')
@@ -15,6 +15,7 @@ def create_app():
     mail.init_app(app)
     cors.init_app(app)
     jwt.init_app(app)
+    socketio.init_app(app)
 
     with app.app_context():
         from citychat_server.routes import (
