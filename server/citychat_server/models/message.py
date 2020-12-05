@@ -7,10 +7,20 @@ class Message(CRUDMixin, db.Model):
     __tablename__ = 'message'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    author = db.Column(
+    chat_id = db.Column(
+        db.ForeignKey(
+            column='chat.id',
+            name='fk_message_chat_id',
+            onupdate='CASCADE',
+            ondelete='CASCADE'
+        ),
+        nullable=False,
+        unique=False
+    )
+    author_id = db.Column(
         db.ForeignKey(
             column='user.id',
-            name='fk_message_author',
+            name='fk_message_author_id',
             onupdate='CASCADE',
             ondelete='CASCADE'
         ),

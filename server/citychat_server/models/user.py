@@ -33,6 +33,22 @@ class User(CRUDMixin, db.Model):
         passive_updates=True,
         passive_deletes=True
     )
+    conversations = db.relationship(
+        'ChatParticipant',
+        uselist=True,
+        backref='participant',
+        cascade='all, delete',
+        passive_updates=True,
+        passive_deletes=True
+    )
+    messages = db.relationship(
+        'Message',
+        uselist=True,
+        backref='author',
+        cascade='all, delete',
+        passive_updates=True,
+        passive_deletes=True
+    )
 
     def __str__(self):
         return (
