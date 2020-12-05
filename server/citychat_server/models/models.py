@@ -2,5 +2,6 @@
 
 from citychat_server.models import (
     jwt,
+    message,
     user
 )
