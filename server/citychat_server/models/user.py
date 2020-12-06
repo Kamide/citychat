@@ -283,9 +283,9 @@ class UserRelationship(CRUDMixin, db.Model):
         db.session.commit()
         return row
 
-    def other_user_to_json(self, user_id):
+    def other_user(self, user_id):
         id = self.user_a if self.user_a != user_id else self.user_b
-        return UserProfile.get_first(id=id).to_json(columns=['id', 'name'])
+        return User.get_first(id=id)
 
     def user_is_requester(self, user_id):
         p = 0b10 if self.user_a == user_id else 0b01

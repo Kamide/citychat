@@ -19,8 +19,14 @@ blueprint = Blueprint('user', __name__)
 @get_current_user
 def get_self(current_user):
     return jsonify(
-        user=current_user.to_json(columns=['id', 'name'])
+        user=current_user.profile.to_json(columns=['id', 'name'])
     ), status.HTTP_200_OK
+
+
+def other_user_to_json(user_relationship, user_id):
+    return user_relationship.other_user(user_id).profile.to_json(
+        columns=['id', 'name']
+    )
 
 
 @blueprint.route('/protected/user/self/relationships', methods=['GET'])
@@ -36,15 +42,15 @@ def get_relationships(current_user):
         == UserRelation.FRIEND_REQUEST_FROM_B_TO_A.value
     ))
     return jsonify(
-        friends=[row.other_user_to_json(current_user.id) for row in friends],
+        friends=[other_user_to_json(row, current_user.id) for row in friends],
         pending={
             'incoming': [
-                row.other_user_to_json(current_user.id)
+                other_user_to_json(row, current_user.id)
                 for row in pending
                 if row.user_is_requestee(current_user.id)
             ],
             'outgoing': [
-                row.other_user_to_json(current_user.id)
+                other_user_to_json(row, current_user.id)
                 for row in pending
                 if row.user_is_requester(current_user.id)
             ]
@@ -56,7 +62,7 @@ def get_relationships(current_user):
 @jwt_required
 @get_user
 def get_user_by_id(user_id, user):
-    return jsonify(user=user.to_json(
+    return jsonify(user=user.profile.to_json(
         columns=['id', 'name']
     )), status.HTTP_200_OK
 

@@ -10,7 +10,7 @@ from citychat_server.models.user import UserProfile
 def get_current_user(route):
     @wraps(route)
     def decorated_route(*args, **kwargs):
-        current_user = UserProfile.get_first_active(id=get_jwt_identity())
+        current_user = UserProfile.get_first_active(id=get_jwt_identity()).user
 
         if current_user:
             return route(current_user=current_user, *args, **kwargs)
@@ -25,7 +25,7 @@ def get_user(route):
     def decorated_route(*args, **kwargs):
         try:
             kwargs['user_id'] = int(kwargs['user_id'])
-            user = UserProfile.get_first_active(id=kwargs['user_id'])
+            user = UserProfile.get_first_active(id=kwargs['user_id']).user
 
             if user:
                 return route(user=user, *args, **kwargs)
