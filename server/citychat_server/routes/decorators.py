@@ -10,10 +10,15 @@ from citychat_server.models.user import UserProfile
 def get_current_user(route):
     @wraps(route)
     def decorated_route(*args, **kwargs):
-        current_user = UserProfile.get_first_active(id=get_jwt_identity()).user
+        current_user_profile = UserProfile.get_first_active(
+            id=get_jwt_identity()
+        )
 
-        if current_user:
-            return route(current_user=current_user, *args, **kwargs)
+        if current_user_profile:
+            return route(
+                current_user=current_user_profile.user,
+                *args, **kwargs
+            )
         else:
             return jsonify(), status.HTTP_401_UNAUTHORIZED
 
@@ -25,10 +30,10 @@ def get_user(route):
     def decorated_route(*args, **kwargs):
         try:
             kwargs['user_id'] = int(kwargs['user_id'])
-            user = UserProfile.get_first_active(id=kwargs['user_id']).user
+            user_profile = UserProfile.get_first_active(id=kwargs['user_id'])
 
-            if user:
-                return route(user=user, *args, **kwargs)
+            if user_profile:
+                return route(user=user_profile.user, *args, **kwargs)
             else:
                 return jsonify(), status.HTTP_404_NOT_FOUND
         except (KeyError, ValueError):
