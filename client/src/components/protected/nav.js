@@ -10,7 +10,7 @@ export default function Nav(props) {
     fetchRetry(protectedRoute('/logout'), request({method: 'DELETE', credentials: true, csrfToken: 'access'}));
     fetchRetry(privateRoute('/logout'), request({method: 'DELETE', credentials: true, csrfToken: 'refresh'}))
       .then(data => {
-        if (Object.keys(data).length) {
+        if (data && Object.keys(data).length) {
           history.push('/');
         }
       });

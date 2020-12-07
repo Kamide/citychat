@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { fetchRetry, protectedRoute, request } from '../../api';
 import User from '../user/user';
+import history from '../../history';
 
 export default function Chat(props) {
   const [chatID, setChatID] = useState('');
@@ -10,8 +11,8 @@ export default function Chat(props) {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    setChatID(String(props.match.params.id));
-  }, [props.match.params.id]);
+    setChatID(String(props.chatID));
+  }, [props.chatID]);
 
   useEffect(() => {
     if (chatID) {
@@ -21,9 +22,12 @@ export default function Chat(props) {
           credentials: true
         }))
           .then(data => {
-            if (Object.keys(data).length) {
+            if (data && Object.keys(data).length) {
               setChat(data.chat);
               setParticipants(data.participants);
+            }
+            else {
+              history.push('/app/chat')
             }
           });
 
@@ -33,7 +37,7 @@ export default function Chat(props) {
           credentials: true
         }))
           .then(data => {
-            if (Object.keys(data).length) {
+            if (data && Object.keys(data).length) {
               setMessages(data.messages);
             }
           });

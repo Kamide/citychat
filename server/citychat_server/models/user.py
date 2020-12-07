@@ -271,17 +271,6 @@ class UserRelationship(CRUDMixin, db.Model):
         filtered, *args = cls.get_filtered(**kwargs)
         return (filtered.scalar() is not None, *args)
 
-    @classmethod
-    def insert_commit(cls, **kwargs):
-        row = cls(**kwargs)
-
-        if cls.has_row(**kwargs)[0]:
-            return None
-
-        db.session.add(row)
-        db.session.commit()
-        return row
-
     def other_user(self, user_id):
         id = self.user_a if self.user_a != user_id else self.user_b
         return User.get_first(id=id)

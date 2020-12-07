@@ -1,4 +1,4 @@
-from sqlalchemy.sql import and_
+from sqlalchemy.sql import func, or_
 
 from citychat_server.models import CRUDMixin, db
 
@@ -44,20 +44,26 @@ class Chat(CRUDMixin, db.Model):
 
     @classmethod
     def get_filtered(cls, **kwargs):
-        participants = kwargs.pop('participants', None)
+        user_id = kwargs.pop('user_id', None)
+        participant_id_set = kwargs.pop('participant_id_set', None)
 
-        if participants:
-            conditions = [
-                ChatParticipant.participant_id == p.id
-                for p in participants
-            ]
-
+        if user_id is not None:
             return (
-                cls.query.filter_by(**kwargs).filter(
-                    cls.participants.any(
-                        and_(*conditions)
-                    )
-                )
+                cls.query.filter_by(**kwargs)
+                .filter(cls.participants.any(
+                    ChatParticipant.participant_id == user_id
+                ))
+            )
+        elif participant_id_set:
+            conditions = [
+                ChatParticipant.participant_id == pid
+                for pid in participant_id_set
+            ]
+            return (
+                cls.query.filter_by(**kwargs)
+                .join(ChatParticipant)
+                .group_by(cls.id)
+                .having(func.every(or_(*conditions)))
             )
         else:
             return cls.query.filter_by(**kwargs)

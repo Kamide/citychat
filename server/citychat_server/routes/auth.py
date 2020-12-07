@@ -168,14 +168,14 @@ def login_check():
 @blueprint.route('/protected/logout', methods=['DELETE'])
 @jwt_required
 def logout_access_token():
-    JWTBlacklist.insert_commit(get_raw_jwt())
+    JWTBlacklist.insert_if_not_exists(get_raw_jwt())
     return jsonify(blacklisted=True), status.HTTP_200_OK
 
 
 @blueprint.route('/private/logout', methods=['DELETE'])
 @jwt_refresh_token_required
 def logout_refresh_token():
-    JWTBlacklist.insert_commit(get_raw_jwt())
+    JWTBlacklist.insert_if_not_exists(get_raw_jwt())
     return jsonify(blacklisted=True), status.HTTP_200_OK
 
 

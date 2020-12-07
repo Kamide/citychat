@@ -24,8 +24,8 @@ class JWTBlacklist(CRUDMixin, db.Model):
     expiration_date = db.Column(db.DateTime, nullable=False, unique=False)
 
     @classmethod
-    def insert_commit(cls, decoded_token):
-        return super().insert_commit(
+    def insert_if_not_exists(cls, decoded_token):
+        return super().insert_if_not_exists(
             audience=decoded_token['identity'],
             jti=decoded_token['jti'],
             token_type=decoded_token['type'],

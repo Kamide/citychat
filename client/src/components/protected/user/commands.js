@@ -18,7 +18,7 @@ export default function UserCommands(props) {
         credentials: true
       }))
         .then(data => {
-          if (Object.keys(data).length) {
+          if (data && Object.keys(data).length) {
             const oldRelationship = props.relationship;
             props.setRelationship(data.relationship);
 
@@ -30,7 +30,7 @@ export default function UserCommands(props) {
                   csrfToken: 'access'
                 }))
                   .then(data => {
-                    if (Object.keys(data).length) {
+                    if (data && Object.keys(data).length) {
                       props.setRelationship(data.relationship);
                     }
                   });

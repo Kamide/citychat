@@ -28,7 +28,7 @@ class CRUDMixin:
         return cls.get_filtered(**kwargs).scalar() is not None
 
     @classmethod
-    def insert_commit(cls, **kwargs):
+    def insert_if_not_exists(cls, **kwargs):
         row = cls(**kwargs)
 
         if cls.has_row(**kwargs):

@@ -99,11 +99,13 @@ def send_friend_request(user_id, user, current_user):
     if relationship:
         return jsonify(), status.HTTP_409_CONFLICT
     else:
-        UserRelationship.insert_commit(
+        relationship = UserRelationship(
             **sorted_users,
             relation=relation,
             since=func.now()
         )
+        db.session.add(relationship)
+        db.session.commit()
         return jsonify(relationship=relation), status.HTTP_201_CREATED
 
 

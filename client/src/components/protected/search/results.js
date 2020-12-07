@@ -22,7 +22,7 @@ export default function SearchResults(props) {
       setProcessing(true);
       fetchRetry(protectedRoute('/search', toQueryString(q)), request({method: 'GET', credentials: true, signal: abortController.signal}))
         .then(data => {
-          if (Object.keys(data).length) {
+          if (data && Object.keys(data).length) {
             setResults(data.results);
           }
           setProcessing(false);

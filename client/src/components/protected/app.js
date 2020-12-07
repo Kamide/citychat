@@ -17,7 +17,7 @@ export default function ProtectedApp() {
 
     apiFetch(protectedRoute('/user/self'), request({method: 'GET', credentials: true}))
       .then(data => {
-        if (Object.keys(data).length) {
+        if (data && Object.keys(data).length) {
           setUser(data.user);
         }
       });

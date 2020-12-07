@@ -20,13 +20,13 @@ export default function User(props) {
           credentials: true
         }))
           .then(data => {
-            if (Object.keys(data).length) {
+            if (data && Object.keys(data).length) {
               setUser(data.user);
             }
           });
     }
 
-    if (props.showCommands) {
+    if (props.showCommands || props.detailed) {
       const userID = props.userID || props.user.id;
 
       if (userID !== undefined) {
@@ -36,14 +36,14 @@ export default function User(props) {
             credentials: true
           }))
             .then(data => {
-              if (Object.keys(data).length) {
+              if (data && Object.keys(data).length) {
                 setIsUserA(data.is_user_a);
                 setRelationship(data.relationship);
               }
             });
       }
     }
-  }, [props.user, props.userID, props.showCommands]);
+  }, [props.user, props.userID, props.showCommands, props.detailed]);
 
   const userDNE = (
     <div>
@@ -57,6 +57,9 @@ export default function User(props) {
         {user.name} <span>@{user.id}</span>
       </span>
     );
+    const sendMessageButton = (
+      <button type="button"><Link to={'/app/chat/user/' + user.id}>Send Message</Link></button>
+    );
     const commands = (
       <UserCommands
         userID={user.id}
@@ -69,6 +72,7 @@ export default function User(props) {
       return (
         <div>
           <h1>{userTag}</h1>
+          {sendMessageButton}
           {commands}
         </div>
       );
@@ -77,6 +81,7 @@ export default function User(props) {
       return (
         <div>
           <p><Link to={'/app/user/' + user.id}>{userTag}</Link></p>
+          {props.showSendMessageButton && sendMessageButton}
           {props.showCommands && commands}
         </div>
       );

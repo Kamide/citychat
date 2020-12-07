@@ -3,6 +3,7 @@ import { Link, Route } from 'react-router-dom';
 
 import { fetchRetry, protectedRoute, request } from '../../api';
 import Chat from './chat';
+import UnresolvedChat from './unresolved';
 
 export default function PrivateChat() {
   const [conversations, setConversations] = useState([]);
@@ -14,7 +15,7 @@ export default function PrivateChat() {
         credentials: true
       }))
         .then(data => {
-          if (Object.keys(data).length) {
+          if (data && Object.keys(data).length) {
             setConversations(data.conversations);
           }
         });
@@ -53,7 +54,10 @@ export default function PrivateChat() {
     <div>
       <h1>Messages</h1>
       {renderSidebar()}
-      <Route exact path="/app/chat/:id" render={props => <Chat {...props} />} />
+      <Route exact path="/app/chat/:id" render={props =>
+        <Chat {...props} chatID={props.match.params.id} />} />
+      <Route exact path="/app/chat/user/:id" render={props =>
+        <UnresolvedChat {...props} userID={props.match.params.id} />} />
     </div>
   );
 }
