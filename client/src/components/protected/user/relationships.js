@@ -5,7 +5,7 @@ import User from './user';
 
 export default function Relationships() {
   const [friends, setFriends] = useState([]);
-  const [pending, setPending] = useState([]);
+  const [pending, setPending] = useState({});
   const [tab, setTab] = useState('Friends');
 
   const fetchRelationships = () => {
@@ -45,11 +45,11 @@ export default function Relationships() {
       return (
         <div>
           <h2>Incoming</h2>
-          {pending.incoming.length
+          {Object.keys(pending).length && pending.incoming.length
             ? pending.incoming.map(x => <User key={x.id} user={x} showSendMessageButton={true} showCommands={true} />)
             : <p>No incoming friend requests.</p>}
           <h2>Outgoing</h2>
-          {pending.outgoing.length
+          {Object.keys(pending).length && pending.outgoing.length
             ? pending.outgoing.map(x => <User key={x.id} user={x} showSendMessageButton={true} showCommands={true} />)
             : <p>No outgoing friend requests.</p>}
         </div>
