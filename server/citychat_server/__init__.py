@@ -20,12 +20,14 @@ def create_app():
     with app.app_context():
         from citychat_server.routes import (
             auth,
-            user,
-            search
+            chat,
+            search,
+            user
         )
 
         app.register_blueprint(auth.blueprint)
-        app.register_blueprint(user.blueprint)
+        app.register_blueprint(chat.blueprint)
         app.register_blueprint(search.blueprint)
+        app.register_blueprint(user.blueprint)
 
         return app

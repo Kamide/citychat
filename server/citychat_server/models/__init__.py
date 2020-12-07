@@ -38,9 +38,20 @@ class CRUDMixin:
         db.session.commit()
         return row
 
-    def to_json(self, columns=None):
-        return {
-            c.key: getattr(self, c.key)
-            for c in inspect(self).mapper.column_attrs
-            if not columns or c.key in columns
-        }
+    def to_json(self, operations=None):
+        columns = inspect(self).mapper.column_attrs.keys()
+
+        if operations:
+            for operation in operations:
+                if operation[0] == 'difference':
+                    columns = [c for c in columns if c not in operation[1]]
+                elif operation[0] == 'intersection':
+                    columns = [c for c in columns if c in operation[1]]
+
+        return {c: getattr(self, c) for c in columns}
+
+    def to_public_json(self):
+        return self.to_json()
+
+    def __str__(self):
+        return str(self.to_public_json())

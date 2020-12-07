@@ -10,7 +10,7 @@ export default function Nav(props) {
     fetchRetry(protectedRoute('/logout'), request({method: 'DELETE', credentials: true, csrfToken: 'access'}));
     fetchRetry(privateRoute('/logout'), request({method: 'DELETE', credentials: true, csrfToken: 'refresh'}))
       .then(data => {
-        if (data) {
+        if (Object.keys(data).length) {
           history.push('/');
         }
       });
@@ -22,9 +22,8 @@ export default function Nav(props) {
         <ul className="display--flex margin-right--s--child-universal zero--list-style zero--margin zero--padding">
           <li><Link to='/app/dashboard'>Dashboard</Link></li>
           <li><Link to='/app/friends'>Friends</Link></li>
-          <li>Messages</li>
+          <li><Link to='/app/chat'>Messages</Link></li>
           <li>Groups</li>
-          <li>Organizations</li>
         </ul>
       </nav>
       <Route component={Search} />

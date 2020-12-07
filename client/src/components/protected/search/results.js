@@ -22,7 +22,7 @@ export default function SearchResults(props) {
       setProcessing(true);
       fetchRetry(protectedRoute('/search', toQueryString(q)), request({method: 'GET', credentials: true, signal: abortController.signal}))
         .then(data => {
-          if (data) {
+          if (Object.keys(data).length) {
             setResults(data.results);
           }
           setProcessing(false);
@@ -44,7 +44,7 @@ export default function SearchResults(props) {
     if (results && results.length) {
       return results.map((r, index) => {
         return (
-          <User key={index} user={r} />
+          <User key={index} user={r} showCommands={true} />
         );
       })
     }

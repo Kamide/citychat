@@ -5,6 +5,7 @@ from flask_api import status
 from flask_jwt_extended import get_jwt_identity
 
 from citychat_server.models.user import UserProfile
+from citychat_server.models.chat import Chat
 
 
 def get_current_user(route):
@@ -50,6 +51,29 @@ def distinct_users_required(route):
                 raise ValueError
             else:
                 return route(*args, **kwargs)
+        except (KeyError, ValueError):
+            return jsonify(), status.HTTP_400_BAD_REQUEST
+
+    return decorated_route
+
+
+def participant_required(route):
+    @wraps(route)
+    def decorated_route(*args, **kwargs):
+        try:
+            kwargs['chat_id'] = int(kwargs['chat_id'])
+            chat = Chat.get_first(id=kwargs['chat_id'])
+
+            if chat:
+                try:
+                    if chat.has_participant(kwargs['current_user']):
+                        return route(chat=chat, *args, **kwargs)
+                    else:
+                        return jsonify(), status.HTTP_403_FORBIDDEN
+                except (KeyError):
+                    return jsonify(), status.HTTP_400_BAD_REQUEST
+            else:
+                return jsonify(), status.HTTP_404_NOT_FOUND
         except (KeyError, ValueError):
             return jsonify(), status.HTTP_400_BAD_REQUEST
 

@@ -20,28 +20,30 @@ export default function User(props) {
           credentials: true
         }))
           .then(data => {
-            if (data) {
+            if (Object.keys(data).length) {
               setUser(data.user);
             }
           });
     }
 
-    const userID = props.userID || props.user.id;
+    if (props.showCommands) {
+      const userID = props.userID || props.user.id;
 
-    if (userID !== undefined) {
-      fetchRetry(protectedRoute('/user/id/', userID, '/relationship'),
-        request({
-          method: 'GET',
-          credentials: true
-        }))
-          .then(data => {
-            if (data) {
-              setIsUserA(data.is_user_a);
-              setRelationship(data.relationship);
-            }
-          });
+      if (userID !== undefined) {
+        fetchRetry(protectedRoute('/user/id/', userID, '/relationship'),
+          request({
+            method: 'GET',
+            credentials: true
+          }))
+            .then(data => {
+              if (Object.keys(data).length) {
+                setIsUserA(data.is_user_a);
+                setRelationship(data.relationship);
+              }
+            });
+      }
     }
-  }, [props.user, props.userID]);
+  }, [props.user, props.userID, props.showCommands]);
 
   const userDNE = (
     <div>
@@ -75,7 +77,7 @@ export default function User(props) {
       return (
         <div>
           <p><Link to={'/app/user/' + user.id}>{userTag}</Link></p>
-          {commands}
+          {props.showCommands && commands}
         </div>
       );
     }

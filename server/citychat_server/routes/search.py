@@ -22,6 +22,6 @@ def search():
     )
 
     return jsonify(results=[
-        u.to_json(columns=['id', 'name'])
+        u.to_public_json()
         for u in users
     ]), status.HTTP_200_OK

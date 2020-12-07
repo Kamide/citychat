@@ -54,12 +54,15 @@ class Message(CRUDMixin, db.Model):
     )
     text = db.relationship(
         'MessageText',
-        uselist=True,
+        uselist=False,
         backref='message',
         cascade='all, delete',
         passive_updates=True,
         passive_deletes=True
     )
+
+    def to_public_json(self):
+        return self.to_json() | self.text.to_json() if self.text else {}
 
 
 class MessageText(CRUDMixin, db.Model):

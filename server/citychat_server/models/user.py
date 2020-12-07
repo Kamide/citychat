@@ -50,18 +50,17 @@ class User(CRUDMixin, db.Model):
         passive_deletes=True
     )
 
-    def __str__(self):
-        return (
-            f'(User {self.id}, Date Registered: {self.date_registered}), '
-            f'Date Activated: {self.date_activated}'
-        )
-
     @property
     def is_active(self):
         return self.date_activated is not None
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
+
+    def to_public_json(self):
+        return self.to_json(operations=[('intersection', {
+            'id', 'date_activated'
+        })])
 
 
 class UserProfile(CRUDMixin, db.Model):
@@ -89,9 +88,6 @@ class UserProfile(CRUDMixin, db.Model):
                            name='cc_user_profile_name')
     )
 
-    def __str__(self):
-        return f'(Profile {self.id}, {self.email}, Name: {self.name})'
-
     @validates('email')
     def validate_email(self, key, value):
         if not value or not re.fullmatch(self.email_regex, value):
@@ -105,7 +101,7 @@ class UserProfile(CRUDMixin, db.Model):
 
         if email:
             return (
-                cls.query.filter(cls.email.ilike(email)).filter_by(**kwargs)
+                cls.query.filter_by(**kwargs).filter(cls.email.ilike(email))
             )
         else:
             return cls.query.filter_by(**kwargs)
@@ -123,6 +119,9 @@ class UserProfile(CRUDMixin, db.Model):
     @classmethod
     def get_active(cls):
         return cls.query.join(User).filter(User.date_activated.isnot(None))
+
+    def to_public_json(self):
+        return self.to_json(operations=[('intersection', {'id', 'name'})])
 
 
 class UserRelation(EnumMixin, Enum):
@@ -230,9 +229,9 @@ class UserRelationship(CRUDMixin, db.Model):
 
         if user_id:
             values.appendleft(
-                cls.query.filter(
+                cls.query.filter_by(**kwargs).filter(
                     or_(cls.user_a == user_id, cls.user_b == user_id)
-                ).filter_by(**kwargs)
+                )
             )
             return values
         elif user_id_pair:

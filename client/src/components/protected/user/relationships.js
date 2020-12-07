@@ -16,7 +16,7 @@ export default function Relationships() {
         method: 'GET', credentials: true, signal: abortController.signal
       }))
         .then(data => {
-          if (data) {
+          if (Object.keys(data).length) {
             setFriends(data.friends);
             setPending(data.pending);
           }
@@ -36,7 +36,7 @@ export default function Relationships() {
       return (
         <div>
           {friends.length
-            ? friends.map(x => <User user={x} />)
+            ? friends.map(x => <User key={x.id} user={x} showCommands={true} />)
             : <p>You haven't added any friends on CityChat yet.</p>}
         </div>
       );
@@ -46,11 +46,11 @@ export default function Relationships() {
         <div>
           <h2>Incoming</h2>
           {pending.incoming.length
-            ? pending.incoming.map(x => <User user={x} />)
+            ? pending.incoming.map(x => <User key={x.id} user={x} showCommands={true} />)
             : <p>No incoming friend requests.</p>}
           <h2>Outgoing</h2>
           {pending.outgoing.length
-            ? pending.outgoing.map(x => <User user={x} />)
+            ? pending.outgoing.map(x => <User key={x.id} user={x} showCommands={true} />)
             : <p>No outgoing friend requests.</p>}
         </div>
       );
@@ -62,7 +62,7 @@ export default function Relationships() {
       <h1>{tab}</h1>
       <nav>
         {['Friends', 'Pending Friend Requests'].map(x =>
-          <button type="button" onClick={() => setTab(x)}>{x}</button>
+          <button key={x} type="button" onClick={() => setTab(x)}>{x}</button>
         )}
       </nav>
       {renderTab()}
