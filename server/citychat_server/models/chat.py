@@ -1,4 +1,4 @@
-from sqlalchemy.sql import func, or_
+from sqlalchemy.sql import func
 
 from citychat_server.models import CRUDMixin, db
 
@@ -55,15 +55,13 @@ class Chat(CRUDMixin, db.Model):
                 ))
             )
         elif participant_id_set:
-            conditions = [
-                ChatParticipant.participant_id == pid
-                for pid in participant_id_set
-            ]
             return (
                 cls.query.filter_by(**kwargs)
                 .join(ChatParticipant)
                 .group_by(cls.id)
-                .having(func.every(or_(*conditions)))
+                .having(func.every(
+                    ChatParticipant.participant_id in participant_id_set
+                ))
             )
         else:
             return cls.query.filter_by(**kwargs)
