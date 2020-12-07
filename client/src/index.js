@@ -1,6 +1,7 @@
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 
+import { StoreProvider } from './components/store';
 import App from './components/app';
 import reportWebVitals from './reportWebVitals';
 
@@ -8,7 +9,9 @@ import './styles/index.css';
 
 ReactDOM.render(
   <StrictMode>
-    <App />
+    <StoreProvider>
+      <App />
+    </StoreProvider>
   </StrictMode>,
   document.getElementById('root')
 );

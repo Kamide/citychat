@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { fetchRetry, request, protectedRoute } from '../../api';
 import UserCommands from './commands';
+import UserTag from './tag';
 
 export default function User(props) {
   const [user, setUser] = useState({});
@@ -23,10 +24,13 @@ export default function User(props) {
             if (data && Object.keys(data).length) {
               setUser(data.user);
             }
+            else {
+              setUser(null)
+            }
           });
     }
 
-    if (props.showCommands || props.detailed) {
+    if (props.showCommands || props.profile) {
       const userID = props.userID || props.user.id;
 
       if (userID !== undefined) {
@@ -43,7 +47,13 @@ export default function User(props) {
             });
       }
     }
-  }, [props.user, props.userID, props.showCommands, props.detailed]);
+  }, [props.user, props.userID, props.showCommands, props.profile]);
+
+  const placeholder = (
+    <div>
+      <p>CityChat User</p>
+    </div>
+  );
 
   const userDNE = (
     <div>
@@ -52,41 +62,56 @@ export default function User(props) {
   );
 
   const renderUser = () => {
+    const UserTagContainer = props.profile ? 'h1' : 'p';
+
     const userTag = (
-      <span>
-        {user.name} <span>@{user.id}</span>
-      </span>
-    );
-    const sendMessageButton = (
-      <button type="button"><Link to={'/app/chat/user/' + user.id}>Send Message</Link></button>
-    );
-    const commands = (
-      <UserCommands
-        userID={user.id}
-        relationship={relationship}
-        setRelationship={setRelationship}
-        isUserA={isUserA} />
+      props.profile
+        ? <UserTag user={user} />
+        : (
+          <Link to={'/app/user/' + user.id}>
+            <UserTag user={user} />
+          </Link>
+        )
     );
 
-    if (props.detailed) {
-      return (
-        <div>
-          <h1>{userTag}</h1>
-          {sendMessageButton}
-          {commands}
-        </div>
-      );
-    }
-    else {
-      return (
-        <div>
-          <p><Link to={'/app/user/' + user.id}>{userTag}</Link></p>
-          {props.showSendMessageButton && sendMessageButton}
-          {props.showCommands && commands}
-        </div>
-      );
-    }
+    const sendMessageButton = (
+      props.showSendMessageButton || props.profile
+        ? (
+          <button type="button">
+            <Link to={'/app/chat/user/' + user.id}>
+              Send Message
+            </Link>
+          </button>
+        )
+        : null
+    );
+
+    const commands = (
+      props.showCommands || props.profile
+        ? (
+          <UserCommands
+            userID={user.id}
+            relationship={relationship}
+            setRelationship={setRelationship}
+            isUserA={isUserA} />
+        )
+        : null
+    );
+
+    return (
+      <div>
+        <UserTagContainer>{userTag}</UserTagContainer>
+        {sendMessageButton}
+        {commands}
+      </div>
+    );
   };
 
-  return user ? renderUser() : userDNE;
+  return user
+    ? (
+        Object.keys(user).length
+          ? renderUser()
+          : placeholder
+    )
+    : userDNE;
 }

@@ -1,19 +1,34 @@
+import { useContext } from 'react';
 import { Link, Route } from 'react-router-dom';
 
 import { fetchRetry, request, protectedRoute, privateRoute } from '../api';
+import { StoreContext } from '../store';
 import User from './user/user';
 import Search from './search/search';
 import history from '../history';
 
 export default function Nav(props) {
+  const [state, dispatch] = useContext(StoreContext);
+
   const logout = () => {
-    fetchRetry(protectedRoute('/logout'), request({method: 'DELETE', credentials: true, csrfToken: 'access'}));
-    fetchRetry(privateRoute('/logout'), request({method: 'DELETE', credentials: true, csrfToken: 'refresh'}))
-      .then(data => {
-        if (data && Object.keys(data).length) {
-          history.push('/');
-        }
-      });
+    fetchRetry(protectedRoute('/logout'),
+      request({
+        method: 'DELETE',
+        credentials: true,
+        csrfToken: 'access'
+      }));
+    fetchRetry(privateRoute('/logout'),
+      request({
+        method: 'DELETE',
+        credentials: true,
+        csrfToken: 'refresh'
+      }))
+        .then(data => {
+          if (data && Object.keys(data).length) {
+            dispatch({ type: 'RESET_USER' });
+            history.push('/');
+          }
+        });
   };
 
   return (
@@ -28,7 +43,7 @@ export default function Nav(props) {
       </nav>
       <Route component={Search} />
       <div>
-        <User user={props.user} />
+        <User user={state.user} />
         <button className="button" type="button" onClick={logout}>Log Out</button>
       </div>
     </div>
