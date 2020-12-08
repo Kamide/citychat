@@ -1,4 +1,4 @@
-from sqlalchemy.sql import func
+from sqlalchemy.sql import and_, func
 
 from citychat_server.models import CRUDMixin, db
 
@@ -59,8 +59,14 @@ class Chat(CRUDMixin, db.Model):
                 cls.query.filter_by(**kwargs)
                 .join(ChatParticipant)
                 .group_by(cls.id)
-                .having(func.every(
-                    ChatParticipant.participant_id in participant_id_set
+                .having(and_(
+                    (
+                        func.count(ChatParticipant.participant_id)
+                        == len(participant_id_set)
+                    ),
+                    func.every(
+                        ChatParticipant.participant_id.in_(participant_id_set)
+                    )
                 ))
             )
         else:

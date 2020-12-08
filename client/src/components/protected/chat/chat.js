@@ -47,6 +47,12 @@ export default function Chat(props) {
         io.on('message', message => setMessages(prevMessages => prevMessages.concat([message])));
       });
     }
+
+    return () => {
+      socket.open().then(io => {
+        io.off('message');
+      });
+    };
   }, [chatID]);
 
   const renderMessages = () => {
