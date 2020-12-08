@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { apiFetch, fetchRetry, protectedRoute, request } from '../../api';
+import { apiFetch, fetchRetry, protectedRoute, request, socket } from '../../api';
 import User from '../user/user';
 import history from '../../history';
 
@@ -41,6 +41,11 @@ export default function Chat(props) {
               setMessages(data.messages);
             }
           });
+
+      socket.open().then(io => {
+        io.emit('join_chat', { chat_id: chatID });
+        io.on('message', message => setMessages(prevMessages => prevMessages.concat([message])));
+      });
     }
   }, [chatID]);
 

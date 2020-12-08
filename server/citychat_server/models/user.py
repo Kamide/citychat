@@ -54,6 +54,11 @@ class User(CRUDMixin, db.Model):
     def is_active(self):
         return self.date_activated is not None
 
+    @classmethod
+    def get_first_active(cls, **kwargs):
+        first = cls.get_first(**kwargs)
+        return first if (first and first.is_active) else None
+
     def check_password(self, password):
         return check_password_hash(self.password, password)
 

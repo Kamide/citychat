@@ -12,31 +12,33 @@ export default function UserCommands(props) {
   };
 
   const friendRequest = (path, method) => {
-    fetchRetry(protectedRoute('/user/id/', props.userID, '/relationship'),
-      request({
-        method: 'GET',
-        credentials: true
-      }))
-        .then(data => {
-          if (data && Object.keys(data).length) {
-            const oldRelationship = props.relationship;
-            props.setRelationship(data.relationship);
+    if (props.userID !== undefined) {
+      fetchRetry(protectedRoute('/user/id/', props.userID, '/relationship'),
+        request({
+          method: 'GET',
+          credentials: true
+        }))
+          .then(data => {
+            if (data && Object.keys(data).length) {
+              const oldRelationship = props.relationship;
+              props.setRelationship(data.relationship);
 
-            if (oldRelationship === data.relationship) {
-              apiFetch(protectedRoute('/user/id/', props.userID, '/friend', path),
-                request({
-                  method: method,
-                  credentials: true,
-                  csrfToken: 'access'
-                }))
-                  .then(data => {
-                    if (data && Object.keys(data).length) {
-                      props.setRelationship(data.relationship);
-                    }
-                  });
+              if (oldRelationship === data.relationship) {
+                apiFetch(protectedRoute('/user/id/', props.userID, '/friend', path),
+                  request({
+                    method: method,
+                    credentials: true,
+                    csrfToken: 'access'
+                  }))
+                    .then(data => {
+                      if (data && Object.keys(data).length) {
+                        props.setRelationship(data.relationship);
+                      }
+                    });
+              }
             }
-          }
-        });
+          });
+    }
   };
 
   const friendRequestCommand = (userA) => {

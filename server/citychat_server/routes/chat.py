@@ -1,14 +1,18 @@
 from flask import Blueprint, jsonify, request
 from flask_api import status
 from flask_jwt_extended import jwt_required
+from flask_socketio import join_room
 
 from citychat_server.forms import MessageForm
 from citychat_server.models import db
 from citychat_server.models.chat import Chat, ChatParticipant, PrivateChat
 from citychat_server.models.message import Message, MessageText
+from citychat_server.routes import socketio
 from citychat_server.routes.decorators import (
     get_current_user,
     get_user,
+    io_get_current_user,
+    io_participant_required,
     participant_required
 )
 
@@ -105,4 +109,13 @@ def send_message(chat_id, chat, current_user):
     text = MessageText(id=message.id, content=form.values['text'])
     db.session.add(text)
     db.session.commit()
+
+    socketio.emit('message', message.to_public_json(), room=f'/chat/{chat_id}')
     return jsonify(sent=True), status.HTTP_200_OK
+
+
+@socketio.on('join_chat')
+@io_get_current_user
+@io_participant_required
+def join_chat(chat_id, chat, current_user, json, *args, **kwargs):
+    join_room(f'/chat/{chat_id}')

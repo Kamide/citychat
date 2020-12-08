@@ -1,17 +1,25 @@
 import { initialState } from './store';
 
 export default function reducer(state, action) {
+  const setAttr = (attr) => {
+    return {
+      ...state,
+      [attr]: action.payload
+    };
+  };
+
+  const resetAttr = (attr) => {
+    return {
+      ...state,
+      [attr]: initialState[attr]
+    };
+  };
+
   switch(action.type) {
     case 'SET_USER':
-      return {
-        ...state,
-        user: action.payload
-      };
+      return setAttr('user');
     case 'RESET_USER':
-      return {
-        ...state,
-        user: initialState.user
-      };
+      return resetAttr('user');
     default:
       return state;
   }

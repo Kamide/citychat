@@ -7,13 +7,6 @@ const API_URL = (process.env['REACT_APP_API_URL'])
   ? process.env['REACT_APP_API_URL'].replace(/\/+$/, "")
   : 'http://localhost:5000';
 
-export const socket = io(API_URL, {
-  autoConnect: false,
-  reconnection: true,
-  transports: ['websocket', 'polling'],
-  withCredentials: true
-});
-
 export function route(...path) {
   return API_URL + path.join('');
 }
@@ -70,7 +63,7 @@ export async function apiFetch(url, options) {
 
   if (response.status === 401) {
     if (data.expired_token && data.expired_token.toLowerCase() === 'access') {
-      response = await fetch(privateRoute('/refresh-token'), request({method: 'POST', credentials: true, csrfToken: 'refresh'}));
+      response = await fetch(privateRoute('/token/access/refresh'), request({method: 'POST', credentials: true, csrfToken: 'refresh'}));
     }
 
     if (response.status === 401) {
@@ -101,6 +94,55 @@ export async function fetchRetry(url, options, limit = 6, delay = 100, backoff =
     return await fetchRetry(url, options, limit - 1, delay * backoff, backoff);
   }
 }
+
+export class Socket {
+  constructor() {
+    this.abortController = null;
+    this.io = null;
+  }
+
+  async connect() {
+    this.abortController = new AbortController();
+
+    let socket = await fetchRetry(privateRoute('/token/access'),
+      request({
+        method: 'GET',
+        credentials: true,
+        signal: this.abortController.signal
+      }))
+        .then(data => {
+          if (data && Object.keys(data).length && data.access_token) {
+            return io(API_URL, {
+              query: 'jwt=' + data.access_token,
+              transports: ['websocket', 'polling'],
+              withCredentials: true
+            });
+          }
+        });
+
+    return await socket;
+  }
+
+  async open() {
+    if (!this.io) {
+      this.io = await this.connect();
+    }
+
+    return await this.io;
+  }
+
+  disconnect() {
+    if (this.abortController) {
+      this.abortController.abort();
+    }
+
+    if (this.io) {
+      this.io.disconnect();
+    }
+  }
+}
+
+export const socket = new Socket();
 
 export const UserRelation = {
   STRANGER: 'S',

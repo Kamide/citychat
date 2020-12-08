@@ -15,37 +15,37 @@ export default function User(props) {
       setUser(props.user);
     }
     else {
-      fetchRetry(protectedRoute('/user/id/', props.userID),
-        request({
-          method: 'GET',
-          credentials: true
-        }))
-          .then(data => {
-            if (data && Object.keys(data).length) {
-              setUser(data.user);
-            }
-            else {
-              setUser(null)
-            }
-          });
-    }
-
-    if (props.showCommands || props.profile) {
-      const userID = props.userID || props.user.id;
-
-      if (userID !== undefined) {
-        fetchRetry(protectedRoute('/user/id/', userID, '/relationship'),
+      if (props.userID !== undefined) {
+        fetchRetry(protectedRoute('/user/id/', props.userID),
           request({
             method: 'GET',
             credentials: true
           }))
             .then(data => {
               if (data && Object.keys(data).length) {
-                setIsUserA(data.is_user_a);
-                setRelationship(data.relationship);
+                setUser(data.user);
+              }
+              else {
+                setUser(null)
               }
             });
       }
+    }
+
+    const userID = props.userID || (props.user && props.user.id);
+
+    if (userID !== undefined && (props.showCommands || props.profile)) {
+      fetchRetry(protectedRoute('/user/id/', userID, '/relationship'),
+        request({
+          method: 'GET',
+          credentials: true
+        }))
+          .then(data => {
+            if (data && Object.keys(data).length) {
+              setIsUserA(data.is_user_a);
+              setRelationship(data.relationship);
+            }
+          });
     }
   }, [props.user, props.userID, props.showCommands, props.profile]);
 

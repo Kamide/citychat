@@ -179,7 +179,7 @@ def logout_refresh_token():
     return jsonify(blacklisted=True), status.HTTP_200_OK
 
 
-@blueprint.route('/private/refresh-token', methods=['POST'])
+@blueprint.route('/private/token/access/refresh', methods=['POST'])
 @jwt_refresh_token_required
 def refresh_token():
     user_id = get_jwt_identity()
@@ -187,3 +187,11 @@ def refresh_token():
     response = jsonify(status=200)
     set_access_cookies(response, access_token)
     return response, status.HTTP_200_OK
+
+
+@blueprint.route('/private/token/access', methods=['GET'])
+@jwt_refresh_token_required
+def get_access_token():
+    user_id = get_jwt_identity()
+    access_token = create_access_token(identity=user_id)
+    return jsonify(access_token=access_token), status.HTTP_200_OK
