@@ -4,7 +4,11 @@ from flask import jsonify, request
 from flask_api import status
 from flask_jwt_extended import decode_token, get_jwt_identity
 from flask_socketio import emit
-from jwt.exceptions import DecodeError, InvalidSignatureError
+from jwt.exceptions import (
+    DecodeError,
+    ExpiredSignatureError,
+    InvalidSignatureError
+)
 from werkzeug.exceptions import BadRequestKeyError
 
 from citychat_server.models.user import User
@@ -78,8 +82,8 @@ def participant_required(route):
     return decorated_route
 
 
-def emit_status(status):
-    emit({'status': status})
+def emit_status(status, response=None):
+    emit({'status': status} | (response or {}))
 
 
 def io_get_current_user(io):
@@ -89,6 +93,10 @@ def io_get_current_user(io):
             access_token = decode_token(request.args['jwt'])
             current_user = User.get_first(id=access_token['identity'])
             return io(current_user=current_user, json=json, *args, **kwargs)
+        except ExpiredSignatureError:
+            return emit_status(status.HTTP_401_UNAUTHORIZED, {
+                'expired_token': 'access'
+            })
         except (BadRequestKeyError, DecodeError, InvalidSignatureError):
             return emit_status(status.HTTP_401_UNAUTHORIZED)
 

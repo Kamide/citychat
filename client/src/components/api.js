@@ -71,6 +71,10 @@ export async function apiFetch(url, options) {
       return null;
     }
 
+    if (options.method === 'POST') {
+      options.headers['X-CSRF-TOKEN'] = getCookie('csrf_access_token');
+    }
+
     data = await (await fetch(url, options)).json();
   }
 
@@ -125,6 +129,9 @@ export class Socket {
 
   async open() {
     if (!this.io) {
+      this.io = await this.connect();
+    }
+    else if (!this.io.connected) {
       this.io = await this.connect();
     }
 
