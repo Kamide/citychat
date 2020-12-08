@@ -1,10 +1,11 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from flask_api import status
 from flask_jwt_extended import jwt_required
 
+from citychat_server.forms import MessageForm
 from citychat_server.models import db
 from citychat_server.models.chat import Chat, ChatParticipant, PrivateChat
-from citychat_server.models.message import Message
+from citychat_server.models.message import Message, MessageText
 from citychat_server.routes.decorators import (
     get_current_user,
     get_user,
@@ -84,3 +85,24 @@ def get_chat_with_user(user_id, user, current_user):
 
         db.session.commit()
         return jsonify(chat_id=chat.id), status.HTTP_201_CREATED
+
+
+@blueprint.route('/protected/chat/<chat_id>/message/send', methods=['POST'])
+@jwt_required
+@get_current_user
+@participant_required
+def send_message(chat_id, chat, current_user):
+    form = MessageForm()
+    form.populate(request.get_json())
+
+    if not form.validate():
+        return jsonify(sent=False), status.HTTP_400_BAD_REQUEST
+
+    message = Message(chat_id=chat_id, author_id=current_user.id)
+    db.session.add(message)
+    db.session.flush()
+
+    text = MessageText(id=message.id, content=form.values['text'])
+    db.session.add(text)
+    db.session.commit()
+    return jsonify(sent=True), status.HTTP_200_OK

@@ -67,3 +67,14 @@ class SearchForm(Form):
 
     def __init__(self):
         super().__init__(method='get', id_prefix='search')
+
+
+class MessageForm(Form):
+    text = StringField(
+        label='Message',
+        validators=[Required()],
+        pre_filters=[strip]
+    )
+
+    def __init__(self):
+        super().__init__(method='post', id_prefix='message')

@@ -14,7 +14,7 @@ export default function ProtectedApp() {
   const [state, dispatch] = useContext(StoreContext);
 
   useEffect(() => {
-    socket.open();
+    socket.connect();
 
     apiFetch(protectedRoute('/user/self'), request({method: 'GET', credentials: true}))
       .then(data => {

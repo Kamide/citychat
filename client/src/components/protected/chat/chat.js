@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { fetchRetry, protectedRoute, request } from '../../api';
+import { apiFetch, fetchRetry, protectedRoute, request } from '../../api';
 import User from '../user/user';
 import history from '../../history';
 
@@ -16,7 +16,7 @@ export default function Chat(props) {
 
   useEffect(() => {
     if (chatID) {
-      fetchRetry(protectedRoute('/chat/' + chatID),
+      fetchRetry(protectedRoute('/chat/', chatID),
         request({
           method: 'GET',
           credentials: true
@@ -61,14 +61,36 @@ export default function Chat(props) {
     )
   };
 
+  const sendMessage = (event) => {
+    event.preventDefault();
+    const values = {
+      text: event.target.messageText.value.trim()
+    }
+
+    if (values.text) {
+      apiFetch(protectedRoute('/chat/', chatID, '/message/send'),
+        request({
+          method: 'POST',
+          credentials: true,
+          csrfToken: 'access',
+          body: values
+        }))
+          .then(data => {
+            if (data && data.sent) {
+              event.target.messageText.value = '';
+            }
+          });
+    }
+  };
+
   return (
     <main>
       <h1>{chat.name}</h1>
       {renderMessages()}
-      <div>
-        <input type="text" />
+      <form onSubmit={sendMessage}>
+        <input type="text" id="messageText" />
         <input type="submit" value="Send" />
-      </div>
+      </form>
     </main>
   );
 }
