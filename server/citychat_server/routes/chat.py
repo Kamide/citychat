@@ -111,13 +111,16 @@ def send_message(chat_id, chat, current_user):
     db.session.commit()
 
     socketio.emit('message', message.to_public_json(), room=f'/chat/{chat_id}')
-    socketio.emit(
-        'chat_list_update', chat.to_public_json(
-            current_user_id=current_user.id,
-            get_latest_message=True
-        ),
-        room=f'/user/{current_user.id}/chat/list'
-    )
+
+    for p in chat.participants:
+        socketio.emit(
+            'chat_list_update', chat.to_public_json(
+                current_user_id=p.participant_id,
+                get_latest_message=True
+            ),
+            room=f'/user/{p.participant_id}/chat/list'
+        )
+
     return jsonify(sent=True), status.HTTP_200_OK
 
 
