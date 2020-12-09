@@ -111,6 +111,13 @@ def send_message(chat_id, chat, current_user):
     db.session.commit()
 
     socketio.emit('message', message.to_public_json(), room=f'/chat/{chat_id}')
+    socketio.emit(
+        'chat_list_update', chat.to_public_json(
+            current_user_id=current_user.id,
+            get_latest_message=True
+        ),
+        room=f'/user/{current_user.id}/chat/list'
+    )
     return jsonify(sent=True), status.HTTP_200_OK
 
 
@@ -119,3 +126,9 @@ def send_message(chat_id, chat, current_user):
 @io_participant_required
 def join_chat(chat_id, chat, current_user, json, *args, **kwargs):
     join_room(f'/chat/{chat_id}')
+
+
+@socketio.on('join_chat_list')
+@io_get_current_user
+def join_chat_list(current_user, json, *args, **kwargs):
+    join_room(f'/user/{current_user.id}/chat/list')

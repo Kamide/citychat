@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, Route } from 'react-router-dom';
 
-import { fetchRetry, protectedRoute, request } from '../../api';
+import { fetchRetry, protectedRoute, request, socket } from '../../api';
 import Chat from './chat';
 import UnresolvedChat from './unresolved';
 
@@ -19,6 +19,29 @@ export default function PrivateChat() {
             setConversations(data.conversations);
           }
         });
+
+    socket.open().then(io => {
+      io.emit('join_chat_list');
+
+      io.on('chat_list_update', data => {
+        setConversations(prevConversations => {
+          const index = prevConversations.findIndex(c => c.chat.id === data.chat.id);
+
+          return [
+            ...prevConversations.slice(0, index),
+            data,
+            ...prevConversations.slice(index + 1)
+          ];
+        });
+      });
+    });
+
+    return () => {
+      socket.open().then(io => {
+        io.off('chat_list_update');
+        io.emit('leave_chat_list');
+      });
+    };
   }, []);
 
   const renderSidebar = () => {

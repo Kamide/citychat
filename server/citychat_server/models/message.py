@@ -61,11 +61,13 @@ class Message(CRUDMixin, db.Model):
         passive_deletes=True
     )
 
-    def to_json(self):
-        return super().to_json() | {'timestamp': str(self.timestamp)}
+    def to_json(self, operations=None):
+        return super().to_json(operations) | {'timestamp': str(self.timestamp)}
 
     def to_public_json(self):
-        return self.to_json() | self.text.to_json() if self.text else {}
+        return self.to_json(
+            operations=[('difference', {'chat_id'})]
+        ) | self.text.to_json() if self.text else {}
 
 
 class MessageText(CRUDMixin, db.Model):

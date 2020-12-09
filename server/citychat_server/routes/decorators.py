@@ -88,7 +88,7 @@ def emit_status(status, response=None):
 
 def io_get_current_user(io):
     @wraps(io)
-    def decorated_io(json, *args, **kwargs):
+    def decorated_io(json=None, *args, **kwargs):
         try:
             access_token = decode_token(request.args['jwt'])
             current_user = User.get_first(id=access_token['identity'])
@@ -105,7 +105,7 @@ def io_get_current_user(io):
 
 def io_participant_required(io):
     @wraps(io)
-    def decorated_io(json, *args, **kwargs):
+    def decorated_io(json=None, *args, **kwargs):
         try:
             chat_id = json['chat_id'] = int(json['chat_id'])
             chat = Chat.get_first(id=chat_id)
