@@ -55,19 +55,45 @@ export default function Chat(props) {
     };
   }, [chatID]);
 
+  const findMessage = (id) => {
+    return messages.find(m => m.id === id);
+  };
+
+  const renderParentMessage = (m) => {
+    if (!m.parent_id) {
+      return null;
+    }
+
+    return (
+      <blockquote>
+        <a href={'#message-' + m.parent_id}>
+          {renderMessage(findMessage(m.parent_id), false, true)}
+        </a>
+      </blockquote>
+    );
+  };
+
+  const renderMessage = (m, showParent, hideLink) => {
+    if (!(m && Object.keys(m).length)) {
+      return null;
+    }
+
+    return (
+      <div key={m.id} id={'message-' + m.id}>
+        <div>
+          <User user={participants[String(m.author_id)]} hideLink={hideLink} />
+          <p>{m.timestamp}</p>
+          {showParent && renderParentMessage(m)}
+        </div>
+        <p>{m.content}</p>
+      </div>
+    );
+  }
+
   const renderMessages = () => {
     return (
       <div>
-        {messages.map(m => {
-          return (
-            <div key={m.id}>
-              <div>
-                <User user={participants[String(m.author_id)]} />
-                <p>{m.timestamp}</p>
-              </div>
-              <p>{m.content}</p>
-            </div>
-          )})}
+        {messages.map(m => renderMessage(m, true, false))}
       </div>
     )
   };

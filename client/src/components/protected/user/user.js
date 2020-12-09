@@ -65,7 +65,7 @@ export default function User(props) {
     const UserTagContainer = props.profile ? 'h1' : 'p';
 
     const userTag = (
-      props.profile
+      props.hideLink || props.profile
         ? <UserTag user={user} />
         : (
           <Link to={'/app/user/' + user.id}>
