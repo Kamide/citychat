@@ -27,11 +27,20 @@ export default function PrivateChat() {
         setConversations(prevConversations => {
           const index = prevConversations.findIndex(c => c.chat.id === data.chat.id);
 
-          return [
-            ...prevConversations.slice(0, index),
-            data,
-            ...prevConversations.slice(index + 1)
-          ];
+          if (data.latest_message.timestamp > prevConversations[index].latest_message.timestamp) {
+            return [
+              data,
+              ...prevConversations.slice(0, index),
+              ...prevConversations.slice(index + 1)
+            ];
+          }
+          else {
+            return [
+              ...prevConversations.slice(0, index),
+              data,
+              ...prevConversations.slice(index + 1)
+            ];
+          }
         });
       });
     });
