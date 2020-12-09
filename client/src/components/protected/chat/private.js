@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, Route } from 'react-router-dom';
+import { Link, Route, Switch } from 'react-router-dom';
 
 import { fetchRetry, protectedRoute, request, socket } from '../../api';
 import Chat from './chat';
@@ -27,7 +27,13 @@ export default function PrivateChat() {
         setConversations(prevConversations => {
           const index = prevConversations.findIndex(c => c.chat.id === data.chat.id);
 
-          if (data.latest_message.timestamp > prevConversations[index].latest_message.timestamp) {
+          if (index < 0) {
+            return [
+              data,
+              ...prevConversations
+            ];
+          }
+          else if (data.latest_message.timestamp > prevConversations[index].latest_message.timestamp) {
             return [
               data,
               ...prevConversations.slice(0, index),
@@ -86,10 +92,12 @@ export default function PrivateChat() {
     <div>
       <h1>Messages</h1>
       {renderSidebar()}
-      <Route exact path="/app/chat/:id" render={props =>
-        <Chat {...props} chatID={props.match.params.id} />} />
-      <Route exact path="/app/chat/user/:id" render={props =>
-        <UnresolvedChat {...props} userID={props.match.params.id} />} />
+      <Switch>
+        <Route exact path="/app/chat/:id" render={props =>
+          <Chat {...props} chatID={props.match.params.id} />} />
+        <Route exact path="/app/chat/user/:id" render={props =>
+          <UnresolvedChat {...props} userID={props.match.params.id} />} />
+      </Switch>
     </div>
   );
 }
