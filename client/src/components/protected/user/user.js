@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { fetchRetry, request, protectedRoute } from '../../api';
+import { StoreContext } from '../../store';
 import UserCommands from './commands';
 import UserTag from './tag';
 
 export default function User(props) {
+  const [state] = useContext(StoreContext);
   const [user, setUser] = useState({});
   const [relationship, setRelationship] = useState('');
   const [isUserA, setIsUserA] = useState(false);
@@ -34,7 +36,9 @@ export default function User(props) {
 
     const userID = props.userID || (props.user && props.user.id);
 
-    if (userID !== undefined && (props.showCommands || props.profile)) {
+    if (userID !== undefined
+        && String(userID) !== String(state.user.id)
+        && (props.showCommands || props.profile)) {
       fetchRetry(protectedRoute('/user/id/', userID, '/relationship'),
         request({
           method: 'GET',
@@ -47,7 +51,7 @@ export default function User(props) {
             }
           });
     }
-  }, [props.user, props.userID, props.showCommands, props.profile]);
+  }, [props.user, props.userID, props.showCommands, props.profile, state.user.id]);
 
   const placeholder = (
     <div>
