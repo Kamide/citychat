@@ -143,9 +143,9 @@ export class Socket {
       this.abortController.abort();
     }
 
-    if (this.io) {
-      this.io.disconnect();
-    }
+    this.open().then(io => {
+      io.disconnect();
+    });
   }
 }
 
