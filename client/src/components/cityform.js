@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ReactSVG } from 'react-svg';
 
 import blinkingEllipsis from '../images/blinking-ellipsis.svg';
@@ -151,4 +151,174 @@ function CitySubmit(props) {
   }
 
   return <input className="button margin-top--s" {...args.field.args} />;
+}
+
+export function CityTag(props) {
+  const field = useRef(null);
+  const [input, setInput] = useState('');
+  const [tags, setTags] = useState([]);
+  const [tagIndex, setTagIndex] = useState(0);
+  const [candidates, setCandidates] = useState([]);
+  const [candidateIndex, setCandidateIndex] = useState(0);
+
+  const KEY = {
+    UP: 38,
+    DOWN: 40,
+    LEFT: 37,
+    RIGHT: 39,
+    ENTER: 13,
+    BACKSPACE: 8,
+    DELETE: 46
+  };
+
+  const resolveTagIndex = () => tagIndex + tags.length;
+
+  const addTag = (index) => {
+    if (candidates.length) {
+      setTagIndex(0);
+      setTags(prevTags => {
+        if (prevTags.find(t => props.compareCandidates(t, candidates[index]))) {
+          return prevTags;
+        }
+        else {
+          return prevTags.concat([candidates[index]])
+        }
+      });
+
+      setCandidates([]);
+      setInput('');
+    }
+
+    field.current.focus();
+  };
+
+  const removeTag = (index, backspace) => {
+    if (backspace) {
+      setTagIndex(prevTagIndex => Math.max(-1 * (tags.length - 1), prevTagIndex));
+    }
+    else {
+      setTagIndex(prevTagIndex => Math.max(-1 * (tags.length - 1), prevTagIndex + 1));
+    }
+
+    setTags(prevTags => {
+      return [
+        ...prevTags.slice(0, index),
+        ...prevTags.slice(index + 1)
+      ];
+    });
+
+    field.current.focus();
+  };
+
+  const filterCandidates = (event) => {
+    const keyword = event.target.value;
+    setInput(keyword);
+    setTagIndex(event.target.selectionStart);
+    setCandidates(props.candidates.filter(c =>
+      keyword
+      && !tags.includes(c)
+      && props.handleFilter(c, keyword)));
+  };
+
+  const selectCandidates = (event) => {
+    switch (event.keyCode) {
+      case KEY.UP:
+        event.preventDefault();
+        setCandidateIndex(prevSelection => Math.max(0, prevSelection - 1));
+        break;
+
+      case KEY.DOWN:
+        event.preventDefault();
+        setCandidateIndex(prevSelection => Math.min(candidates.length - 1, prevSelection + 1));
+        break;
+
+      case KEY.LEFT:
+        setTagIndex(prevTagIndex => Math.max(-1 * tags.length, prevTagIndex - 1));
+        break;
+
+      case KEY.RIGHT:
+        if (tagIndex < 0) {
+          event.preventDefault();
+        }
+        setTagIndex(prevTagIndex => Math.min(input.length, prevTagIndex + 1));
+        break;
+
+      case KEY.ENTER:
+        if (input) {
+          event.preventDefault()
+          addTag(candidateIndex);
+        }
+        break;
+
+      case KEY.BACKSPACE:
+      case KEY.DELETE:
+        if (tagIndex < 0) {
+          event.preventDefault();
+          removeTag(resolveTagIndex(), event.keyCode === KEY.DELETE);
+        }
+        else if (!input.length && tags.length) {
+          setTagIndex(-1);
+        }
+        break;
+
+      default:
+        setCandidateIndex(0);
+    }
+  };
+
+  const renderTags = () => {
+    return (
+      <ul id={props.inputID + 'Tags'}>
+        {tags.map((value, index) => {
+          return (
+            <li key={index}>
+              {index === resolveTagIndex() && '➡️'}
+              <button type="button" onClick={() => removeTag(index, false)}>
+                {props.renderTag(value)}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  };
+
+  const renderCandidates = () => {
+    if (!candidates.length) {
+      return null;
+    }
+
+    return (
+      <ul>
+        {candidates.map((value, index) => {
+          return (
+            <li key={index}>
+              {index === candidateIndex && '➡️'}
+              <button type="button" onClick={() => addTag(index)}>
+                {props.renderCandidate(value)}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  };
+
+  return (
+    <form {...props.containerAttributes}>
+      <label htmlFor={props.inputID}>{props.inputLabel}</label>
+      <div>
+        {renderTags()}
+        <input
+          type="text"
+          id={props.inputID}
+          ref={field}
+          value={input}
+          onInput={filterCandidates}
+          onKeyDown={selectCandidates} />
+        {tagIndex > -1 && renderCandidates()}
+      </div>
+      <input type="submit" value={props.submitLabel} onClick={props.handleSubmit} />
+    </form>
+  );
 }
