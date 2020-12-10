@@ -16,7 +16,7 @@ export default function ProtectedApp() {
   useEffect(() => {
     socket.open();
 
-    apiFetch(protectedRoute('/user/self'), request({method: 'GET', credentials: true}))
+    apiFetch(protectedRoute('/self'), request({method: 'GET', credentials: true}))
       .then(data => {
         if (data && Object.keys(data).length) {
           dispatch({

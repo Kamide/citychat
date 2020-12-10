@@ -155,5 +155,13 @@ export const UserRelation = {
   STRANGER: 'S',
   FRIEND_REQUEST_FROM_A_TO_B: 'FX',
   FRIEND_REQUEST_FROM_B_TO_A: 'XF',
-  FRIEND: 'F'
+  FRIEND: 'F',
+  toBinary: function(value) {
+    return parseInt([...value].map(c => Number(c !== 'X')).join(''), 2);
+  },
+  userIsRequester: function(userIDPair, userID, relation) {
+    const p = userIDPair.sort().indexOf(userID) === 0 ? 0b10 : 0b01;
+    const q = this.toBinary(relation);
+    return p & q;
+  }
 };

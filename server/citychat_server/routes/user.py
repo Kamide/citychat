@@ -14,7 +14,7 @@ from citychat_server.routes.decorators import (
 blueprint = Blueprint('user', __name__)
 
 
-@blueprint.route('/protected/user/self', methods=['GET'])
+@blueprint.route('/protected/self', methods=['GET'])
 @jwt_required
 @get_current_user
 def get_self(current_user):
@@ -23,37 +23,41 @@ def get_self(current_user):
     ), status.HTTP_200_OK
 
 
-def other_user_to_json(user_relationship, user_id):
-    return user_relationship.other_user(user_id).profile.to_public_json()
-
-
-@blueprint.route('/protected/user/self/relationships', methods=['GET'])
+@blueprint.route('/protected/self/friends', methods=['GET'])
 @jwt_required
 @get_current_user
-def get_relationships(current_user):
+def get_friends(current_user):
     relationships = UserRelationship.get_filtered(user_id=current_user.id)[0]
     friends = relationships.filter_by(relation=UserRelation.FRIEND.value)
-    pending = relationships.filter(or_(
+    return jsonify(friends=[
+        row.other_user(current_user.id).profile.to_public_json()
+        for row in friends
+    ]), status.HTTP_200_OK
+
+
+@blueprint.route('/protected/self/friends/requests', methods=['GET'])
+@jwt_required
+@get_current_user
+def get_friend_requests(current_user):
+    relationships = UserRelationship.get_filtered(user_id=current_user.id)[0]
+    requests = relationships.filter(or_(
         UserRelationship.relation
         == UserRelation.FRIEND_REQUEST_FROM_A_TO_B.value,
         UserRelationship.relation
         == UserRelation.FRIEND_REQUEST_FROM_B_TO_A.value
     ))
-    return jsonify(
-        friends=[other_user_to_json(row, current_user.id) for row in friends],
-        pending={
-            'incoming': [
-                other_user_to_json(row, current_user.id)
-                for row in pending
-                if row.user_is_requestee(current_user.id)
-            ],
-            'outgoing': [
-                other_user_to_json(row, current_user.id)
-                for row in pending
-                if row.user_is_requester(current_user.id)
-            ]
-        }
-    ), status.HTTP_200_OK
+    return jsonify(requests={
+        'incoming': [
+            row.other_user(current_user.id).profile.to_public_json()
+            for row in requests
+            if row.user_is_requestee(current_user.id)
+        ],
+        'outgoing': [
+            row.other_user(current_user.id).profile.to_public_json()
+            for row in requests
+            if row.user_is_requester(current_user.id)
+        ]
+    }), status.HTTP_200_OK
 
 
 @blueprint.route('/protected/user/id/<user_id>', methods=['GET'])
@@ -69,16 +73,12 @@ def get_user_by_id(user_id, user):
 @get_user
 @distinct_users_required
 def get_relationship(user_id, user, current_user):
-    relationship, sorted_users = UserRelationship.get_first(
+    relationship, *args = UserRelationship.get_first(
         user_id_pair=[user_id, current_user.id]
     )
-    return jsonify(
-        is_user_a=sorted_users['user_a'] == current_user.id,
-        relationship=(
-            relationship.relation if relationship
-            else UserRelation.STRANGER()
-        )
-    ), status.HTTP_200_OK
+    return jsonify(relationship=(
+        relationship.relation if relationship else UserRelation.STRANGER()
+    )), status.HTTP_200_OK
 
 
 @blueprint.route('/protected/user/id/<user_id>/friend/request',
@@ -162,7 +162,7 @@ def accept_user_friend_request(user_id, user, current_user):
         user_id_pair=[user_id, current_user.id]
     )
 
-    if relationship:
+    if relationship and relationship.user_is_requestee(current_user.id):
         relationship.relation = UserRelation.FRIEND.value
         relationship.since = func.now()
         db.session.commit()

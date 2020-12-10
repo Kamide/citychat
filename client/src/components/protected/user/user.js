@@ -10,7 +10,6 @@ export default function User(props) {
   const [state] = useContext(StoreContext);
   const [user, setUser] = useState({});
   const [relationship, setRelationship] = useState('');
-  const [isUserA, setIsUserA] = useState(false);
 
   useEffect(() => {
     if (props.user) {
@@ -46,7 +45,6 @@ export default function User(props) {
         }))
           .then(data => {
             if (data && Object.keys(data).length) {
-              setIsUserA(data.is_user_a);
               setRelationship(data.relationship);
             }
           });
@@ -96,8 +94,7 @@ export default function User(props) {
           <UserCommands
             userID={user.id}
             relationship={relationship}
-            setRelationship={setRelationship}
-            isUserA={isUserA} />
+            setRelationship={setRelationship} />
         )
         : null
     );

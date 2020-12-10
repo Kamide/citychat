@@ -1,6 +1,11 @@
+import { useContext } from 'react';
+
 import { UserRelation, apiFetch, fetchRetry, request, protectedRoute } from '../../api';
+import { StoreContext } from '../../store';
 
 export default function UserCommands(props) {
+  const [state] = useContext(StoreContext);
+
   if (!props.relationship) {
     return null;
   }
@@ -41,8 +46,8 @@ export default function UserCommands(props) {
     }
   };
 
-  const friendRequestCommand = (userA) => {
-    if (userA) {
+  const friendRequestCommand = () => {
+    if (UserRelation.userIsRequester([props.userID, state.user.id], state.user.id, props.relationship)) {
       commands.push(newCommand('requestCancel', 'Cancel Friend Request',
         () => friendRequest('/request/cancel', 'DELETE')));
     }
@@ -60,10 +65,10 @@ export default function UserCommands(props) {
         () => friendRequest('/request', 'POST')));
       break;
     case UserRelation.FRIEND_REQUEST_FROM_A_TO_B:
-      friendRequestCommand(props.isUserA);
+      friendRequestCommand();
       break;
     case UserRelation.FRIEND_REQUEST_FROM_B_TO_A:
-      friendRequestCommand(!props.isUserA);
+      friendRequestCommand();
       break;
     case UserRelation.FRIEND:
       commands.push(newCommand('unfriend', 'Unfriend',
@@ -73,7 +78,7 @@ export default function UserCommands(props) {
       break;
   }
 
-  if (!commands.length) {
+  if (!commands.length || String(props.userID) === String(state.user.id)) {
     return null;
   }
 
