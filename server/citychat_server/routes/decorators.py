@@ -54,7 +54,7 @@ def get_users(route):
             users = {kwargs['current_user']}
 
             for id in kwargs['user_id_list']:
-                user = User.get_first_active(id=id)
+                user = User.get_first_active(id=int(id))
 
                 if user:
                     users.add(user)
