@@ -10,7 +10,7 @@ from citychat_server.models.message import Message, MessageText
 from citychat_server.routes import socketio
 from citychat_server.routes.decorators import (
     get_current_user,
-    get_user,
+    get_users,
     io_get_current_user,
     io_participant_required,
     participant_required
@@ -59,12 +59,13 @@ def get_messages(chat_id, chat, current_user):
     ]), status.HTTP_200_OK
 
 
-@blueprint.route('/protected/chat/user/<user_id>', methods=['PUT'])
+@blueprint.route('/protected/chat/users/<user_id_list>', methods=['PUT'])
 @jwt_required
 @get_current_user
-@get_user
-def get_chat_with_user(user_id, user, current_user):
-    chat = Chat.get_first(participant_id_set={current_user.id, user_id})
+@get_users
+def get_chat_with_users(user_id_list, users, current_user):
+    participant_id_set = {user.id for user in users}
+    chat = Chat.get_first(participant_id_set=participant_id_set)
 
     if chat:
         return jsonify(chat_id=chat.id), status.HTTP_200_OK
@@ -77,15 +78,13 @@ def get_chat_with_user(user_id, user, current_user):
         db.session.add(private_chat)
         db.session.flush()
 
-        cp_current_user = ChatParticipant(
-            chat_id=chat.id,
-            participant_id=current_user.id
-        )
-        db.session.add(cp_current_user)
-
-        if user_id != current_user.id:
-            cp_user = ChatParticipant(chat_id=chat.id, participant_id=user_id)
-            db.session.add(cp_user)
+        for pid in participant_id_set:
+            chat_participant = ChatParticipant(
+                chat_id=chat.id,
+                participant_id=pid
+            )
+            db.session.add(chat_participant)
+            db.session.flush()
 
         db.session.commit()
         return jsonify(chat_id=chat.id), status.HTTP_201_CREATED

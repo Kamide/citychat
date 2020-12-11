@@ -156,10 +156,11 @@ function CitySubmit(props) {
 export function CityTag(props) {
   const field = useRef(null);
   const [input, setInput] = useState('');
-  const [tags, setTags] = useState([]);
   const [tagIndex, setTagIndex] = useState(0);
   const [candidates, setCandidates] = useState([]);
   const [candidateIndex, setCandidateIndex] = useState(0);
+
+  useEffect(() => field.current.focus(), []);
 
   const KEY = {
     UP: 38,
@@ -171,12 +172,12 @@ export function CityTag(props) {
     DELETE: 46
   };
 
-  const resolveTagIndex = () => tagIndex + tags.length;
+  const resolveTagIndex = () => tagIndex + props.tags.length;
 
   const addTag = (index) => {
     if (candidates.length) {
       setTagIndex(0);
-      setTags(prevTags => {
+      props.setTags(prevTags => {
         if (prevTags.find(t => props.compareCandidates(t, candidates[index]))) {
           return prevTags;
         }
@@ -194,13 +195,13 @@ export function CityTag(props) {
 
   const removeTag = (index, backspace) => {
     if (backspace) {
-      setTagIndex(prevTagIndex => Math.max(-1 * (tags.length - 1), prevTagIndex));
+      setTagIndex(prevTagIndex => Math.max(-1 * (props.tags.length - 1), prevTagIndex));
     }
     else {
-      setTagIndex(prevTagIndex => Math.max(-1 * (tags.length - 1), prevTagIndex + 1));
+      setTagIndex(prevTagIndex => Math.max(-1 * (props.tags.length - 1), prevTagIndex + 1));
     }
 
-    setTags(prevTags => {
+    props.setTags(prevTags => {
       return [
         ...prevTags.slice(0, index),
         ...prevTags.slice(index + 1)
@@ -216,7 +217,7 @@ export function CityTag(props) {
     setTagIndex(event.target.selectionStart);
     setCandidates(props.candidates.filter(c =>
       keyword
-      && !tags.includes(c)
+      && !props.tags.includes(c)
       && props.handleFilter(c, keyword)));
   };
 
@@ -233,7 +234,7 @@ export function CityTag(props) {
         break;
 
       case KEY.LEFT:
-        setTagIndex(prevTagIndex => Math.max(-1 * tags.length, prevTagIndex - 1));
+        setTagIndex(prevTagIndex => Math.max(-1 * props.tags.length, prevTagIndex - 1));
         break;
 
       case KEY.RIGHT:
@@ -256,7 +257,7 @@ export function CityTag(props) {
           event.preventDefault();
           removeTag(resolveTagIndex(), event.keyCode === KEY.DELETE);
         }
-        else if (!input.length && tags.length) {
+        else if (!input.length && props.tags.length) {
           setTagIndex(-1);
         }
         break;
@@ -268,8 +269,8 @@ export function CityTag(props) {
 
   const renderTags = () => {
     return (
-      <ul id={props.inputID + 'Tags'}>
-        {tags.map((value, index) => {
+      <ul id={props.inputID + 'props.tags'}>
+        {props.tags.map((value, index) => {
           return (
             <li key={index}>
               {index === resolveTagIndex() && '➡️'}

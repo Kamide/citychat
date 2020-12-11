@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import { apiFetch, protectedRoute, request, socket } from '../api';
+import { fetchRetry, protectedRoute, request, socket } from '../api';
 import { StoreContext } from '../store';
 import ChatApp from './chat/app';
 import Dashboard from './dashboard';
@@ -16,7 +16,7 @@ export default function ProtectedApp() {
   useEffect(() => {
     socket.open();
 
-    apiFetch(protectedRoute('/self'), request({method: 'GET', credentials: true}))
+    fetchRetry(protectedRoute('/self'), request({method: 'GET', credentials: true}))
       .then(data => {
         if (data && Object.keys(data).length) {
           dispatch({

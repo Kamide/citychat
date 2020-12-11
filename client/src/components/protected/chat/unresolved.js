@@ -6,7 +6,7 @@ import history from '../../history';
 export default function UnresolvedChat(props) {
   useEffect(() => {
     if (props.userID !== undefined) {
-      fetchRetry(protectedRoute('/chat/user/', props.userID),
+      fetchRetry(protectedRoute('/chat/users/', props.userID),
         request({
           method: 'PUT',
           credentials: true,

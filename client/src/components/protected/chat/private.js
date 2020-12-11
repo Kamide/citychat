@@ -3,10 +3,12 @@ import { Link, Route, Switch } from 'react-router-dom';
 
 import { fetchRetry, protectedRoute, request, socket } from '../../api';
 import Chat from './chat';
+import Compose from './compose';
 import UnresolvedChat from './unresolved';
 
 export default function PrivateChat() {
   const [conversations, setConversations] = useState([]);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     fetchRetry(protectedRoute('/chat'),
@@ -88,10 +90,22 @@ export default function PrivateChat() {
     );
   };
 
+  const toggle = () => {
+    setVisible(prevVisible => !prevVisible);
+  };
+
   return (
     <div>
-      <h1>Messages</h1>
+      <div>
+        <h1>Messages</h1>
+        <div>
+          <button type="button" onClick={toggle}>New Conversation</button>
+          {visible && <Compose setVisible={setVisible} />}
+        </div>
+      </div>
+
       {renderSidebar()}
+
       <Switch>
         <Route exact path="/app/chat/:id" render={props =>
           <Chat {...props} chatID={props.match.params.id} />} />

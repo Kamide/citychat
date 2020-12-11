@@ -45,6 +45,29 @@ def get_user(route):
     return decorated_route
 
 
+def get_users(route):
+    @wraps(route)
+    def decorated_route(*args, **kwargs):
+        try:
+            kwargs['user_id_list'] = kwargs['user_id_list'].split('-')
+            kwargs['user_id_list'].sort()
+            users = {kwargs['current_user']}
+
+            for id in kwargs['user_id_list']:
+                user = User.get_first_active(id=id)
+
+                if user:
+                    users.add(user)
+                else:
+                    return jsonify(), status.HTTP_404_NOT_FOUND
+
+            return route(users=users, *args, **kwargs)
+        except (KeyError, ValueError):
+            return jsonify(), status.HTTP_400_BAD_REQUEST
+
+    return decorated_route
+
+
 def distinct_users_required(route):
     @wraps(route)
     def decorated_route(*args, **kwargs):
