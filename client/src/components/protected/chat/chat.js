@@ -125,9 +125,9 @@ export default function Chat(props) {
   };
 
   return (
-    <div className="secondary Grid">
+    <main className="secondary Grid">
       <header className="Masthead">
-        <h1>{chat.name}</h1>
+        <h1 className="Heading">{chat.name}</h1>
       </header>
 
       <div className="tertiary Grid Chat">
@@ -138,6 +138,6 @@ export default function Chat(props) {
           <input type="submit" value="Send" />
         </form>
       </div>
-    </div>
+    </main>
   );
 }

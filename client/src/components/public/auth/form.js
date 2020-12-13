@@ -6,9 +6,13 @@ export default function AuthForm(props) {
   endpoint = publicRoute(endpoint);
 
   return (
-    <div>
-      <h1>{props.heading}</h1>
-      <Form endpoint={endpoint} {...args} />
-    </div>
+    <main className="secondary Grid">
+      <header className="Masthead">
+        <h1 className="Heading">{props.heading}</h1>
+      </header>
+      <div className="Content">
+        <Form endpoint={endpoint} {...args} />
+      </div>
+    </main>
   );
 }

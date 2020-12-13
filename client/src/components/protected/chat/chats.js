@@ -92,7 +92,7 @@ export default function Chats() {
     <Fragment>
       <div className="secondary Grid">
         <header className="secondary Masthead">
-          <h1>Chats</h1>
+          <h1 className="Heading">Chats</h1>
           <div>
             <button onClick={toggle}>+</button>
 

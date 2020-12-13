@@ -36,10 +36,10 @@ export default function Nav(props) {
     ['/app/chat', 'Chats'],
     ['/app/groups', 'Groups'],
     ['/app/contacts', 'Contacts']
-  ]
+  ];
 
   return (
-    <header className="secondary Grid">
+    <div className="secondary Grid">
       <header className="primary Masthead">
         <Logo />
       </header>
@@ -58,6 +58,6 @@ export default function Nav(props) {
           ))}
         </ul>
       </nav>
-    </header>
+    </div>
   );
 }
