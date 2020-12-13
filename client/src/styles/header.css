@@ -27,10 +27,13 @@
 }
 
 .Subheading {
-    border-top: var(--border);
     border-bottom: var(--border);
     font-size: 1.25em;
     font-weight: 500;
     margin: 0;
     padding: var(--spacing-unit-y) var(--spacing-unit-x);
+}
+
+.Subheading:not(:first-child) {
+    border-top: var(--border);
 }
