@@ -3,14 +3,6 @@
     line-height: 1.5;
 }
 
-    #public .Content {
-        margin: var(--spacing-unit-y) var(--spacing-unit-x);
-    }
-
-        #public .Content p {
-            margin: var(--spacing-unit-y) 0;
-        }
-
     #public #noEmail {
         border-top: var(--border);
     }

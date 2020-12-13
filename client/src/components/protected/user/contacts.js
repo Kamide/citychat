@@ -40,45 +40,52 @@ export default function Contacts() {
     fetchRelationships();
   }, []);
 
+  const renderUser = (x) => (
+    <div className="Item">
+      <User key={x.id} user={x} showSendMessageButton={true} showCommands={true} />
+    </div>
+  );
+
   const renderTab = () => {
     if (tab === 'Friends') {
       return (
         <div>
+          <h2 className="Subheading">All</h2>
           {friends.length
-            ? friends.map(x => <User key={x.id} user={x} showSendMessageButton={true} showCommands={true} />)
-            : <p>You haven't added any friends on CityChat yet.</p>}
+            ? friends.map(x => renderUser(x))
+            : <p className="Content">You haven't added any friends on CityChat yet.</p>}
         </div>
       );
     }
     else {
       return (
         <div>
-          <h2>Incoming</h2>
+          <h2 className="Subheading">Incoming</h2>
           {Object.keys(requests).length && requests.incoming.length
-            ? requests.incoming.map(x => <User key={x.id} user={x} showSendMessageButton={true} showCommands={true} />)
-            : <p>No incoming friend requests.</p>}
-          <h2>Outgoing</h2>
+            ? requests.incoming.map(x => renderUser(x))
+            : <p className="Content">No incoming friend requests.</p>}
+          <h2 className="Subheading">Outgoing</h2>
           {Object.keys(requests).length && requests.outgoing.length
-            ? requests.outgoing.map(x => <User key={x.id} user={x} showSendMessageButton={true} showCommands={true} />)
-            : <p>No outgoing friend requests.</p>}
+            ? requests.outgoing.map(x => renderUser(x))
+            : <p className="Content">No outgoing friend requests.</p>}
         </div>
       );
     }
   };
 
   return (
-    <div>
-      <header>
-        <h1>Contacts</h1>
+    <main className="single secondary Grid">
+      <header className="Masthead">
+        <h1 className="Heading">Contacts</h1>
         <nav>
           {['Friends', 'Requests'].map(x =>
             <button key={x} type="button" onClick={() => setTab(x)}>{x}</button>
           )}
         </nav>
       </header>
-      <main>
+      <div className="Menu">
         {renderTab()}
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }

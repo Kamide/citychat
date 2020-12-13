@@ -15,6 +15,10 @@
     overflow-y: auto;
 }
 
+.single.secondary.Grid {
+    grid-area: b / b / c / c;
+}
+
 div.secondary.Grid {
     max-width: 25vw;
     resize: horizontal;

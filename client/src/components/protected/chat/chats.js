@@ -64,7 +64,7 @@ export default function Chats() {
 
   const renderChats = () => {
     if (!conversations.length) {
-      return <p className="Item">Your conversations with others will appear here.</p>;
+      return <p className="Content">Your conversations with others will appear here.</p>;
     }
 
     return (
