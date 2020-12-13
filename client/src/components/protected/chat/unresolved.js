@@ -14,10 +14,10 @@ export default function UnresolvedChat(props) {
         }))
           .then(data => {
             if (data && Object.keys(data).length) {
-              history.push('/app/chat/' + data.chat_id)
+              history.replace('/app/chat/' + data.chat_id)
             }
             else {
-              history.push('/app/chat')
+              history.replace('/app/chat')
             }
           });
     }
