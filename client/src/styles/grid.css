@@ -13,7 +13,11 @@
 .secondary.Grid {
     grid-template: 'head' auto 'body' 1fr;
     overflow-y: auto;
-    overflow-x: visible;
+}
+
+div.secondary.Grid {
+    max-width: 25vw;
+    resize: horizontal;
 }
 
 .tertiary.Grid {
