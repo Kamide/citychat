@@ -1,0 +1,19 @@
+.Preview {
+    /* --fade-direction: to right; */
+    /* --fade-color: var(--primary-bg-color); */
+    overflow: hidden;
+    padding-bottom: 0.125em;
+    padding-top: 0.125em;
+    position: relative;
+}
+
+.Preview::after {
+    background-image: linear-gradient(var(--fade-direction), transparent 75%, var(--fade-color));
+    content: '';
+    display: block;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}

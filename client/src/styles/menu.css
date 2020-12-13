@@ -23,6 +23,7 @@
     }
 
     .Menu .Item {
+        cursor: pointer;
         padding: var(--spacing-unit-y) var(--spacing-unit-x);
     }
 

@@ -73,7 +73,7 @@ export default function Chat(props) {
     );
   };
 
-  const renderMessage = (m, showParent, hideLink) => {
+  const renderMessage = (m, isLeaf, hideLink) => {
     if (!(m && Object.keys(m).length)) {
       return null;
     }
@@ -86,10 +86,10 @@ export default function Chat(props) {
             <time className="Timestamp">{m.timestamp}</time>
           </div>
 
-          {showParent && renderParentMessage(m)}
+          {isLeaf && renderParentMessage(m)}
         </header>
 
-        <p className="Content">{m.content}</p>
+        <p className={'Content' + (isLeaf ? '' : ' Preview')}>{m.content}</p>
       </section>
     );
   }

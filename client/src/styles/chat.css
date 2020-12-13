@@ -1,3 +1,38 @@
+.Chats .Name {
+    font-weight: 600;
+}
+
+.Chats .Preview {
+    --fade-direction: to right;
+    --fade-color: var(--secondary-bg-color);
+    list-style: none;
+    margin-top: calc(var(--spacing-unit-y) / 2);
+    max-height: 1em;
+    padding-left: 0;
+}
+
+.Chats .Item:hover .Preview {
+    --fade-color: var(--highlight-color);
+}
+
+    .Chats .Preview .Author {
+        font-weight: 500;
+    }
+
+.Chats q {
+    color: var(--tertiary-fg-color);
+}
+
+.Chats q::before, .Chats q::after {
+    content: '';
+    filter: brightness(4);
+}
+
+.Chats a {
+    color: inherit;
+    text-decoration: none;
+}
+
 .Chat {
     --message-content-spacing-unit: calc(var(--user-picture-size) + 2 * var(--stroke-width) + var(--spacing-unit-x) / 2);
     font-size: var(--chat-font-size);
@@ -59,6 +94,11 @@
                 text-decoration: none;
             }
 
+            .Chat .Message .Parent a:hover {
+                filter: saturate(1.25);
+                opacity: 0.75;
+            }
+
             .Chat .Message .Parent .Message {
                 margin-left: var(--message-content-spacing-unit);
                 margin-top: 0;
@@ -66,19 +106,11 @@
 
             .Chat .Message .Parent .Content {
                 max-height: calc(var(--chat-line-height) * 1em);
-                overflow: hidden;
-                position: relative;
             }
 
-            .Chat .Message .Parent .Content::after {
-                background-image: linear-gradient(to right, transparent 90%, var(--primary-bg-color));
-                content: '';
-                display: block;
-                height: 100%;
-                left: 0;
-                position: absolute;
-                top: 0;
-                width: 100%;
+            .Chat .Message .Parent .Content.Preview {
+                --fade-direction: to right;
+                --fade-color: var(--primary-bg-color);
             }
 
     .Chat .Content {

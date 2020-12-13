@@ -8,6 +8,7 @@ import '../styles/chat.css';
 import '../styles/grid.css';
 import '../styles/header.css';
 import '../styles/menu.css';
+import '../styles/preview.css'
 import '../styles/user.css';
 
 export default function App() {

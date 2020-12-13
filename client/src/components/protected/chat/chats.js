@@ -5,6 +5,7 @@ import { fetchRetry, protectedRoute, request, socket } from '../../api';
 import Chat from './chat';
 import Compose from './compose';
 import UnresolvedChat from './unresolved';
+import history from '../../history';
 
 export default function Chats() {
   const [conversations, setConversations] = useState([]);
@@ -67,15 +68,20 @@ export default function Chats() {
     }
 
     return (
-      <ul className="Menu">
+      <ul className="Chats Menu">
         {conversations.map(c => {
           const latestMessageSender = c.participants[c.latest_message.author_id].nickname || c.participants[c.latest_message.author_id].name
 
           return (
-            <li key={c.chat.id} className="Item">
-              <Link to={'/app/chat/' + c.chat.id}>{c.chat.name}</Link>
-              <ul>
-                <li>{latestMessageSender}: {c.latest_message.content}</li>
+            <li key={c.chat.id} className="Item" onClick={() => history.push('/app/chat/' + c.chat.id)}>
+              <Link className="Name" to={'/app/chat/' + c.chat.id}>
+                {c.chat.name}
+              </Link>
+              <ul className="Preview">
+                <li>
+                  <span className="Author">{latestMessageSender}: </span>
+                  <q>{c.latest_message.content}</q
+                ></li>
               </ul>
             </li>
           );
