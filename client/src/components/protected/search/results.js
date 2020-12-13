@@ -42,23 +42,31 @@ export default function SearchResults(props) {
 
   const renderResults = () => {
     if (results && results.length) {
-      return results.map((r, index) => {
-        return (
-          <User key={index} user={r} showCommands={true} />
-        );
-      })
+      return (
+        <div className="Content">
+          {results.map((r, index) => {
+            return (
+              <div>
+                <User key={index} user={r} showCommands={true} />
+              </div>
+            );
+          })}
+        </div>
+      );
     }
     else {
-      return <p>No results found.</p>;
+      return <p className="Content">No results found.</p>;
     }
   };
 
   return (
-    <div>
-      <h1>Search Results</h1>
+    <main className="single secondary Grid">
+      <header className="Masthead">
+        <h1 className="Heading">Search Results</h1>
+      </header>
       {queryValid
         ? (processing ? loading : renderResults())
-        : <p>Please enter a search term.</p>}
-    </div>
+        : <p className="Content">Please enter a search term.</p>}
+    </main>
   );
 }

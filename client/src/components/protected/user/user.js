@@ -67,8 +67,8 @@ export default function User(props) {
         </figcaption>
       </figure>
 
-      {props.showSendMessageButton && sendMessageButton}
-      {props.showCommands && commands}
+      {sendMessageButton}
+      {commands}
     </Fragment>
   );
 }

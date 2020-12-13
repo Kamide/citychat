@@ -22,3 +22,19 @@
     color: inherit;
     text-decoration: none;
 }
+
+.Profile .User {
+    --user-picture-size: 3em;
+    --user-picture-fillet: calc(var(--user-picture-size) / 2);
+    font-size: 1.5em;
+}
+
+.Profile .Picture {
+    position: fixed;
+    top: var(--spacing-unit-y);
+}
+
+.Profile .Name {
+    margin-top: calc(var(--user-picture-size) / 4);
+    margin-left: calc(var(--user-picture-size) + var(--spacing-unit-x));
+}
