@@ -3,6 +3,11 @@
     line-height: 1.5;
 }
 
+    #public .secondary.Grid {
+        resize: none;
+        max-width: none;
+    }
+
     #public #noEmail {
         border-top: var(--border);
     }
