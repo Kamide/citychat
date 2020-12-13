@@ -7,7 +7,7 @@ import '../styles/logo.css'
 
 export default function Logo() {
   return (
-    <div aria-label="City Chat logo" className="CityChat">
+    <div aria-label="CityChat logo" className="CityChat">
       <ReactSVG aria-hidden="true" className="Logomark" src={logomark} />
       <ReactSVG aria-hidden="true" className="Logotype" src={logotype} />
     </div>

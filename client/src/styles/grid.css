@@ -8,6 +8,7 @@
     height: 100%;
     width: 100%;
     word-break: break-all;
+    z-index: 0;
 }
 
 .secondary.Grid {

@@ -29,11 +29,11 @@
 
     .Menu .Item:hover {
         background-color: var(--highlight-color);
-        box-shadow: 0 0 0 var(--stroke-width) var(--shadow-color);
+        box-shadow: 0 0 0 var(--stroke-width) var(--stroke-color);
     }
 
     .Menu .Item:active {
-        box-shadow: 0 0 0 var(--stroke-width) var(--shadow-color), inset calc(var(--spacing-unit-x) / 4) 0 0 0 var(--shadow-color);
+        box-shadow: 0 0 0 var(--stroke-width) var(--stroke-color), inset calc(var(--spacing-unit-x) / 4) 0 0 0 var(--stroke-color);
     }
 
     .Menu a.Item {

@@ -1,3 +1,52 @@
 .Content {
     margin: var(--spacing-unit-y) var(--spacing-unit-x);
 }
+
+.Header, .Masthead {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.Masthead {
+    border-bottom: var(--border);
+    padding: var(--spacing-unit-y) var(--spacing-unit-x);
+}
+
+    .Masthead .Heading {
+        font-size: 1.5em;
+        font-weight: 600;
+        margin: 0;
+    }
+
+.primary.Masthead {
+    background-color: var(--tertiary-bg-color);
+    border-right: var(--border);
+    font-size: 1.5em;
+}
+
+.secondary.Masthead {
+    background-color: var(--secondary-bg-color);
+    border-right: var(--border);
+}
+
+.Subheading {
+    border-bottom: var(--border);
+    font-size: 1.25em;
+    font-weight: 500;
+    margin: 0;
+    padding: var(--spacing-unit-y) var(--spacing-unit-x);
+}
+
+.Subheading:not(:first-child) {
+    border-top: var(--border);
+}
+
+.Preview {
+    mask-image: linear-gradient(var(--mask-direction), black 75%, transparent);
+    /* --mask-direction: to right; */
+    overflow: hidden;
+    padding-bottom: 0.125em;
+    padding-top: 0.125em;
+    position: relative;
+}

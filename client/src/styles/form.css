@@ -1,0 +1,109 @@
+.Button {
+    -webkit-appearance: none;
+    background-color: transparent;
+    border: none;
+    font-size: 1em;
+    margin: 0;
+    outline: none;
+    padding: 0;
+}
+
+.Button {
+    align-items: center;
+    border-radius: 0.25em;
+    display: inline-flex;
+    line-height: 1;
+}
+
+    .Button div {
+        display: inline-flex;
+    }
+
+    .Button svg {
+        height: 1em;
+        width: 1em;
+    }
+
+.Text.Button {
+    padding: 0.625em 1em;
+}
+
+.Icon.Button {
+    font-size: 1.5em;
+    padding: 0.25em;
+}
+
+.primary.Button {
+    background-color: var(--primary-button-bg-color);
+    color: var(--primary-button-fg-color);
+    fill: var(--primary-button-fg-color);
+}
+
+.primary.Button:hover, .primary.Button:focus {
+    background-color: var(--primary-button-bg-color-hover);
+}
+
+.primary.Button:active {
+    background-color: var(--primary-button-bg-color-active);
+}
+
+.secondary.Button {
+    background-color: var(--secondary-button-bg-color);
+    box-shadow: inset 0 0 0 0.0625em var(--secondary-button-fg-color);
+    color: var(--secondary-button-fg-color);
+    fill: var(--secondary-button-fg-color);
+}
+
+.secondary.Button:hover, .secondary.Button:focus {
+    box-shadow: inset 0 0 0 0.125em var(--secondary-button-fg-color);
+}
+
+.secondary.Button:active {
+    box-shadow: inset 0 0 0 0.1875em var(--secondary-button-fg-color);
+}
+
+.tertiary.Button {
+    background-color: var(--tertiary-button-bg-color);
+    color: inherit;
+}
+
+.tertiary.Button:hover, .tertiary.Button:focus {
+    background-color: var(--tertiary-button-bg-color-hover);
+}
+
+.tertiary.Button:active {
+    background-color: var(--tertiary-button-bg-color-active);
+}
+
+.Modal {
+    align-items: center;
+    background-color: var(--modal-shadow-color);
+    display: grid;
+    grid-template: 'a' minmax(0, 1fr) 'b' 1fr 'c' minmax(0, 2fr);
+    height: 100%;
+    justify-content: center;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+}
+
+    .Modal .Dialog {
+        grid-area: b;
+    }
+
+.Dialog {
+    backdrop-filter: blur(1rem);
+    background-color: var(--primary-bg-color);
+    border: var(--border);
+    border-radius: 0.25em;
+    box-shadow: var(--shadow);
+    pointer-events: initial;
+    z-index: 1;
+}
+
+    .Dialog .Masthead nav {
+        margin-left: calc(2 * var(--spacing-unit-x));
+    }

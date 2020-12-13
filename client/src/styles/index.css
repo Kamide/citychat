@@ -3,7 +3,7 @@
     --secondary-brand-color: #fdfdfc;
 
     --primary-bg-color: hsl(50, 50%, 98%);
-    --primary-fg-color: hsl(250, 40%, 0%);;
+    --primary-fg-color: hsl(250, 40%, 0%);
 
     --secondary-bg-color: hsl(290, 40%, 94%);
     --secondary-fg-color: hsl(250, 50%, 20%);
@@ -11,8 +11,23 @@
     --tertiary-bg-color: hsl(270, 30%, 86%);
     --tertiary-fg-color: hsl(250, 70%, 40%);
 
+    --primary-button-bg-color: hsl(280, 60%, 50%);
+    --primary-button-bg-color-hover: hsl(280, 60%, 45%);
+    --primary-button-bg-color-active: hsl(280, 60%, 40%);
+    --primary-button-fg-color: var(--secondary-brand-color);
+
+    --secondary-button-bg-color: var(--primary-bg-color);
+    --secondary-button-fg-color: var(--primary-button-bg-color);
+
+    --tertiary-button-bg-color: rgba(0, 0, 0, 0);
+    --tertiary-button-bg-color-hover: rgba(0, 0, 0, 0.1);
+    --tertiary-button-bg-color-active: rgba(0, 0, 0, 0.2);
+    --tertiary-button-fg-color: currentColor;
+
     --highlight-color: hsl(50, 100%, 90%);
-    --shadow-color: hsla(250, 80%, 20%, 0.2);
+    --shadow-color: hsla(250, 100%, 10%, 0.6);
+    --modal-shadow-color: hsla(250, 50%, 5%, 0.4);
+    --shadow: 0 0.5rem 1rem var(--shadow-color);
 
     --font-size: 16px;
     --chat-font-size: 20px;
@@ -22,7 +37,8 @@
     --spacing-unit-y: 1rem;
 
     --stroke-width: 1px;
-    --border: var(--stroke-width) solid var(--shadow-color);
+    --stroke-color: hsla(280, 50%, 60%, 0.5);
+    --border: var(--stroke-width) solid var(--stroke-color);
 
     --user-picture-size: 2em;
     --user-picture-fillet: calc(var(--user-picture-size) / 2);

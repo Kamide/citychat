@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { fetchRetry, protectedRoute, request } from '../../api';
-import { CityTag } from '../../cityform';
+import { CityDialog, CityTag } from '../../cityform';
 import User from '../user/user';
 import history from '../../history';
 
@@ -35,18 +35,20 @@ export default function Compose(props) {
   }
 
   return (
-    <CityTag
-      inputID="newParticipant"
-      inputLabel="To"
-      submitLabel="Start Conversation"
-      tags={tags}
-      setTags={setTags}
-      candidates={candidates}
-      compareCandidates={compareUsers}
-      renderTag={renderUser}
-      renderCandidate={renderUser}
-      handleFilter={handleFilter}
-      handleSubmit={handleSubmit} />
+    <CityDialog heading="Start a New Chat" setVisible={props.setVisible}>
+      <CityTag
+        inputID="newChatParticipants"
+        inputLabel="Participants"
+        submitLabel="Start Chat"
+        tags={tags}
+        setTags={setTags}
+        candidates={candidates}
+        compareCandidates={compareUsers}
+        renderTag={renderUser}
+        renderCandidate={renderUser}
+        handleFilter={handleFilter}
+        handleSubmit={handleSubmit} />
+    </CityDialog>
   );
 
 }

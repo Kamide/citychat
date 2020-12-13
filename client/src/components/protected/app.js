@@ -35,7 +35,7 @@ export default function ProtectedApp() {
       <Nav />
       <Switch>
         <Route exact path="/app/contacts" component={Contacts} />
-        <Route path="/app/chat" component={Chats} />
+        <Route path="/app/chats" component={Chats} />
         <Route path="/app/search" component={SearchResults} />
         <Route path="/app/user/:id" component={UserProfile} />
         <Route component={Chats} />

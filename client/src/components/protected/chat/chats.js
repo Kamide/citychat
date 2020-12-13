@@ -1,11 +1,14 @@
 import { Fragment, useEffect, useState } from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
+import { ReactSVG } from 'react-svg';
 
 import { fetchRetry, protectedRoute, request, socket } from '../../api';
 import Chat from './chat';
 import Compose from './compose';
 import UnresolvedChat from './unresolved';
 import history from '../../history';
+
+import newChatIcon from '../../../images/new-chat-icon.svg';
 
 export default function Chats() {
   const [conversations, setConversations] = useState([]);
@@ -100,7 +103,9 @@ export default function Chats() {
         <header className="secondary Masthead">
           <h1 className="Heading">Chats</h1>
           <div>
-            <button onClick={toggle}>+</button>
+            <button aria-label="Start a new chat" className="primary Icon Button" onClick={toggle}>
+              <ReactSVG aria-hidden="true" src={newChatIcon} />
+            </button>
 
             {visible && <Compose setVisible={setVisible} />}
           </div>

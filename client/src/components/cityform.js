@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ReactSVG } from 'react-svg';
 
 import blinkingEllipsis from '../images/blinking-ellipsis.svg';
+import closeIcon from '../images/close-icon.svg';
 
 export default function CityForm(props) {
   const [processingTimer, setProcessingTimer] = useState(0);
@@ -308,10 +309,14 @@ export function CityTag(props) {
     );
   };
 
+  const className = 'CityTag ' + (props.containerAttributes
+    && props.containerAttributes.className)
+    || '';
+
   return (
-    <form {...props.containerAttributes}>
+    <form {...props.containerAttributes} className={className}>
       <label htmlFor={props.inputID}>{props.inputLabel}</label>
-      <div>
+      <div className="CityTag">
         {renderTags()}
         <input
           type="text"
@@ -322,7 +327,29 @@ export function CityTag(props) {
           onKeyDown={selectCandidates} />
         {tagIndex > -1 && renderCandidates()}
       </div>
-      <input type="submit" value={props.submitLabel} onClick={props.handleSubmit} />
+      <input className="primary Text Button" type="submit" value={props.submitLabel} onClick={props.handleSubmit} />
     </form>
+  );
+}
+
+export function CityDialog(props) {
+  return (
+    <div className="Modal">
+      <aside className="Dialog">
+        <header className="Masthead">
+          <h1 className="Heading">
+            {props.heading}
+          </h1>
+          <nav>
+            <button aria-label="Close" className="tertiary Icon Button" onClick={() => props.setVisible(false)}>
+              <ReactSVG aria-hidden="true" src={closeIcon} />
+            </button>
+          </nav>
+        </header>
+        <div className="Content">
+          {props.children}
+        </div>
+      </aside>
+    </div>
   );
 }

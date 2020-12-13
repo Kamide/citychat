@@ -5,10 +5,9 @@ import ProtectedApp from './protected/app';
 import PublicApp from './public/app';
 
 import '../styles/chat.css';
+import '../styles/form.css';
 import '../styles/grid.css';
-import '../styles/header.css';
 import '../styles/menu.css';
-import '../styles/preview.css'
 import '../styles/text.css';
 import '../styles/user.css';
 
