@@ -1,0 +1,94 @@
+.Chat {
+    --message-content-spacing-unit: calc(var(--user-picture-size) + 2 * var(--stroke-width) + var(--spacing-unit-x) / 2);
+    font-size: var(--chat-font-size);
+}
+
+    .Chat .Messages {
+        overflow-y: auto;
+    }
+
+    .Chat .Message {
+        margin: var(--spacing-unit-y) var(--spacing-unit-x);
+    }
+
+        .Chat .Message .Header {
+            align-items: flex-start;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        .Chat .Message .Author {
+            align-items: center;
+            display: flex;
+        }
+
+        .Chat .Message .Timestamp {
+            color: var(--tertiary-fg-color);
+            font-size: 0.8em;
+            margin-left: calc(var(--spacing-unit-x) / 2);
+        }
+
+        .Chat .Message .Timestamp::before {
+            content: '\2014';
+            margin-right: calc(var(--spacing-unit-x) / 2);
+        }
+
+        .Chat .Message .Parent {
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+
+        .Chat .Message .Parent::before {
+            border-left: var(--border);
+            border-top: var(--border);
+            border-top-left-radius: var(--user-picture-fillet);
+            bottom: 0;
+            content: '';
+            display: block;
+            height: calc(100% - var(--user-picture-size) / 2);
+            left: calc(var(--user-picture-size) / 2);
+            position: absolute;
+            width: calc(var(--message-content-spacing-unit) - var(--user-picture-size) / 2);
+        }
+
+            .Chat .Message .Parent a {
+                color: inherit;
+                filter: saturate(1.5);
+                opacity: 0.5;
+                text-decoration: none;
+            }
+
+            .Chat .Message .Parent .Message {
+                margin-left: var(--message-content-spacing-unit);
+                margin-top: 0;
+            }
+
+            .Chat .Message .Parent .Content {
+                max-height: calc(var(--chat-line-height) * 1em);
+                overflow: hidden;
+                position: relative;
+            }
+
+            .Chat .Message .Parent .Content::after {
+                background-image: linear-gradient(to right, transparent 90%, var(--primary-bg-color));
+                content: '';
+                display: block;
+                height: 100%;
+                left: 0;
+                position: absolute;
+                top: 0;
+                width: 100%;
+            }
+
+    .Chat .Content {
+        line-height: var(--chat-line-height);
+        margin-bottom: calc(var(--spacing-unit-y) / 2);
+        margin-left: var(--message-content-spacing-unit);
+        margin-top: calc(var(--spacing-unit-y) / 2);
+    }
+
+    .Chat .Box {
+        border-top: var(--border);
+        padding: var(--spacing-unit-y) var(--spacing-unit-x);
+    }

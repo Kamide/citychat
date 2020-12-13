@@ -11,11 +11,9 @@ export default function Search(props) {
   }
 
   return (
-    <div>
-      <form className="display--flex field-group" onSubmit={search}>
-        <input aria-label="Search term" id="searchQ" type="search" placeholder="Search" />
-        <button aria-label="Search" className="button inline" type="submit">🔍</button>
-      </form>
-    </div>
+    <form onSubmit={search}>
+      <input aria-labelledby="searchSubmit" id="searchQ" type="search" placeholder="🔍 Search" />
+      <input id="searchSubmit" type="submit" value="Search" />
+    </form>
   );
 }

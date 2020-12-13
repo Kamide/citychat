@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
 
 import { fetchRetry, protectedRoute, request, socket } from '../../api';
@@ -6,7 +6,7 @@ import Chat from './chat';
 import Compose from './compose';
 import UnresolvedChat from './unresolved';
 
-export default function PrivateChat() {
+export default function Chats() {
   const [conversations, setConversations] = useState([]);
   const [visible, setVisible] = useState(false);
 
@@ -61,32 +61,26 @@ export default function PrivateChat() {
     };
   }, []);
 
-  const renderSidebar = () => {
+  const renderChats = () => {
     if (!conversations.length) {
-      return (
-        <nav>
-          <p>Your conversations with others will appear here.</p>
-        </nav>
-      );
+      return <p className="Item">Your conversations with others will appear here.</p>;
     }
 
     return (
-      <nav>
-        <ul>
-          {conversations.map(c => {
-            const latestMessageSender = c.participants[c.latest_message.author_id].nickname || c.participants[c.latest_message.author_id].name
+      <ul className="Menu">
+        {conversations.map(c => {
+          const latestMessageSender = c.participants[c.latest_message.author_id].nickname || c.participants[c.latest_message.author_id].name
 
-            return (
-              <li key={c.chat.id}>
-                <Link to={'/app/chat/' + c.chat.id}>{c.chat.name}</Link>
-                <ul>
-                  <li>{latestMessageSender}: {c.latest_message.content}</li>
-                </ul>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+          return (
+            <li key={c.chat.id} className="Item">
+              <Link to={'/app/chat/' + c.chat.id}>{c.chat.name}</Link>
+              <ul>
+                <li>{latestMessageSender}: {c.latest_message.content}</li>
+              </ul>
+            </li>
+          );
+        })}
+      </ul>
     );
   };
 
@@ -95,16 +89,21 @@ export default function PrivateChat() {
   };
 
   return (
-    <div>
-      <div>
-        <h1>Messages</h1>
-        <div>
-          <button type="button" onClick={toggle}>New Conversation</button>
-          {visible && <Compose setVisible={setVisible} />}
-        </div>
-      </div>
+    <Fragment>
+      <div className="secondary Grid">
+        <header className="secondary Masthead">
+          <h1>Chats</h1>
+          <div>
+            <button onClick={toggle}>+</button>
 
-      {renderSidebar()}
+            {visible && <Compose setVisible={setVisible} />}
+          </div>
+        </header>
+
+        <nav className="secondary Menu">
+          {renderChats()}
+        </nav>
+      </div>
 
       <Switch>
         <Route exact path="/app/chat/:id" render={props =>
@@ -112,6 +111,6 @@ export default function PrivateChat() {
         <Route exact path="/app/chat/user/:id" render={props =>
           <UnresolvedChat {...props} userID={props.match.params.id} />} />
       </Switch>
-    </div>
+    </Fragment>
   );
 }

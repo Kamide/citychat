@@ -1,12 +1,28 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { UserRelation, apiFetch, fetchRetry, request, protectedRoute } from '../../api';
 import { StoreContext } from '../../store';
 
 export default function UserCommands(props) {
   const [state] = useContext(StoreContext);
+  const [relationship, setRelationship] = useState('');
 
-  if (!props.relationship) {
+  useEffect(() => {
+    if (String(props.userID) !== String(state.user.id)) {
+      fetchRetry(protectedRoute('/user/id/', props.userID, '/relationship'),
+        request({
+          method: 'GET',
+          credentials: true
+        }))
+          .then(data => {
+            if (data && Object.keys(data).length) {
+              setRelationship(data.relationship);
+            }
+          });
+    }
+  }, [props.userID, state.user.id]);
+
+  if (!relationship) {
     return null;
   }
 
@@ -25,8 +41,8 @@ export default function UserCommands(props) {
         }))
           .then(data => {
             if (data && Object.keys(data).length) {
-              const oldRelationship = props.relationship;
-              props.setRelationship(data.relationship);
+              const oldRelationship = relationship;
+              setRelationship(data.relationship);
 
               if (oldRelationship === data.relationship) {
                 apiFetch(protectedRoute('/user/id/', props.userID, '/friend', path),
@@ -37,7 +53,7 @@ export default function UserCommands(props) {
                   }))
                     .then(data => {
                       if (data && Object.keys(data).length) {
-                        props.setRelationship(data.relationship);
+                        setRelationship(data.relationship);
                       }
                     });
               }
@@ -47,7 +63,7 @@ export default function UserCommands(props) {
   };
 
   const friendRequestCommand = () => {
-    if (UserRelation.userIsRequester([props.userID, state.user.id], state.user.id, props.relationship)) {
+    if (UserRelation.userIsRequester([props.userID, state.user.id], state.user.id, relationship)) {
       commands.push(newCommand('requestCancel', 'Cancel Friend Request',
         () => friendRequest('/request/cancel', 'DELETE')));
     }
@@ -59,7 +75,7 @@ export default function UserCommands(props) {
     }
   };
 
-  switch (props.relationship) {
+  switch (relationship) {
     case UserRelation.STRANGER:
       commands.push(newCommand('requestSend', 'Send Friend Request',
         () => friendRequest('/request', 'POST')));

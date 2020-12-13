@@ -12,7 +12,7 @@ export default function Activate(props) {
   }, [props.match.params.token]);
 
   return (
-    <div className="margin-x--auto max-width--400 text-align--center">
+    <div>
       <h1>Account Activated</h1>
       <p>
         Thank you for confirming your email address.
@@ -21,7 +21,7 @@ export default function Activate(props) {
         You may now log in to your new CityChat account with your email address.
       </p>
       <p>
-        <Link to='/login' className="button">Log In</Link>
+        <Link to='/login'>Log In</Link>
       </p>
     </div>
   );

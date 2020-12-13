@@ -2,15 +2,16 @@ import { useContext, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import { fetchRetry, protectedRoute, request, socket } from '../api';
+
 import { StoreContext } from '../store';
-import ChatApp from './chat/app';
-import Dashboard from './dashboard';
+import Chats from './chat/chats';
 import Nav from './nav';
-import Relationships from './user/relationships';
+import Contacts from './user/contacts';
 import SearchResults from './search/results';
 import UserProfile from './user/profile';
 
 export default function ProtectedApp() {
+  // eslint-disable-next-line no-unused-vars
   const [state, dispatch] = useContext(StoreContext);
 
   useEffect(() => {
@@ -30,18 +31,15 @@ export default function ProtectedApp() {
   }, [dispatch]);
 
   return (
-    <div className="padding--l">
-      <Nav user={state.user} />
-      <main>
-        <Switch>
-          <Route exact path="/app/dashboard" component={Dashboard} />
-          <Route exact path="/app/friends" component={Relationships} />
-          <Route path="/app/chat" component={ChatApp} />
-          <Route path="/app/search" component={SearchResults} />
-          <Route path="/app/user/:id" component={UserProfile} />
-          <Route component={Dashboard} />
-        </Switch>
-      </main>
+    <div className="primary Grid">
+      <Nav />
+      <Switch>
+        <Route exact path="/app/contacts" component={Contacts} />
+        <Route path="/app/chat" component={Chats} />
+        <Route path="/app/search" component={SearchResults} />
+        <Route path="/app/user/:id" component={UserProfile} />
+        <Route component={Chats} />
+      </Switch>
     </div>
   );
 }

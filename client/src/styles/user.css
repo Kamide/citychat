@@ -1,0 +1,24 @@
+.User {
+    align-items: center;
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+}
+
+.User .Picture {
+    border: var(--border);
+    border-radius: var(--user-picture-fillet);
+    height: var(--user-picture-size);
+    width: var(--user-picture-size);
+}
+
+.User .Name {
+    display: inline-block;
+    font-weight: 500;
+    margin-left: calc(var(--spacing-unit-x) / 2);
+}
+
+.User .Name a {
+    color: inherit;
+    text-decoration: none;
+}

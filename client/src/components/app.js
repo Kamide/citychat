@@ -4,6 +4,12 @@ import history from './history';
 import ProtectedApp from './protected/app';
 import PublicApp from './public/app';
 
+import '../styles/chat.css';
+import '../styles/grid.css';
+import '../styles/header.css';
+import '../styles/menu.css';
+import '../styles/user.css';
+
 export default function App() {
   return (
     <Router history={history}>

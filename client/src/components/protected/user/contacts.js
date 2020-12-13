@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { fetchRetry, request, protectedRoute } from '../../api';
 import User from './user';
 
-export default function Relationships() {
+export default function Contacts() {
   const [friends, setFriends] = useState([]);
   const [requests, setRequests] = useState({});
   const [tab, setTab] = useState('Friends');
@@ -68,13 +68,17 @@ export default function Relationships() {
 
   return (
     <div>
-      <h1>{tab}</h1>
-      <nav>
-        {['Friends', 'Requests'].map(x =>
-          <button key={x} type="button" onClick={() => setTab(x)}>{x}</button>
-        )}
-      </nav>
-      {renderTab()}
+      <header>
+        <h1>Contacts</h1>
+        <nav>
+          {['Friends', 'Requests'].map(x =>
+            <button key={x} type="button" onClick={() => setTab(x)}>{x}</button>
+          )}
+        </nav>
+      </header>
+      <main>
+        {renderTab()}
+      </main>
     </div>
   );
 }

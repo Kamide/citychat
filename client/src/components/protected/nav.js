@@ -1,11 +1,12 @@
 import { useContext } from 'react';
-import { Link, Route } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { fetchRetry, request, protectedRoute, privateRoute } from '../api';
 import { StoreContext } from '../store';
 import User from './user/user';
-import Search from './search/search';
 import history from '../history';
+
+import Logo from '../logo';
 
 export default function Nav(props) {
   const [state, dispatch] = useContext(StoreContext);
@@ -31,21 +32,32 @@ export default function Nav(props) {
         });
   };
 
+  const destinations = [
+    ['/app/chat', 'Chats'],
+    ['/app/groups', 'Groups'],
+    ['/app/contacts', 'Contacts']
+  ]
+
   return (
-    <div className="align-items--center display--flex justify-content--space-between">
-      <nav>
-        <ul className="display--flex margin-right--s--child-universal zero--list-style zero--margin zero--padding">
-          <li><Link to='/app/dashboard'>Dashboard</Link></li>
-          <li><Link to='/app/friends'>Friends</Link></li>
-          <li><Link to='/app/chat'>Messages</Link></li>
-          <li>Groups</li>
+    <header className="secondary Grid">
+      <header className="primary Masthead">
+        <Logo />
+      </header>
+
+      <nav className="primary Menu">
+        <div className="Section Item">
+          <User user={state.user} />
+          <button onClick={logout}>Log Out</button>
+        </div>
+
+        <ul className="Menu Section">
+          {destinations.map((x, i) => (
+            <li key={i}>
+              <Link className="Item" to={x[0]}>{x[1]}</Link>
+            </li>
+          ))}
         </ul>
       </nav>
-      <Route component={Search} />
-      <div>
-        <User user={state.user} />
-        <button className="button" type="button" onClick={logout}>Log Out</button>
-      </div>
-    </div>
+    </header>
   );
 }

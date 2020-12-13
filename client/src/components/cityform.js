@@ -14,7 +14,7 @@ export default function CityForm(props) {
 
   if (props.networkError) {
     return (
-      <div className="text-align--center">
+      <div>
         Sorry, something went wrong.
         Please refresh the page and try again.
       </div>
@@ -23,7 +23,7 @@ export default function CityForm(props) {
 
   if (!Object.keys(props.form).length) {
     return (
-      <div aria-label="Loading form" className="text-align--center">
+      <div aria-label="Loading form">
         <ReactSVG aria-hidden="true" src={blinkingEllipsis} />
       </div>
     );
@@ -54,7 +54,7 @@ export default function CityForm(props) {
     }
 
     return (
-      <ul className="padding-left--l">
+      <ul>
         {props.form.errors[key].map((error, index) => {
           return <li key={key + index}>{error}</li>
         })}
@@ -84,7 +84,7 @@ export default function CityForm(props) {
     <form onSubmit={handleSubmit} {...props.form.args}>
       {props.form.fields.map(([key, fields]) => {
         return (
-          <div className="display--flex field-group flex-direction--column margin-y--m" key={key}>
+          <div key={key}>
             {fields.map((field, index) => {
               return renderField(field, index, props.processing);
             })}
@@ -130,9 +130,9 @@ function CityPassword(props) {
   }
 
   return (
-    <span className="display--flex">
+    <span>
       <CityInput field={field} />
-      <button className="button inline" type="button" onClick={toggle}>
+      <button type="button" onClick={toggle}>
         {visible ? 'Hide' : 'Show'}
       </button>
     </span>
@@ -144,13 +144,13 @@ function CitySubmit(props) {
 
   if (processing) {
     return (
-      <div aria-label="Your form data is being processed" className="button margin-top--s text-align--center">
+      <div aria-label="Your form data is being processed">
         <ReactSVG aria-hidden="true" src={blinkingEllipsis} />
       </div>
     );
   }
 
-  return <input className="button margin-top--s" {...args.field.args} />;
+  return <input {...args.field.args} />;
 }
 
 export function CityTag(props) {
@@ -249,6 +249,9 @@ export function CityTag(props) {
           event.preventDefault()
           addTag(candidateIndex);
         }
+        else {
+          props.handleSubmit(event);
+        }
         break;
 
       case KEY.BACKSPACE:
@@ -274,7 +277,7 @@ export function CityTag(props) {
           return (
             <li key={index}>
               {index === resolveTagIndex() && '➡️'}
-              <button type="button" onClick={() => removeTag(index, false)}>
+              <button onClick={() => removeTag(index, false)}>
                 {props.renderTag(value)}
               </button>
             </li>
@@ -295,7 +298,7 @@ export function CityTag(props) {
           return (
             <li key={index}>
               {index === candidateIndex && '➡️'}
-              <button type="button" onClick={() => addTag(index)}>
+              <button onClick={() => addTag(index)}>
                 {props.renderCandidate(value)}
               </button>
             </li>

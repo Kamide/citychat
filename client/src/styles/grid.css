@@ -1,0 +1,22 @@
+.Grid {
+    box-sizing: border-box;
+    display: grid;
+}
+
+.primary.Grid {
+    grid-template: 'a b c' / 1fr 1fr 3fr;
+    height: 100%;
+    width: 100%;
+    word-break: break-all;
+}
+
+.secondary.Grid {
+    grid-template: 'head' auto 'body' 1fr;
+    overflow-y: auto;
+    overflow-x: visible;
+}
+
+.tertiary.Grid {
+    grid-template: 'body' 1fr 'head' auto;
+    overflow-y: auto;
+}

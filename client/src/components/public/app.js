@@ -22,16 +22,16 @@ export default function PublicApp() {
 
   return (
     <Fragment>
-      <div className="bg-1 padding--l stroke-bottom">
-        <div className="margin-x--auto max-width--1024">
-          <nav className="align-items--center display--flex justify-content--space-between margin--m--negative margin--m-r">
+      <div>
+        <div>
+          <nav>
             <Link to="/"><Logo /></Link>
 
-            <ul className="button--child-universal display--flex margin-right--s--child-universal zero--list-style zero--margin zero--padding">
+            <ul>
               <li>
                 <Link to="/login">Log In</Link>
               </li>
-              <li className="inverse">
+              <li>
                 <Link to="/signup">Sign Up</Link>
               </li>
             </ul>
@@ -39,7 +39,7 @@ export default function PublicApp() {
         </div>
       </div>
 
-      <main className="margin-x--auto max-width--1024 padding--l">
+      <main>
         <Switch>
           <Route exact path="/" component={Landing} />
           <Route key="login" exact path="/login">

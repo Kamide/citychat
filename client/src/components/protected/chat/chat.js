@@ -65,7 +65,7 @@ export default function Chat(props) {
     }
 
     return (
-      <blockquote>
+      <blockquote className="Parent">
         <a href={'#message-' + m.parent_id}>
           {renderMessage(findMessage(m.parent_id), false, true)}
         </a>
@@ -79,22 +79,26 @@ export default function Chat(props) {
     }
 
     return (
-      <div key={m.id} id={'message-' + m.id}>
-        <div>
-          <User user={participants[String(m.author_id)]} hideLink={hideLink} />
-          <p>{m.timestamp}</p>
+      <section key={m.id} id={'message-' + m.id} className="Message">
+        <header className="Header">
+          <div className="Author">
+            <User user={participants[String(m.author_id)]} hideLink={hideLink} />
+            <time className="Timestamp">{m.timestamp}</time>
+          </div>
+
           {showParent && renderParentMessage(m)}
-        </div>
-        <p>{m.content}</p>
-      </div>
+        </header>
+
+        <p className="Content">{m.content}</p>
+      </section>
     );
   }
 
   const renderMessages = () => {
     return (
-      <div>
+      <article className="Messages">
         {messages.map(m => renderMessage(m, true, false))}
-      </div>
+      </article>
     )
   };
 
@@ -121,13 +125,19 @@ export default function Chat(props) {
   };
 
   return (
-    <main>
-      <h1>{chat.name}</h1>
-      {renderMessages()}
-      <form onSubmit={sendMessage}>
-        <input type="text" id="messageText" />
-        <input type="submit" value="Send" />
-      </form>
-    </main>
+    <div className="secondary Grid">
+      <header className="Masthead">
+        <h1>{chat.name}</h1>
+      </header>
+
+      <div className="tertiary Grid Chat">
+        {renderMessages()}
+
+        <form className="Box" onSubmit={sendMessage}>
+          <input type="text" id="messageText" />
+          <input type="submit" value="Send" />
+        </form>
+      </div>
+    </div>
   );
 }

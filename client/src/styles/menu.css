@@ -1,0 +1,46 @@
+.Menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+}
+
+.primary.Menu {
+    background-color: var(--tertiary-bg-color);
+    border-right: var(--border);
+    color: var(--tertiary-fg-color);
+}
+
+.secondary.Menu {
+    background-color: var(--secondary-bg-color);
+    border-right: var(--border);
+    color: var(--secondary-fg-color);
+}
+
+    .Menu .Section {
+        margin-bottom: calc(1 * var(--spacing-unit-y));
+        margin-top: calc(1 * var(--spacing-unit-y));
+    }
+
+    .Menu .Item {
+        padding: var(--spacing-unit-y) var(--spacing-unit-x);
+    }
+
+    .Menu .Item:hover {
+        background-color: var(--highlight-color);
+        box-shadow: 0 0 0 var(--stroke-width) var(--shadow-color);
+    }
+
+    .Menu .Item:active {
+        box-shadow: 0 0 0 var(--stroke-width) var(--shadow-color), inset calc(var(--spacing-unit-x) / 4) 0 0 0 var(--shadow-color);
+    }
+
+    .Menu a.Item {
+        color: inherit;
+        display: block;
+        text-decoration: none;
+    }
+
+    .Menu a.Item:focus {
+        outline: none;
+    }
