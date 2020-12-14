@@ -10,8 +10,8 @@ export default function AuthForm(props) {
       <header className="Masthead">
         <h1 className="Heading">{props.heading}</h1>
       </header>
-      <div className="Content">
-        <Form endpoint={endpoint} {...args} />
+      <div>
+        <Form className="Content" endpoint={endpoint} {...args} />
       </div>
     </main>
   );

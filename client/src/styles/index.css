@@ -1,4 +1,5 @@
 :root {
+    /* Colors */
     --primary-brand-color: #aa66cc;
     --secondary-brand-color: #fdfdfc;
 
@@ -10,6 +11,15 @@
 
     --tertiary-bg-color: hsl(270, 30%, 86%);
     --tertiary-fg-color: hsl(250, 70%, 40%);
+
+    --highlight-color: hsl(50, 100%, 90%);
+    --shadow-color: hsla(250, 100%, 10%, 0.6);
+    --modal-shadow-color: hsla(250, 50%, 5%, 0.4);
+
+    --input-bg-color: hsla(230, 20%, 60%, 0.1);
+    --input-bg-color-hover: hsla(230, 20%, 60%, 0.2);
+    --input-bg-color-focus: white;
+    --input-fg-color: inherit;
 
     --primary-button-bg-color: hsl(280, 60%, 50%);
     --primary-button-bg-color-hover: hsl(280, 60%, 45%);
@@ -24,24 +34,29 @@
     --tertiary-button-bg-color-active: rgba(0, 0, 0, 0.2);
     --tertiary-button-fg-color: currentColor;
 
-    --highlight-color: hsl(50, 100%, 90%);
-    --shadow-color: hsla(250, 100%, 10%, 0.6);
-    --modal-shadow-color: hsla(250, 50%, 5%, 0.4);
+    --stroke-color: hsla(280, 50%, 60%, 0.5);
+
+    /* Presets */
+    --border: var(--stroke-width) solid var(--stroke-color);
     --shadow: 0 0.5rem 1rem var(--shadow-color);
 
-    --font-size: 16px;
-    --chat-font-size: 20px;
-    --chat-line-height: 1.5;
-
-    --spacing-unit-x: 1rem;
-    --spacing-unit-y: 1rem;
-
+    /* Sizes */
     --stroke-width: 1px;
-    --stroke-color: hsla(280, 50%, 60%, 0.5);
-    --border: var(--stroke-width) solid var(--stroke-color);
 
     --user-picture-size: 2em;
     --user-picture-fillet: calc(var(--user-picture-size) / 2);
+
+    --field-fillet: 0.125em;
+
+    /* Spacing */
+    --spacing-unit-x: 1rem;
+    --spacing-unit-y: 1rem;
+
+    /* Typography */
+    --font-size: 16px;
+
+    --chat-font-size: 20px;
+    --chat-line-height: 1.5;
 }
 
 html {

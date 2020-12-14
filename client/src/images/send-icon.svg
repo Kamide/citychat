@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="24"
+   height="24"
+   viewBox="0 0 24 24"
+   version="1.1"
+   id="send-icon"
+   inkscape:version="1.0.1 (c497b03c, 2020-09-10)"
+   sodipodi:docname="send-icon.svg">
+  <defs
+     id="send-icon-defs" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="10.965243"
+     inkscape:cy="13.121752"
+     inkscape:document-units="px"
+     inkscape:current-layer="send-icon-layer"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:showpageshadow="false"
+     units="px"
+     inkscape:snap-intersection-paths="true"
+     showguides="true" />
+  <metadata
+     id="send-icon-metadata">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="send-icon-layer">
+    <rect
+       id="send-icon-arrow-shaft"
+       width="2"
+       height="17"
+       x="11"
+       y="2.9999998" />
+    <rect
+       id="send-icon-arrowhead-right"
+       width="2"
+       height="10"
+       x="-7.0710683"
+       y="9.8994951"
+       transform="matrix(-0.70710678,0.70710678,0.70710678,0.70710678,0,0)" />
+    <rect
+       id="send-icon-arrowhead-left"
+       width="2"
+       height="10"
+       x="9.8994951"
+       y="-7.0710683"
+       transform="rotate(45)" />
+  </g>
+</svg>

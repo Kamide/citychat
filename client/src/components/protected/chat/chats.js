@@ -103,7 +103,7 @@ export default function Chats() {
         <header className="secondary Masthead">
           <h1 className="Heading">Chats</h1>
           <div>
-            <button aria-label="Start a new chat" className="primary Icon Button" onClick={toggle}>
+            <button aria-label="Start a new chat" className="primary Icon Button Field" onClick={toggle}>
               <ReactSVG aria-hidden="true" src={newChatIcon} />
             </button>
 

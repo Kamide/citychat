@@ -15,7 +15,7 @@ export default function CityForm(props) {
 
   if (props.networkError) {
     return (
-      <div>
+      <div className={props.className}>
         Sorry, something went wrong.
         Please refresh the page and try again.
       </div>
@@ -24,7 +24,7 @@ export default function CityForm(props) {
 
   if (!Object.keys(props.form).length) {
     return (
-      <div aria-label="Loading form">
+      <div aria-label="Loading form" className={props.className}>
         <ReactSVG aria-hidden="true" src={blinkingEllipsis} />
       </div>
     );
@@ -82,10 +82,10 @@ export default function CityForm(props) {
   };
 
   return (
-    <form onSubmit={handleSubmit} {...props.form.args}>
+    <form className={props.className} onSubmit={handleSubmit} {...props.form.args}>
       {props.form.fields.map(([key, fields]) => {
         return (
-          <div key={key}>
+          <div key={key} className="Field Group">
             {fields.map((field, index) => {
               return renderField(field, index, props.processing);
             })}
@@ -99,16 +99,16 @@ export default function CityForm(props) {
 
 function CityEmail(props) {
   const {type, ...args} = props.field.args;
-  return <input type="text" {...args} />;
+  return <input className="Input Field" type="text" {...args} />;
 }
 
 function CityInput(props) {
-  return <input {...props.field.args} />;
+  return <input className="Input Field" {...props.field.args} />;
 }
 
 function CityLabel(props) {
   return (
-    <label {...props.field.args}>
+    <label className="Label" {...props.field.args}>
       {props.field.value}
     </label>
   );
@@ -125,15 +125,14 @@ function CityPassword(props) {
     ...props.field,
     args: {
       ...props.field.args,
-      className: 'flex--fill',
       type: visible ? 'text' : 'password'
     }
   }
 
   return (
-    <span>
+    <span className="Combined Field">
       <CityInput field={field} />
-      <button type="button" onClick={toggle}>
+      <button className="secondary Text Button Field" type="button" onClick={toggle}>
         {visible ? 'Hide' : 'Show'}
       </button>
     </span>
@@ -151,7 +150,7 @@ function CitySubmit(props) {
     );
   }
 
-  return <input {...args.field.args} />;
+  return <input className="primary Text Button Field" {...args.field.args} />;
 }
 
 export function CityTag(props) {
@@ -327,7 +326,7 @@ export function CityTag(props) {
           onKeyDown={selectCandidates} />
         {tagIndex > -1 && renderCandidates()}
       </div>
-      <input className="primary Text Button" type="submit" value={props.submitLabel} onClick={props.handleSubmit} />
+      <input className="primary Text Button Field" type="submit" value={props.submitLabel} onClick={props.handleSubmit} />
     </form>
   );
 }
@@ -341,7 +340,7 @@ export function CityDialog(props) {
             {props.heading}
           </h1>
           <nav>
-            <button aria-label="Close" className="tertiary Icon Button" onClick={() => props.setVisible(false)}>
+            <button aria-label="Close" className="tertiary Icon Button Field" onClick={() => props.setVisible(false)}>
               <ReactSVG aria-hidden="true" src={closeIcon} />
             </button>
           </nav>

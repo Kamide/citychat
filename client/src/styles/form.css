@@ -1,4 +1,4 @@
-.Button {
+.Field {
     -webkit-appearance: none;
     background-color: transparent;
     border: none;
@@ -8,9 +8,36 @@
     padding: 0;
 }
 
+.Field.Group {
+    margin: var(--spacing-unit-y) 0;
+}
+
+.Label {
+    display: block;
+    margin: calc(var(--spacing-unit-y) / 2) 0;
+    width: fit-content;
+}
+
+.Input {
+    background-color: var(--input-bg-color);
+    border-radius: var(--field-fillet);
+    box-shadow: inset 0 0 0 var(--stroke-width) var(--stroke-color);
+    color: var(--input-fg-color);
+    height: 1em;
+    padding: 0.625em;
+}
+
+.Input:hover {
+    background-color: var(--input-bg-color-hover);
+}
+
+.Input:focus, .Input:active {
+    background-color: var(--input-bg-color-focus);
+}
+
 .Button {
     align-items: center;
-    border-radius: 0.25em;
+    border-radius: var(--field-fillet);
     display: inline-flex;
     line-height: 1;
 }
@@ -49,17 +76,17 @@
 
 .secondary.Button {
     background-color: var(--secondary-button-bg-color);
-    box-shadow: inset 0 0 0 0.0625em var(--secondary-button-fg-color);
+    box-shadow: inset 0 0 0 var(--stroke-width) var(--secondary-button-fg-color);
     color: var(--secondary-button-fg-color);
     fill: var(--secondary-button-fg-color);
 }
 
 .secondary.Button:hover, .secondary.Button:focus {
-    box-shadow: inset 0 0 0 0.125em var(--secondary-button-fg-color);
+    box-shadow: inset 0 0 0 calc(2 * var(--stroke-width)) var(--secondary-button-fg-color);
 }
 
 .secondary.Button:active {
-    box-shadow: inset 0 0 0 0.1875em var(--secondary-button-fg-color);
+    box-shadow: inset 0 0 0 calc(3 * var(--stroke-width)) var(--secondary-button-fg-color);
 }
 
 .tertiary.Button {
@@ -74,6 +101,15 @@
 .tertiary.Button:active {
     background-color: var(--tertiary-button-bg-color-active);
 }
+
+.Combined.Field {
+    display: inline-flex;
+    flex-wrap: wrap;
+}
+
+    .Combined.Field .Field:not(:last-child) {
+        margin-right: calc(var(--spacing-unit-x) / 4);
+    }
 
 .Modal {
     align-items: center;
@@ -98,7 +134,7 @@
     backdrop-filter: blur(1rem);
     background-color: var(--primary-bg-color);
     border: var(--border);
-    border-radius: 0.25em;
+    border-radius: var(--field-fillet);
     box-shadow: var(--shadow);
     pointer-events: initial;
     z-index: 1;

@@ -41,6 +41,7 @@ export default function Form(props) {
 
   return (
     <CityForm
+      className={props.className}
       form={form}
       setForm={setForm}
       networkError={networkError}

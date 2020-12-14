@@ -32,7 +32,7 @@
     font-size: var(--chat-font-size);
 }
 
-    .Chat .Messages {
+    .Chat .MessageContainer {
         overflow-y: auto;
     }
 
@@ -109,9 +109,26 @@
         margin-bottom: calc(var(--spacing-unit-y) / 2);
         margin-left: var(--message-content-spacing-unit);
         margin-top: calc(var(--spacing-unit-y) / 2);
+        white-space: pre;
     }
 
-    .Chat .Box {
-        border-top: var(--border);
-        padding: var(--spacing-unit-y) var(--spacing-unit-x);
+.ChatBoxContainer  {
+    border-top: var(--border);
+    padding: var(--spacing-unit-y) var(--spacing-unit-x);
+}
+
+    .ChatBoxContainer .Combined.Field {
+        display: flex;
     }
+
+.ChatBox {
+    flex: 1;
+    font: inherit;
+    max-height: 50vh;
+    resize: none;
+}
+
+.ChatBox.Input {
+    height: auto;
+    line-height: var(--chat-line-height);
+}

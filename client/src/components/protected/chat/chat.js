@@ -1,25 +1,43 @@
 import { useEffect, useRef, useState } from 'react';
+import { ReactSVG } from 'react-svg';
 
 import { apiFetch, fetchRetry, protectedRoute, request, socket } from '../../api';
 import User from '../user/user';
 import history from '../../history';
 
+import sendIcon from '../../../images/send-icon.svg'
+
 export default function Chat(props) {
-  const chatbox = useRef(null);
-  const lastMessageAnchor = useRef(null);
+  const chatBox = useRef(null);
+  const [initialChatBoxHeight, setInitialChatBoxHeight] = useState(1);
+  const lastMessagePointer = useRef(null);
+
   const [chatID, setChatID] = useState('');
   const [chat, setChat] = useState({});
   const [participants, setParticipants] = useState({});
   const [messages, setMessages] = useState([]);
 
-  const scrollToLastMessage = () => lastMessageAnchor.current.scrollIntoView();
+  const KEY = {
+    ENTER: 13
+  };
+
+  const resizeChatBox = () => {
+    chatBox.current.style.height = initialChatBoxHeight + 'px';
+    chatBox.current.rows = Math.floor(chatBox.current.scrollHeight / initialChatBoxHeight);
+    chatBox.current.style.height = 'auto';
+  };
+
+  const scrollToLastMessage = () => lastMessagePointer.current.scrollIntoView();
 
   useEffect(() => {
     setChatID(String(props.chatID));
   }, [props.chatID]);
 
   useEffect(() => {
-    chatbox.current.focus();
+    chatBox.current.rows = 1;
+    chatBox.current.style.height = 'auto';
+    setInitialChatBoxHeight(Math.max(1, parseInt(getComputedStyle(chatBox.current).height)));
+    chatBox.current.focus();
 
     if (chatID) {
       fetchRetry(protectedRoute('/chat/', chatID),
@@ -63,7 +81,7 @@ export default function Chat(props) {
         io.off('message');
       });
     };
-  }, [chatID]);
+  }, [chatID, setInitialChatBoxHeight]);
 
   const findMessage = (id) => {
     return messages.find(m => m.id === id);
@@ -106,17 +124,16 @@ export default function Chat(props) {
 
   const renderMessages = () => {
     return (
-      <article className="Messages">
+      <article className="MessageContainer">
         {messages.map(m => renderMessage(m, true, false))}
-        <span aria-hidden="true" ref={lastMessageAnchor} />
+        <span aria-hidden="true" ref={lastMessagePointer} />
       </article>
     )
   };
 
-  const sendMessage = (event) => {
-    event.preventDefault();
+  const sendMessage = () => {
     const values = {
-      text: event.target.messageText.value.trim()
+      text: chatBox.current.value
     }
 
     if (values.text) {
@@ -129,11 +146,33 @@ export default function Chat(props) {
         }))
           .then(data => {
             if (data && data.sent) {
-              event.target.messageText.value = '';
+              chatBox.current.value = '';
+              chatBox.current.rows = 1;
             }
           });
     }
+
+    chatBox.current.focus();
   };
+
+  const handleShortcuts = (event) => {
+    switch (event.keyCode) {
+      case KEY.ENTER:
+        if (!event.shiftKey) {
+          event.preventDefault();
+          sendMessage();
+        }
+        break;
+
+      default:
+        return;
+    }
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    sendMessage();
+  }
 
   return (
     <main className="secondary Grid">
@@ -144,9 +183,21 @@ export default function Chat(props) {
       <div className="tertiary Grid Chat">
         {renderMessages()}
 
-        <form className="Box" onSubmit={sendMessage}>
-          <input ref={chatbox} id="messageText" type="text" autoComplete="off" />
-          <input type="submit" value="Send" />
+        <form className="ChatBoxContainer" onSubmit={handleSubmit}>
+          <div className="Combined Field">
+            <textarea
+              ref={chatBox}
+              id="messageText"
+              className="ChatBox Input Field"
+              type="text"
+              placeholder={'Message ' + (chat.name || 'CityChat User')}
+              onInput={resizeChatBox}
+              onKeyDown={handleShortcuts}>
+            </textarea>
+            <button aria-label="Send message" className="primary Icon Button Field" type="submit">
+              <ReactSVG aria-hidden="true" src={sendIcon} />
+            </button>
+          </div>
         </form>
       </div>
     </main>
