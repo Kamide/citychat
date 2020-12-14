@@ -43,8 +43,8 @@
 }
 
 .Preview {
-    mask-image: linear-gradient(var(--mask-direction), black 75%, transparent);
     /* --mask-direction: to right; */
+    mask-image: linear-gradient(var(--mask-direction), black 75%, transparent);
     overflow: hidden;
     padding-bottom: 0.125em;
     padding-top: 0.125em;

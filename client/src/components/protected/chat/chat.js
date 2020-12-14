@@ -1,20 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { apiFetch, fetchRetry, protectedRoute, request, socket } from '../../api';
 import User from '../user/user';
 import history from '../../history';
 
 export default function Chat(props) {
+  const chatbox = useRef(null);
+  const lastMessageAnchor = useRef(null);
   const [chatID, setChatID] = useState('');
   const [chat, setChat] = useState({});
   const [participants, setParticipants] = useState({});
   const [messages, setMessages] = useState([]);
+
+  const scrollToLastMessage = () => lastMessageAnchor.current.scrollIntoView();
 
   useEffect(() => {
     setChatID(String(props.chatID));
   }, [props.chatID]);
 
   useEffect(() => {
+    chatbox.current.focus();
+
     if (chatID) {
       fetchRetry(protectedRoute('/chat/', chatID),
         request({
@@ -39,12 +45,16 @@ export default function Chat(props) {
           .then(data => {
             if (data && Object.keys(data).length) {
               setMessages(data.messages);
+              scrollToLastMessage();
             }
           });
 
       socket.open().then(io => {
         io.emit('join_chat', { chat_id: chatID });
-        io.on('message', message => setMessages(prevMessages => prevMessages.concat([message])));
+        io.on('message', message => {
+          setMessages(prevMessages => prevMessages.concat([message]));
+          scrollToLastMessage();
+        });
       });
     }
 
@@ -98,6 +108,7 @@ export default function Chat(props) {
     return (
       <article className="Messages">
         {messages.map(m => renderMessage(m, true, false))}
+        <span aria-hidden="true" ref={lastMessageAnchor} />
       </article>
     )
   };
@@ -134,7 +145,7 @@ export default function Chat(props) {
         {renderMessages()}
 
         <form className="Box" onSubmit={sendMessage}>
-          <input type="text" id="messageText" />
+          <input ref={chatbox} id="messageText" type="text" autoComplete="off" />
           <input type="submit" value="Send" />
         </form>
       </div>
