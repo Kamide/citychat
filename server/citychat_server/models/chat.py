@@ -26,8 +26,8 @@ class Chat(CRUDMixin, db.Model):
         passive_deletes=True,
     )
 
-    private_chat = db.relationship(
-        'PrivateChat',
+    direct_chat = db.relationship(
+        'DirectChat',
         uselist=False,
         backref='chat',
         cascade='all, delete',
@@ -80,7 +80,7 @@ class Chat(CRUDMixin, db.Model):
         return False
 
     def resolve_name(self, **kwargs):
-        if self.private_chat:
+        if self.direct_chat:
             current_user_id = kwargs.get('current_user_id')
             current_user_name = 'CityChat User'
             names = []
@@ -152,13 +152,13 @@ class ChatParticipant(CRUDMixin, db.Model):
         return self.to_json(operations=[('difference', {'chat_id'})])
 
 
-class PrivateChat(CRUDMixin, db.Model):
-    __tablename__ = 'private_chat'
+class DirectChat(CRUDMixin, db.Model):
+    __tablename__ = 'direct_chat'
 
     id = db.Column(
         db.ForeignKey(
             column='chat.id',
-            name='fk_private_chat_chat_id',
+            name='fk_direct_chat_chat_id',
             onupdate='CASCADE',
             ondelete='CASCADE'
         ),
