@@ -12,6 +12,7 @@ from flask_jwt_extended import (
     set_access_cookies,
     set_refresh_cookies
 )
+from flask_socketio import join_room, emit
 from itsdangerous import BadSignature, SignatureExpired
 from sqlalchemy.sql import func
 
@@ -20,6 +21,8 @@ from citychat_server.mail import debug_email, mail
 from citychat_server.models import db
 from citychat_server.models.jwt import JWTBlacklist
 from citychat_server.models.user import User, UserProfile
+from citychat_server.routes import socketio
+from citychat_server.routes.decorators import io_get_current_user
 from citychat_server.token import encode_token, decode_token
 
 HOUR = 3600
@@ -195,3 +198,9 @@ def get_access_token():
     user_id = get_jwt_identity()
     access_token = create_access_token(identity=user_id)
     return jsonify(access_token=access_token), status.HTTP_200_OK
+
+
+@socketio.on('connect')
+@io_get_current_user
+def socketio_connect(*args, **kwargs):
+    join_room(f"/user/{kwargs['current_user'].id}")

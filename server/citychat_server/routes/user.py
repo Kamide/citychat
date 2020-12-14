@@ -5,6 +5,7 @@ from sqlalchemy.sql import func, or_
 
 from citychat_server.models import db
 from citychat_server.models.user import UserRelation, UserRelationship
+from citychat_server.routes import socketio
 from citychat_server.routes.decorators import (
     distinct_users_required,
     get_current_user,
@@ -12,6 +13,13 @@ from citychat_server.routes.decorators import (
 )
 
 blueprint = Blueprint('user', __name__)
+
+
+def emit_relationship_update(user_id, relationship):
+    socketio.emit(
+        'relation_update',
+        relationship.to_public_json() if relationship else 'S',
+        room=f'/user/{user_id}')
 
 
 @blueprint.route('/protected/self', methods=['GET'])
@@ -106,6 +114,7 @@ def send_friend_request(user_id, user, current_user):
         )
         db.session.add(relationship)
         db.session.commit()
+        emit_relationship_update(user_id, relationship)
         return jsonify(relationship=relation), status.HTTP_201_CREATED
 
 
@@ -144,6 +153,7 @@ def unfriend(user_id, user, current_user):
     if relationship:
         db.session.delete(relationship)
         db.session.commit()
+        emit_relationship_update(user_id, {})
         return jsonify(
             relationship=UserRelation.STRANGER()
         ), status.HTTP_200_OK
@@ -166,6 +176,7 @@ def accept_user_friend_request(user_id, user, current_user):
         relationship.relation = UserRelation.FRIEND.value
         relationship.since = func.now()
         db.session.commit()
+        emit_relationship_update(user_id, relationship)
         return jsonify(
             relationship=UserRelation.FRIEND.value
         ), status.HTTP_200_OK

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 
-import { UserRelation, apiFetch, fetchRetry, request, protectedRoute } from '../../api';
+import { UserRelation, apiFetch, fetchRetry, protectedRoute, request, socket } from '../../api';
 import { StoreContext } from '../../store';
 
 export default function UserCommands(props) {
@@ -8,7 +8,7 @@ export default function UserCommands(props) {
   const [relationship, setRelationship] = useState('');
 
   useEffect(() => {
-    if (String(props.userID) !== String(state.user.id)) {
+    if (props.userID !== undefined && String(props.userID) !== String(state.user.id)) {
       fetchRetry(protectedRoute('/user/id/', props.userID, '/relationship'),
         request({
           method: 'GET',
@@ -19,6 +19,12 @@ export default function UserCommands(props) {
               setRelationship(data.relationship);
             }
           });
+
+      socket.open().then(io => {
+        io.on('relation_update', userRelationship => {
+          setRelationship(userRelationship.relation || 'S');
+        });
+      });
     }
   }, [props.userID, state.user.id]);
 

@@ -111,11 +111,11 @@ def emit_status(status, response=None):
 
 def io_get_current_user(io):
     @wraps(io)
-    def decorated_io(json=None, *args, **kwargs):
+    def decorated_io(*args, **kwargs):
         try:
             access_token = decode_token(request.args['jwt'])
             current_user = User.get_first(id=access_token['identity'])
-            return io(current_user=current_user, json=json, *args, **kwargs)
+            return io(current_user=current_user, *args, **kwargs)
         except ExpiredSignatureError:
             return emit_status(status.HTTP_401_UNAUTHORIZED, {
                 'expired_token': 'access'
@@ -128,23 +128,21 @@ def io_get_current_user(io):
 
 def io_participant_required(io):
     @wraps(io)
-    def decorated_io(json=None, *args, **kwargs):
+    def decorated_io(*args, **kwargs):
         try:
-            chat_id = json['chat_id'] = int(json['chat_id'])
-            chat = Chat.get_first(id=chat_id)
+            chat = Chat.get_first(id=int(args[0]['chat_id']))
 
             if chat:
                 try:
                     if chat.has_participant(kwargs['current_user']):
-                        return io(chat_id=chat_id, chat=chat, json=json,
-                                  *args, **kwargs)
+                        return io(chat=chat, *args, **kwargs)
                     else:
                         return emit_status(status.HTTP_403_FORBIDDEN)
                 except (KeyError):
                     return emit_status(status.HTTP_400_BAD_REQUEST)
             else:
                 return emit_status(status.HTTP_404_NOT_FOUND)
-        except (KeyError, ValueError):
+        except (IndexError, KeyError, ValueError):
             return emit_status(status.HTTP_400_BAD_REQUEST)
 
     return decorated_io

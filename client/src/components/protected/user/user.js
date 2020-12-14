@@ -1,16 +1,14 @@
 import { Fragment, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { fetchRetry, request, protectedRoute } from '../../api';
+import { fetchRetry, protectedRoute, request } from '../../api';
+import { initialState } from '../../store';
 import UserCommands from './commands';
 
 import defaultProfilePicture from '../../../images/default-profile-picture.svg';
 
 export default function User(props) {
-  const [user, setUser] = useState({
-    id: 0,
-    name: 'CityChat User'
-  });
+  const [user, setUser] = useState(initialState.user);
 
   useEffect(() => {
     if (props.user) {

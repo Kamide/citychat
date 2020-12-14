@@ -41,8 +41,8 @@ export default function Contacts() {
   }, []);
 
   const renderUser = (x) => (
-    <div className="Item">
-      <User key={x.id} user={x} showSendMessageButton={true} showCommands={true} />
+    <div key={x.id} className="Item">
+      <User user={x} showSendMessageButton={true} showCommands={true} />
     </div>
   );
 

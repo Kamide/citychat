@@ -3,7 +3,10 @@ import { createContext, useReducer } from 'react';
 import reducer from './reducer';
 
 export const initialState = {
-  user: {}
+  user: {
+    id: undefined,
+    name: 'CityChat User'
+  }
 };
 
 export const StoreContext = createContext(initialState);

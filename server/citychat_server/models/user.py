@@ -287,3 +287,6 @@ class UserRelationship(CRUDMixin, db.Model):
 
     def user_is_requestee(self, user_id):
         return not self.user_is_requester(user_id)
+
+    def to_json(self, operations=None):
+        return super().to_json(operations) | {'since': str(self.since)}

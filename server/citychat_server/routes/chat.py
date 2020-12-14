@@ -136,11 +136,11 @@ def send_message(chat_id, chat, current_user):
 @socketio.on('join_chat')
 @io_get_current_user
 @io_participant_required
-def join_chat(chat_id, chat, current_user, json, *args, **kwargs):
-    join_room(f'/chat/{chat_id}')
+def join_chat(*args, **kwargs):
+    join_room(f"/chat/{kwargs['chat'].id}")
 
 
 @socketio.on('join_chat_list')
 @io_get_current_user
-def join_chat_list(current_user, json, *args, **kwargs):
-    join_room(f'/user/{current_user.id}/chat/list')
+def join_chat_list(*args, **kwargs):
+    join_room(f"/user/{kwargs['current_user'].id}/chat/list")
