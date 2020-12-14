@@ -5,7 +5,12 @@ from flask_socketio import join_room
 
 from citychat_server.forms import MessageForm
 from citychat_server.models import db
-from citychat_server.models.chat import Chat, ChatParticipant, DirectChat
+from citychat_server.models.chat import (
+    Chat,
+    ChatParticipant,
+    DirectChat,
+    GroupChat
+)
 from citychat_server.models.message import Message, MessageText
 from citychat_server.routes import socketio
 from citychat_server.routes.decorators import (
@@ -74,9 +79,14 @@ def get_chat_with_users(user_id_list, users, current_user):
         db.session.add(chat)
         db.session.flush()
 
-        direct_chat = DirectChat(id=chat.id)
-        db.session.add(direct_chat)
-        db.session.flush()
+        if len(participant_id_set) > 2:
+            group_chat = GroupChat(id=chat.id)
+            db.session.add(group_chat)
+            db.session.flush()
+        else:
+            direct_chat = DirectChat(id=chat.id)
+            db.session.add(direct_chat)
+            db.session.flush()
 
         for pid in participant_id_set:
             chat_participant = ChatParticipant(

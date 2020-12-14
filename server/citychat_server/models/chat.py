@@ -34,6 +34,14 @@ class Chat(CRUDMixin, db.Model):
         passive_updates=True,
         passive_deletes=True
     )
+    group_chat = db.relationship(
+        'GroupChat',
+        uselist=False,
+        backref='chat',
+        cascade='all, delete',
+        passive_updates=True,
+        passive_deletes=True
+    )
 
     @property
     def latest_message(self):
@@ -80,9 +88,16 @@ class Chat(CRUDMixin, db.Model):
         return False
 
     def resolve_name(self, **kwargs):
-        if self.direct_chat:
+        if self.direct_chat or self.group_chat:
+            if self.group_chat and self.group_chat.name:
+                return self.group_chat.name
+
             current_user_id = kwargs.get('current_user_id')
-            current_user_name = 'CityChat User'
+            current_user_name = (
+                'CityChat User' if self.direct_chat
+                else 'CityChat Group'
+            )
+
             names = []
 
             for p in self.participants:
@@ -164,3 +179,18 @@ class DirectChat(CRUDMixin, db.Model):
         ),
         primary_key=True
     )
+
+
+class GroupChat(CRUDMixin, db.Model):
+    __tablename__ = 'group_chat'
+
+    id = db.Column(
+        db.ForeignKey(
+            column='chat.id',
+            name='fk_group_chat_chat_id',
+            onupdate='CASCADE',
+            ondelete='CASCADE'
+        ),
+        primary_key=True
+    )
+    name = db.Column(db.String(255), nullable=True, unique=False)
