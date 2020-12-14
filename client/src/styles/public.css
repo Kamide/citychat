@@ -3,6 +3,10 @@
     line-height: 1.5;
 }
 
+    #public .Field {
+        line-height: 1;
+    }
+
     #public .secondary.Grid {
         resize: none;
         max-width: none;

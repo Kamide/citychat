@@ -32,8 +32,13 @@
         box-shadow: 0 0 0 var(--stroke-width) var(--stroke-color);
     }
 
-    .Menu .Item:active {
+    .Menu .Item:active, .Menu .active.Item {
+        background-color: var(--highlight-color);
         box-shadow: 0 0 0 var(--stroke-width) var(--stroke-color), inset calc(var(--spacing-unit-x) / 4) 0 0 0 var(--stroke-color);
+    }
+
+    .Menu .Button.Item {
+        width: 100%;
     }
 
     .Menu a.Item {

@@ -79,7 +79,7 @@ export default function Contacts() {
         <h1 className="Heading">Contacts</h1>
         <nav>
           {['Friends', 'Requests'].map(x =>
-            <button key={x} type="button" onClick={() => setTab(x)}>{x}</button>
+            <button key={x} onClick={() => setTab(x)}>{x}</button>
           )}
         </nav>
       </header>

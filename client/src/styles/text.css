@@ -19,6 +19,15 @@
         margin: 0;
     }
 
+.contraflow.Masthead {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+    .contraflow.Masthead .Heading {
+        margin-bottom: var(--spacing-unit-y);
+    }
+
 .primary.Masthead {
     background-color: var(--tertiary-bg-color);
     border-right: var(--border);

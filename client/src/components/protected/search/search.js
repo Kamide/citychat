@@ -1,19 +1,42 @@
+import { useRef, useEffect } from 'react';
+
 import history from '../../history';
 
 export default function Search(props) {
+  const searchBox = useRef(null);
+
+  useEffect(() => {
+    searchBox.current.focus();
+  }, []);
+
+  useEffect(() => {
+    if (props.query) {
+      searchBox.current.value = props.query;
+    }
+  }, [props.query])
+
   const search = (event) => {
     event.preventDefault();
-    const searchQ = event.target.searchQ.value.trim();
+    const q = searchBox.current.value.trim();
 
-    if (searchQ) {
-      history.push(`/app/search?q=${searchQ}&context=${props.location.pathname}`);
+    if (q) {
+      if (props.setVisible) {
+        props.setVisible(false);
+      }
+
+      if (props.location) {
+        history.push(`/app/search?q=${q}&context=${props.location.pathname}`);
+      }
+      else {
+        history.push(`/app/search?q=${q}`);
+      }
     }
   }
 
   return (
-    <form onSubmit={search}>
-      <input aria-labelledby="searchSubmit" id="searchQ" type="search" placeholder="🔍 Search" />
-      <input id="searchSubmit" type="submit" value="Search" />
+    <form className="Combined Field" onSubmit={search}>
+      <input aria-labelledby="searchSubmit" ref={searchBox} className="Input Field" type="search" placeholder="🔍 Search" />
+      <input id="searchSubmit" className="primary Text Button Field" type="submit" value="Search" />
     </form>
   );
 }

@@ -35,7 +35,7 @@ export default function UserCommands(props) {
   let commands = [];
 
   const newCommand = (key, value, onClick) => {
-    return <button key={key} type="button" onClick={onClick}>{value}</button>;
+    return <button key={key} onClick={onClick}>{value}</button>;
   };
 
   const friendRequest = (path, method) => {

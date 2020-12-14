@@ -29,12 +29,12 @@
 
 .Chat {
     --message-content-spacing-unit: calc(var(--user-picture-size) + 2 * var(--stroke-width) + var(--spacing-unit-x) / 2);
-    font-size: var(--chat-font-size);
 }
 
-    .Chat .MessageContainer {
-        overflow-y: auto;
-    }
+.Chat .MessageContainer {
+    font-size: var(--chat-font-size);
+    overflow-y: auto;
+}
 
     .Chat .Message {
         margin: var(--spacing-unit-y) var(--spacing-unit-x);

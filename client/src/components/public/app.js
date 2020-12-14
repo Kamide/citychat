@@ -5,6 +5,7 @@ import { request,protectedRoute } from '../api';
 import Activate from './auth/activate';
 import AuthForm from './auth/form';
 import Logo from '../logo';
+import Navigator from '../navigator';
 import Pending from './auth/pending';
 import history from '../history';
 
@@ -39,12 +40,13 @@ export default function PublicApp() {
 
         <nav className="primary Menu">
           <ul className="Menu Section">
-            <li>
-              <Link className="Item" to="/login">Log In</Link>
-            </li>
-            <li>
-              <Link className="Item" to="/signup">Sign Up</Link>
-            </li>
+            <Route component={(props) =>
+              <Navigator
+                className="Item"
+                destinations={[
+                  ['/login', 'Log In'],
+                  ['/signup', 'Sign Up'] ]}
+                {...props} />} />
           </ul>
         </nav>
       </div>
