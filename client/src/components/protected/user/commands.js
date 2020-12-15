@@ -23,7 +23,9 @@ export default function UserCommands(props) {
 
       socket.open().then(io => {
         io.on('relation_update', userRelationship => {
-          setRelationship(userRelationship.relation || 'S');
+          if (UserRelation.usersHaveRelationship([props.userID, state.user.id], userRelationship)) {
+            setRelationship(userRelationship.relation);
+          }
         });
       });
     }

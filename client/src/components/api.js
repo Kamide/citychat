@@ -182,5 +182,9 @@ export const UserRelation = {
     const p = userIDPair.sort().indexOf(userID) === 0 ? 0b10 : 0b01;
     const q = this.toBinary(relation);
     return p & q;
+  },
+  usersHaveRelationship: function(userIDPair, relationship) {
+    return userIDPair.includes(relationship.user_a)
+        && userIDPair.includes(relationship.user_b);
   }
 };

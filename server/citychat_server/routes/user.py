@@ -15,10 +15,10 @@ from citychat_server.routes.decorators import (
 blueprint = Blueprint('user', __name__)
 
 
-def emit_relationship_update(user_id, relationship):
+def emit_relationship_update(user_id, relationship, merger={}):
     socketio.emit(
         'relation_update',
-        relationship.to_public_json() if relationship else 'S',
+        relationship.to_public_json() | merger,
         room=f'/user/{user_id}')
 
 
@@ -151,9 +151,11 @@ def unfriend(user_id, user, current_user):
     )
 
     if relationship:
+        emit_relationship_update(user_id, relationship, {
+            'relation': UserRelation.STRANGER()
+        })
         db.session.delete(relationship)
         db.session.commit()
-        emit_relationship_update(user_id, {})
         return jsonify(
             relationship=UserRelation.STRANGER()
         ), status.HTTP_200_OK
