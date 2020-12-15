@@ -6,10 +6,16 @@ import { StoreContext } from '../../store';
 export default function UserCommands(props) {
   const [state] = useContext(StoreContext);
   const [relationship, setRelationship] = useState('');
-  const [fetcher] = useState(new Fetcher());
+  const [fetcher, setFetcher] = useState(null);
 
   useEffect(() => {
-    if (props.userID !== undefined && String(props.userID) !== String(state.user.id)) {
+    let f = new Fetcher();
+    setFetcher(f);
+    return () => f.abort();
+  }, []);
+
+  useEffect(() => {
+    if (fetcher !== null && props.userID !== undefined && String(props.userID) !== String(state.user.id)) {
       fetcher.retry(protectedRoute('/user/id/', props.userID, '/relationship'),
         request({
           method: 'GET',
@@ -29,8 +35,6 @@ export default function UserCommands(props) {
         });
       });
     }
-
-    return () => fetcher.abort();
   }, [fetcher, props.userID, state.user.id]);
 
   if (!relationship) {
