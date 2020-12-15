@@ -32,7 +32,7 @@ export default function Nav() {
       }))
         .then(data => {
           if (Fetcher.isNonEmpty(data)) {
-            dispatch({ type: 'RESET_USER' });
+            dispatch({ type: 'RESET_ALL' });
             history.push('/');
           }
         });

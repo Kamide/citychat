@@ -284,7 +284,7 @@ export function CityTag(props) {
 
   const renderTags = () => {
     return (
-      <ul id={props.inputID + 'props.tags'} class="TagContainer">
+      <ul id={props.inputID + 'props.tags'} className="TagContainer">
         {props.tags.map((value, index) => {
           return (
             <li key={index}>

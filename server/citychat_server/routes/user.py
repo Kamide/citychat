@@ -15,6 +15,20 @@ from citychat_server.routes.decorators import (
 blueprint = Blueprint('user', __name__)
 
 
+def emit_contact_update(relation_before, relation_after, user_pair):
+    for user_from in user_pair:
+        for user_to in user_pair:
+            if user_from.id != user_to.id:
+                socketio.emit(
+                    'contact_update',
+                    {
+                        'relation_before': relation_before,
+                        'relation_after': relation_after,
+                        'user': user_from.profile.to_public_json()
+                    },
+                    room=f'/user/{user_to.id}')
+
+
 def emit_relationship_update(user_id, relationship, merger={}):
     socketio.emit(
         'relation_update',
@@ -115,6 +129,11 @@ def send_friend_request(user_id, user, current_user):
         db.session.add(relationship)
         db.session.commit()
         emit_relationship_update(user_id, relationship)
+        emit_contact_update(
+            relation_before=UserRelation.STRANGER(),
+            relation_after=relation,
+            user_pair=[current_user, user]
+        )
         return jsonify(relationship=relation), status.HTTP_201_CREATED
 
 
@@ -154,6 +173,11 @@ def unfriend(user_id, user, current_user):
         emit_relationship_update(user_id, relationship, {
             'relation': UserRelation.STRANGER()
         })
+        emit_contact_update(
+            relation_before=relationship.relation,
+            relation_after=UserRelation.STRANGER(),
+            user_pair=[current_user, user]
+        )
         db.session.delete(relationship)
         db.session.commit()
         return jsonify(
@@ -175,10 +199,16 @@ def accept_user_friend_request(user_id, user, current_user):
     )
 
     if relationship and relationship.user_is_requestee(current_user.id):
+        relation = relationship.relation
         relationship.relation = UserRelation.FRIEND.value
         relationship.since = func.now()
         db.session.commit()
         emit_relationship_update(user_id, relationship)
+        emit_contact_update(
+            relation_before=relation,
+            relation_after=UserRelation.FRIEND.value,
+            user_pair=[current_user, user]
+        )
         return jsonify(
             relationship=UserRelation.FRIEND.value
         ), status.HTTP_200_OK

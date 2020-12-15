@@ -11,7 +11,12 @@ export default function UserCommands(props) {
   useEffect(() => {
     let f = new Fetcher();
     setFetcher(f);
-    return () => f.abort();
+    return () => {
+      f.abort()
+      socket.open().then(io => {
+        io.off('relation_update');
+      });
+    };
   }, []);
 
   useEffect(() => {

@@ -1,29 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 
-import { Fetcher, protectedRoute, request } from '../../api';
 import { CityDialog, CityTag } from '../../cityform';
+import { StoreContext } from '../../store';
 import User from '../user/user';
 import history from '../../history';
 
 export default function Compose(props) {
+  const [state] = useContext(StoreContext);
   const [tags, setTags] = useState([]);
-  const [candidates, setCandidates] = useState([]);
-
-  useEffect(() => {
-    const fetcher = new Fetcher();
-
-    fetcher.retry(protectedRoute('/self/friends'),
-      request({
-        method: 'GET', credentials: true
-      }))
-        .then(data => {
-          if (Fetcher.isNonEmpty(data)) {
-            setCandidates(data.friends);
-          }
-        });
-
-    return () => fetcher.abort();
-  }, []);
 
   const compareUsers = (lhs, rhs) => lhs.id === rhs.id;
   const renderUser = (value) => <User user={value} hideLink={true} />;
@@ -46,7 +30,7 @@ export default function Compose(props) {
         submitLabel="Start Chat"
         tags={tags}
         setTags={setTags}
-        candidates={candidates}
+        candidates={state.relationships.friends}
         compareCandidates={compareUsers}
         renderTag={renderUser}
         renderCandidate={renderUser}

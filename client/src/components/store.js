@@ -6,6 +6,13 @@ export const initialState = {
   user: {
     id: undefined,
     name: 'CityChat User'
+  },
+  relationships: {
+    friends: [],
+    requests: {
+      incoming: [],
+      outgoing: []
+    }
   }
 };
 
