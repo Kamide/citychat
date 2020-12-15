@@ -73,6 +73,12 @@ source venv/bin/activate
 
 Start the PostgreSQL server on `postgresql://localhost` before starting the CityChat server.
 
+To create all tables, run:
+
+```bash
+flask db upgrade
+```
+
 To start the server, run:
 
 ```bash
