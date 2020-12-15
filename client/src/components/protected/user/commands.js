@@ -29,6 +29,8 @@ export default function UserCommands(props) {
         });
       });
     }
+
+    return () => fetcher.abort();
   }, [fetcher, props.userID, state.user.id]);
 
   if (!relationship) {
