@@ -160,10 +160,14 @@ export function CityTag(props) {
   const [candidates, setCandidates] = useState([]);
   const [candidateIndex, setCandidateIndex] = useState(0);
 
-  useEffect(() => {
+  const focusField = () => {
     if (field.current) {
       field.current.focus();
     }
+  };
+
+  useEffect(() => {
+    focusField();
   }, []);
 
   const KEY = {
@@ -280,12 +284,15 @@ export function CityTag(props) {
 
   const renderTags = () => {
     return (
-      <ul id={props.inputID + 'props.tags'}>
+      <ul id={props.inputID + 'props.tags'} class="TagContainer">
         {props.tags.map((value, index) => {
           return (
             <li key={index}>
-              {index === resolveTagIndex() && '➡️'}
-              <button onClick={() => removeTag(index, false)}>
+              {index === resolveTagIndex() &&
+                <span className="Hidden">Selected</span>}
+              <button
+                className={'secondary Text Button Field' + (index === resolveTagIndex() ? ' active' : '')}
+                onClick={() => removeTag(index, false)}>
                 {props.renderTag(value)}
               </button>
             </li>
@@ -301,12 +308,15 @@ export function CityTag(props) {
     }
 
     return (
-      <ul>
+      <ul className="CandidateContainer">
         {candidates.map((value, index) => {
           return (
             <li key={index}>
-              {index === candidateIndex && '➡️'}
-              <button onClick={() => addTag(index)}>
+              {index === candidateIndex &&
+                <span className="Hidden">Selected</span>}
+              <button
+                className={'secondary Text Button Field' + (index === candidateIndex ? ' active' : '')}
+                onClick={() => addTag(index)}>
                 {props.renderCandidate(value)}
               </button>
             </li>
@@ -322,19 +332,26 @@ export function CityTag(props) {
 
   return (
     <form {...props.containerAttributes} className={className}>
-      <label htmlFor={props.inputID}>{props.inputLabel}</label>
-      <div className="CityTag">
-        {renderTags()}
-        <input
-          type="text"
-          id={props.inputID}
-          ref={field}
-          value={input}
-          onInput={filterCandidates}
-          onKeyDown={selectCandidates} />
-        {tagIndex > -1 && renderCandidates()}
+      <label className="Label" htmlFor={props.inputID}>{props.inputLabel}</label>
+      <div className="Combined Field" onClick={focusField}>
+        <div className="Combined Input Field">
+          {renderTags()}
+
+          <div className="Overlay">
+            <input
+              type="text"
+              id={props.inputID}
+              className="Field"
+              ref={field}
+              value={input}
+              onInput={filterCandidates}
+              onKeyDown={selectCandidates} />
+
+            {tagIndex > -1 && renderCandidates()}
+          </div>
+        </div>
+        <input className="primary Text Button Field Submit" type="submit" value={props.submitLabel} onClick={props.handleSubmit} />
       </div>
-      <input className="primary Text Button Field" type="submit" value={props.submitLabel} onClick={props.handleSubmit} />
     </form>
   );
 }

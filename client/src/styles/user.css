@@ -1,6 +1,14 @@
+.UserContainer {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
 .User {
     align-items: center;
     display: inline-flex;
+    flex: 1;
     margin: 0;
     padding: 0;
 }
@@ -23,18 +31,27 @@
     text-decoration: none;
 }
 
+.UserCommands {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.Profile .Heading {
+    flex: 1;
+}
+
+.Profile .UserContainer {
+    align-items: flex-start;
+    flex-direction: column;
+}
+
 .Profile .User {
-    --user-picture-size: 3em;
+    --user-picture-size: 4em;
     --user-picture-fillet: calc(var(--user-picture-size) / 2);
-    font-size: 1.5em;
 }
 
-.Profile .Picture {
-    position: fixed;
-    top: var(--spacing-unit-y);
-}
-
-.Profile .Name {
-    margin-top: calc(var(--user-picture-size) / 4);
-    margin-left: calc(var(--user-picture-size) + var(--spacing-unit-x));
+.Profile .UserCommands {
+    font-size: 1rem;
+    margin-top: var(--spacing-unit-y);
 }

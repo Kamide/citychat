@@ -23,14 +23,16 @@ export default function SearchResults(props) {
       setProcessing(true);
       fetcher.retry(protectedRoute('/search', toQueryString(queryArray)), request({method: 'GET', credentials: true}))
         .then(data => {
-          if (Fetcher.isNonEmpty(data)) {
+          if (data && Object.keys(data).length) {
             setResults(data.results);
           }
           setProcessing(false);
         });
     }
 
-    return () => fetcher.abort();
+    return () => {
+      fetcher.abort();
+    };
   }, [props.location.search]);
 
   const loading = (
@@ -42,12 +44,10 @@ export default function SearchResults(props) {
   const renderResults = () => {
     if (results && results.length) {
       return (
-        <div className="Content">
-          {results.map((r, index) => {
+        <div className="Menu">
+          {results.map((user, index) => {
             return (
-              <div key={index}>
-                <User key={index} user={r} showCommands={true} />
-              </div>
+              <User key={index} user={user} showCommands={true} className="Item" />
             );
           })}
         </div>

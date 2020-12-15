@@ -43,7 +43,13 @@
     display: inline-flex;
 }
 
+    .Button a {
+        color: inherit;
+        text-decoration: none;
+    }
+
     .Button div {
+        align-items: center;
         display: inline-flex;
     }
 
@@ -86,7 +92,7 @@
     box-shadow: inset 0 0 0 calc(2 * var(--stroke-width)) var(--secondary-button-fg-color);
 }
 
-.secondary.Button:active {
+.secondary.Button:active, .active.secondary.Button {
     box-shadow: inset 0 0 0 calc(3 * var(--stroke-width)) var(--secondary-button-fg-color);
 }
 
@@ -104,6 +110,7 @@
 }
 
 .Combined.Field {
+    align-items: stretch;
     display: inline-flex;
     flex-wrap: wrap;
 }
@@ -144,3 +151,30 @@
     .Dialog .Masthead nav {
         margin-left: calc(2 * var(--spacing-unit-x));
     }
+
+.CityTag .Overlay {
+    position: relative;
+}
+
+.CityTag img {
+    max-height: 1em;
+    max-width: 1em;
+}
+
+.TagContainer, .CandidateContainer {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.TagContainer li {
+    margin-right: calc(var(--spacing-unit-x) / 4);
+}
+
+.CandidateContainer {
+    flex-direction: column;
+    left: 0;
+    position: absolute;
+}

@@ -37,9 +37,7 @@ export default function Contacts() {
   }, []);
 
   const renderUser = (x) => (
-    <div key={x.id} className="Item">
-      <User user={x} showSendMessageButton={true} showCommands={true} />
-    </div>
+    <User key={x.id} user={x} showCommands={true} className="Item" />
   );
 
   const renderTab = () => {
@@ -71,11 +69,16 @@ export default function Contacts() {
 
   return (
     <main className="single secondary Grid">
-      <header className="Masthead">
+      <header className="contraflow Masthead">
         <h1 className="Heading">Contacts</h1>
         <nav>
           {['Friends', 'Requests'].map(x =>
-            <button key={x} onClick={() => setTab(x)}>{x}</button>
+            <button
+              key={x}
+              className={'secondary Text Button Field ' + (tab === x && 'active')}
+              onClick={() => setTab(x)}>
+              {x}
+            </button>
           )}
         </nav>
       </header>

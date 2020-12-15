@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Route } from 'react-router-dom';
+import { Link, Route } from 'react-router-dom';
 
 import { Fetcher, request, protectedRoute, privateRoute } from '../api';
 import { StoreContext } from '../store';
@@ -42,14 +42,13 @@ export default function Nav() {
   return (
     <div className="secondary Grid">
       <header className="primary Masthead">
-        <Logo />
+        <Link to='/app'>
+          <Logo />
+        </Link>
       </header>
 
       <nav className="primary Menu">
-        <div className="Section Item">
-          <User user={state.user} />
-          <button onClick={logout}>Log Out</button>
-        </div>
+        <User user={state.user} className="Section Item" />
 
         <ul className="Menu Section">
           <Route component={props =>
@@ -57,7 +56,6 @@ export default function Nav() {
               className="Item"
               destinations={[
                 ['/app/chat', 'Chats'],
-                ['/app/groups', 'Groups'],
                 ['/app/contacts', 'Contacts'] ]}
               {...props} />} />
         </ul>
@@ -69,6 +67,10 @@ export default function Nav() {
               <Route component={(props) => <Search setVisible={setVisible} {...props} />} />
             </CityDialog>}
         </div>
+
+        <button className="Button Field Item" onClick={logout}>
+          Log Out
+        </button>
       </nav>
     </div>
   );
