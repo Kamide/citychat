@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 
-import { Fetcher, UserRelation, apiFetch, protectedRoute, request, socket } from '../../api';
+import { Fetcher, UserRelation, protectedRoute, request, socket } from '../../api';
 import { StoreContext } from '../../store';
 
 export default function UserCommands(props) {
@@ -48,7 +48,7 @@ export default function UserCommands(props) {
   };
 
   const friendRequest = (path, method) => {
-    if (props.userID !== undefined) {
+    if (fetcher !== null && props.userID !== undefined) {
       fetcher.retry(protectedRoute('/user/id/', props.userID, '/relationship'),
         request({
           method: 'GET',
@@ -59,8 +59,8 @@ export default function UserCommands(props) {
               const oldRelationship = relationship;
               setRelationship(data.relationship);
 
-              if (oldRelationship === data.relationship) {
-                apiFetch(protectedRoute('/user/id/', props.userID, '/friend', path),
+              if (fetcher !== null && oldRelationship === data.relationship) {
+                fetcher.retry(protectedRoute('/user/id/', props.userID, '/friend', path),
                   request({
                     method: method,
                     credentials: true,
