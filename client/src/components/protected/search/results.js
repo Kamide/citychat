@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ReactSVG } from 'react-svg';
 
-import { queryArrayHasParam, splitQuery, toQueryString } from '../../../utils/query';
+import { queryArrayToJSON, splitQuery, toQueryString } from '../../../utils/query';
 import { fetchRetry, request, protectedRoute } from '../../api';
 import Search from './search';
 import User from '../user/user';
@@ -10,20 +10,18 @@ import blinkingEllipsis from '../../../images/blinking-ellipsis.svg';
 
 export default function SearchResults(props) {
   const [query, setQuery] = useState(false);
-  const [queryValid, setQueryValid] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [results, setResults] = useState([]);
 
   useEffect(() => {
     const abortController = new AbortController();
-    const q = splitQuery(props.location.search);
-    const valid = queryArrayHasParam(q, 'q');
-    setQueryValid(valid);
+    const queryArray = splitQuery(props.location.search);
+    const queryJSON = queryArrayToJSON(queryArray);
+    setQuery(queryJSON);
 
-    if (valid) {
-      setQuery(q[0][1]);
+    if (queryJSON.q) {
       setProcessing(true);
-      fetchRetry(protectedRoute('/search', toQueryString(q)), request({method: 'GET', credentials: true, signal: abortController.signal}))
+      fetchRetry(protectedRoute('/search', toQueryString(queryArray)), request({method: 'GET', credentials: true, signal: abortController.signal}))
         .then(data => {
           if (data && Object.keys(data).length) {
             setResults(data.results);
@@ -66,9 +64,9 @@ export default function SearchResults(props) {
     <main className="single secondary Grid">
       <header className="contraflow Masthead">
         <h1 className="Heading">Search</h1>
-        <nav><Search query={query} /></nav>
+        <nav><Search q={query.q} /></nav>
       </header>
-      {queryValid
+      {query.q
         ? (processing ? loading : renderResults())
         : <p className="Content">Please enter a search term.</p>}
     </main>

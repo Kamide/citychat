@@ -10,10 +10,10 @@ export default function Search(props) {
   }, []);
 
   useEffect(() => {
-    if (props.query) {
-      searchBox.current.value = props.query;
+    if (props.q) {
+      searchBox.current.value = props.q;
     }
-  }, [props.query])
+  }, [props.q])
 
   const search = (event) => {
     event.preventDefault();

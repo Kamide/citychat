@@ -1,5 +1,8 @@
-export function queryArrayHasParam(query, param) {
-  return query.some(pair => pair.includes(param) && pair[1]);
+export function queryArrayToJSON(queryArray) {
+  return queryArray.reduce((json, pair) => {
+    json[pair[0]] = pair[1]
+    return json;
+  }, {});
 }
 
 export function splitQuery(query) {
