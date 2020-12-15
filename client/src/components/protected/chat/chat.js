@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { ReactSVG } from 'react-svg';
 
-import { Fetcher, apiFetch, protectedRoute, request, socket } from '../../api';
+import { Fetcher, protectedRoute, request, socket } from '../../api';
 import User from '../user/user';
 import history from '../../history';
 
 import sendIcon from '../../../images/send-icon.svg'
 
 export default function Chat(props) {
+  const [fetcherObj, setFetcherObj] = useState(null);
+
   const chatBox = useRef(null);
   const [initialChatBoxHeight, setInitialChatBoxHeight] = useState(1);
   const lastMessagePointer = useRef(null);
@@ -41,6 +43,7 @@ export default function Chat(props) {
 
   useEffect(() => {
     const fetcher = new Fetcher();
+    setFetcherObj(fetcher);
 
     if (chatBox.current) {
       chatBox.current.rows = 1;
@@ -151,8 +154,8 @@ export default function Chat(props) {
       text: chatBox.current.value
     }
 
-    if (values.text) {
-      apiFetch(protectedRoute('/chat/', chatID, '/message/send'),
+    if (fetcherObj !== null && values.text) {
+      fetcherObj.retry(protectedRoute('/chat/', chatID, '/message/send'),
         request({
           method: 'POST',
           credentials: true,
@@ -160,7 +163,7 @@ export default function Chat(props) {
           body: values
         }))
           .then(data => {
-            if (data && data.sent) {
+            if (chatBox.current && data && data.sent) {
               chatBox.current.value = '';
               chatBox.current.rows = 1;
             }
