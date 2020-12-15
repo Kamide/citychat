@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { fetchRetry, request, protectedRoute } from '../../api';
+import { Fetcher, request, protectedRoute } from '../../api';
 import User from './user';
 
 export default function Contacts() {
@@ -8,36 +8,32 @@ export default function Contacts() {
   const [requests, setRequests] = useState({});
   const [tab, setTab] = useState('Friends');
 
-  const fetchRelationships = () => {
-    const abortController = new AbortController();
+  useEffect(() => {
+    const fetcher = new Fetcher();
 
-    fetchRetry(protectedRoute('/self/friends'),
+    fetcher.retry(protectedRoute('/self/friends'),
+    request({
+      method: 'GET', credentials: true
+    }))
+      .then(data => {
+        if (Fetcher.isNonEmpty(data)) {
+          setFriends(data.friends);
+        }
+      });
+
+    fetcher.retry(protectedRoute('/self/friends/requests'),
       request({
-        method: 'GET', credentials: true, signal: abortController.signal
+        method: 'GET', credentials: true
       }))
         .then(data => {
-          if (data && Object.keys(data).length) {
-            setFriends(data.friends);
-          }
-        });
-
-    fetchRetry(protectedRoute('/self/friends/requests'),
-      request({
-        method: 'GET', credentials: true, signal: abortController.signal
-      }))
-        .then(data => {
-          if (data && Object.keys(data).length) {
+          if (Fetcher.isNonEmpty(data)) {
             setRequests(data.requests);
           }
         });
 
     return () => {
-      abortController.abort();
+      fetcher.abort();
     };
-  };
-
-  useEffect(() => {
-    fetchRelationships();
   }, []);
 
   const renderUser = (x) => (

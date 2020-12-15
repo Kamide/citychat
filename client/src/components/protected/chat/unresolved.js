@@ -1,19 +1,21 @@
 import { useEffect } from 'react';
 
-import { fetchRetry, protectedRoute, request } from '../../api';
+import { Fetcher, protectedRoute, request } from '../../api';
 import history from '../../history';
 
 export default function UnresolvedChat(props) {
   useEffect(() => {
+    const fetcher = new Fetcher();
+
     if (props.userID !== undefined) {
-      fetchRetry(protectedRoute('/chat/users/', props.userID),
+      fetcher.retry(protectedRoute('/chat/users/', props.userID),
         request({
           method: 'PUT',
           credentials: true,
           csrfToken: 'access'
         }))
           .then(data => {
-            if (data && Object.keys(data).length) {
+            if (Fetcher.isNonEmpty(data)) {
               history.replace('/app/chat/' + data.chat_id)
             }
             else {
@@ -21,6 +23,8 @@ export default function UnresolvedChat(props) {
             }
           });
     }
+
+    return () => fetcher.abort();
   }, [props.userID]);
 
   return null;

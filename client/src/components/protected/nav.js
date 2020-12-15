@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { Route } from 'react-router-dom';
 
-import { fetchRetry, request, protectedRoute, privateRoute } from '../api';
+import { Fetcher, request, protectedRoute, privateRoute } from '../api';
 import { StoreContext } from '../store';
 import Navigator from '../navigator';
 import Search from './search/search';
@@ -17,24 +17,26 @@ export default function Nav() {
   const [visible, setVisible] = useState(false)
 
   const logout = () => {
-    fetchRetry(protectedRoute('/logout'),
+    const fetcher = new Fetcher();
+    fetcher.retry(protectedRoute('/logout'),
       request({
         method: 'DELETE',
         credentials: true,
         csrfToken: 'access'
       }));
-    fetchRetry(privateRoute('/logout'),
+    fetcher.retry(privateRoute('/logout'),
       request({
         method: 'DELETE',
         credentials: true,
         csrfToken: 'refresh'
       }))
         .then(data => {
-          if (data && Object.keys(data).length) {
+          if (Fetcher.isNonEmpty(data)) {
             dispatch({ type: 'RESET_USER' });
             history.push('/');
           }
         });
+    return () => fetcher.abort();
   };
 
   return (

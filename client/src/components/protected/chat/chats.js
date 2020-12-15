@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
 import { ReactSVG } from 'react-svg';
 
-import { fetchRetry, protectedRoute, request, socket } from '../../api';
+import { Fetcher, protectedRoute, request, socket } from '../../api';
 import Chat from './chat';
 import Compose from './compose';
 import UnresolvedChat from './unresolved';
@@ -15,13 +15,15 @@ export default function Chats() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    fetchRetry(protectedRoute('/chat'),
+    const fetcher = new Fetcher();
+
+    fetcher.retry(protectedRoute('/chat'),
       request({
         method: 'GET',
         credentials: true
       }))
         .then(data => {
-          if (data && Object.keys(data).length) {
+          if (Fetcher.isNonEmpty(data)) {
             setConversations(data.conversations);
           }
         });
@@ -62,6 +64,7 @@ export default function Chats() {
         io.off('chat_list_update');
         io.emit('leave_chat_list');
       });
+      fetcher.abort();
     };
   }, []);
 

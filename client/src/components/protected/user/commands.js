@@ -1,21 +1,22 @@
 import { useContext, useEffect, useState } from 'react';
 
-import { UserRelation, apiFetch, fetchRetry, protectedRoute, request, socket } from '../../api';
+import { Fetcher, UserRelation, apiFetch, protectedRoute, request, socket } from '../../api';
 import { StoreContext } from '../../store';
 
 export default function UserCommands(props) {
   const [state] = useContext(StoreContext);
   const [relationship, setRelationship] = useState('');
+  const [fetcher] = useState(new Fetcher());
 
   useEffect(() => {
     if (props.userID !== undefined && String(props.userID) !== String(state.user.id)) {
-      fetchRetry(protectedRoute('/user/id/', props.userID, '/relationship'),
+      fetcher.retry(protectedRoute('/user/id/', props.userID, '/relationship'),
         request({
           method: 'GET',
           credentials: true
         }))
           .then(data => {
-            if (data && Object.keys(data).length) {
+            if (Fetcher.isNonEmpty(data)) {
               setRelationship(data.relationship);
             }
           });
@@ -26,7 +27,7 @@ export default function UserCommands(props) {
         });
       });
     }
-  }, [props.userID, state.user.id]);
+  }, [fetcher, props.userID, state.user.id]);
 
   if (!relationship) {
     return null;
@@ -40,13 +41,13 @@ export default function UserCommands(props) {
 
   const friendRequest = (path, method) => {
     if (props.userID !== undefined) {
-      fetchRetry(protectedRoute('/user/id/', props.userID, '/relationship'),
+      fetcher.retry(protectedRoute('/user/id/', props.userID, '/relationship'),
         request({
           method: 'GET',
           credentials: true
         }))
           .then(data => {
-            if (data && Object.keys(data).length) {
+            if (Fetcher.isNonEmpty(data)) {
               const oldRelationship = relationship;
               setRelationship(data.relationship);
 
@@ -58,7 +59,7 @@ export default function UserCommands(props) {
                     csrfToken: 'access'
                   }))
                     .then(data => {
-                      if (data && Object.keys(data).length) {
+                      if (Fetcher.isNonEmpty(data)) {
                         setRelationship(data.relationship);
                       }
                     });

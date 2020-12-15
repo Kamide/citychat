@@ -160,7 +160,11 @@ export function CityTag(props) {
   const [candidates, setCandidates] = useState([]);
   const [candidateIndex, setCandidateIndex] = useState(0);
 
-  useEffect(() => field.current.focus(), []);
+  useEffect(() => {
+    if (field.current) {
+      field.current.focus();
+    }
+  }, []);
 
   const KEY = {
     UP: 38,
@@ -190,7 +194,9 @@ export function CityTag(props) {
       setInput('');
     }
 
-    field.current.focus();
+    if (field.current) {
+      field.current.focus();
+    }
   };
 
   const removeTag = (index, backspace) => {
@@ -208,7 +214,9 @@ export function CityTag(props) {
       ];
     });
 
-    field.current.focus();
+    if (field.current) {
+      field.current.focus();
+    }
   };
 
   const filterCandidates = (event) => {

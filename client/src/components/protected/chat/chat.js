@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ReactSVG } from 'react-svg';
 
-import { apiFetch, fetchRetry, protectedRoute, request, socket } from '../../api';
+import { Fetcher, apiFetch, protectedRoute, request, socket } from '../../api';
 import User from '../user/user';
 import history from '../../history';
 
@@ -22,31 +22,41 @@ export default function Chat(props) {
   };
 
   const resizeChatBox = () => {
-    chatBox.current.style.height = initialChatBoxHeight + 'px';
-    chatBox.current.rows = Math.floor(chatBox.current.scrollHeight / initialChatBoxHeight);
-    chatBox.current.style.height = 'auto';
+    if (chatBox.current) {
+      chatBox.current.style.height = initialChatBoxHeight + 'px';
+      chatBox.current.rows = Math.floor(chatBox.current.scrollHeight / initialChatBoxHeight);
+      chatBox.current.style.height = 'auto';
+    }
   };
 
-  const scrollToLastMessage = () => lastMessagePointer.current.scrollIntoView();
+  const scrollToLastMessage = () => {
+    if (lastMessagePointer.current) {
+      lastMessagePointer.current.scrollIntoView();
+    }
+  };
 
   useEffect(() => {
     setChatID(String(props.chatID));
   }, [props.chatID]);
 
   useEffect(() => {
-    chatBox.current.rows = 1;
-    chatBox.current.style.height = 'auto';
-    setInitialChatBoxHeight(Math.max(1, parseInt(getComputedStyle(chatBox.current).height)));
-    chatBox.current.focus();
+    const fetcher = new Fetcher();
+
+    if (chatBox.current) {
+      chatBox.current.rows = 1;
+      chatBox.current.style.height = 'auto';
+      setInitialChatBoxHeight(Math.max(1, parseInt(getComputedStyle(chatBox.current).height)));
+      chatBox.current.focus();
+    }
 
     if (chatID) {
-      fetchRetry(protectedRoute('/chat/', chatID),
+      fetcher.retry(protectedRoute('/chat/', chatID),
         request({
           method: 'GET',
           credentials: true
         }))
           .then(data => {
-            if (data && Object.keys(data).length) {
+            if (Fetcher.isNonEmpty(data)) {
               setChat(data.chat);
               setParticipants(data.participants);
             }
@@ -55,13 +65,13 @@ export default function Chat(props) {
             }
           });
 
-      fetchRetry(protectedRoute('/chat/' + chatID + '/messages'),
+      fetcher.retry(protectedRoute('/chat/' + chatID + '/messages'),
         request({
           method: 'GET',
           credentials: true
         }))
           .then(data => {
-            if (data && Object.keys(data).length) {
+            if (Fetcher.isNonEmpty(data)) {
               setMessages(data.messages);
               scrollToLastMessage();
             }
@@ -80,6 +90,7 @@ export default function Chat(props) {
       socket.open().then(io => {
         io.off('message');
       });
+      fetcher.abort();
     };
   }, [chatID, setInitialChatBoxHeight]);
 
@@ -132,6 +143,10 @@ export default function Chat(props) {
   };
 
   const sendMessage = () => {
+    if (!chatBox.current) {
+      return;
+    }
+
     const values = {
       text: chatBox.current.value
     }

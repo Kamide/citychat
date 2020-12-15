@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { fetchRetry, protectedRoute, request } from '../../api';
+import { Fetcher, protectedRoute, request } from '../../api';
 import { initialState } from '../../store';
 import UserCommands from './commands';
 
@@ -11,23 +11,27 @@ export default function User(props) {
   const [user, setUser] = useState(initialState.user);
 
   useEffect(() => {
+    const fetcher = new Fetcher();
+
     if (props.user) {
       setUser(props.user);
     }
     else {
       if (props.userID !== undefined) {
-        fetchRetry(protectedRoute('/user/id/', props.userID),
+        fetcher.retry.retry(protectedRoute('/user/id/', props.userID),
           request({
             method: 'GET',
             credentials: true
           }))
             .then(data => {
-              if (data && Object.keys(data).length) {
+              if (Fetcher.isNonEmpty(data)) {
                 setUser(data.user);
               }
             });
       }
     }
+
+    return () => fetcher.abort();
   }, [props.user, props.userID]);
 
   const username = props.hideLink || props.profile

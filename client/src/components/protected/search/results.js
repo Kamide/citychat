@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ReactSVG } from 'react-svg';
 
 import { queryArrayToJSON, splitQuery, toQueryString } from '../../../utils/query';
-import { fetchRetry, request, protectedRoute } from '../../api';
+import { Fetcher, request, protectedRoute } from '../../api';
 import Search from './search';
 import User from '../user/user';
 
@@ -14,25 +14,23 @@ export default function SearchResults(props) {
   const [results, setResults] = useState([]);
 
   useEffect(() => {
-    const abortController = new AbortController();
+    const fetcher = new Fetcher();
     const queryArray = splitQuery(props.location.search);
     const queryJSON = queryArrayToJSON(queryArray);
     setQuery(queryJSON);
 
     if (queryJSON.q) {
       setProcessing(true);
-      fetchRetry(protectedRoute('/search', toQueryString(queryArray)), request({method: 'GET', credentials: true, signal: abortController.signal}))
+      fetcher.retry(protectedRoute('/search', toQueryString(queryArray)), request({method: 'GET', credentials: true}))
         .then(data => {
-          if (data && Object.keys(data).length) {
+          if (Fetcher.isNonEmpty(data)) {
             setResults(data.results);
           }
           setProcessing(false);
         });
     }
 
-    return () => {
-      abortController.abort();
-    };
+    return () => fetcher.abort();
   }, [props.location.search]);
 
   const loading = (

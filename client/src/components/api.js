@@ -99,6 +99,25 @@ export async function fetchRetry(url, options, limit = 6, delay = 100, backoff =
   }
 }
 
+export class Fetcher {
+  constructor() {
+    this.abortController = new AbortController();
+  }
+
+  static isNonEmpty(json) {
+    return json && Object.keys(json).length;
+  }
+
+  async retry(...args) {
+    args[1]['signal'] = this.abortController.signal;
+    return await fetchRetry(...args);
+  }
+
+  abort() {
+    this.abortController.abort();
+  }
+}
+
 export class Socket {
   constructor() {
     this.abortController = null;

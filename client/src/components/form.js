@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { fetchRetry, request} from './api';
+import { Fetcher, request} from './api';
 import CityForm from './cityform';
 import history from './history';
 
@@ -10,9 +10,16 @@ export default function Form(props) {
   const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
-    fetchRetry(props.endpoint, request({method: 'GET'}))
-      .then(data => setForm(data.form))
+    const fetcher = new Fetcher();
+
+    fetcher.retry(props.endpoint, request({method: 'GET'}))
+      .then(data => {
+        if (Fetcher.isNonEmpty(data)) {
+          setForm(data.form);
+        }})
       .catch(() => setNetworkError(true));
+
+    return () => fetcher.abort();
   }, [props.endpoint]);
 
   const handleSubmit = (values) => {

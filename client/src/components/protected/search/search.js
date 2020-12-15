@@ -6,16 +6,22 @@ export default function Search(props) {
   const searchBox = useRef(null);
 
   useEffect(() => {
-    searchBox.current.focus();
+    if (searchBox.current) {
+      searchBox.current.focus();
+    }
   }, []);
 
   useEffect(() => {
-    if (props.q) {
+    if (props.q && searchBox.current) {
       searchBox.current.value = props.q;
     }
   }, [props.q])
 
   const search = (event) => {
+    if (!searchBox.current) {
+      return;
+    }
+
     event.preventDefault();
     const q = searchBox.current.value.trim();
 

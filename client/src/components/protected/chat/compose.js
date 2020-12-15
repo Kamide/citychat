@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { fetchRetry, protectedRoute, request } from '../../api';
+import { Fetcher, protectedRoute, request } from '../../api';
 import { CityDialog, CityTag } from '../../cityform';
 import User from '../user/user';
 import history from '../../history';
@@ -10,15 +10,19 @@ export default function Compose(props) {
   const [candidates, setCandidates] = useState([]);
 
   useEffect(() => {
-    fetchRetry(protectedRoute('/self/friends'),
+    const fetcher = new Fetcher();
+
+    fetcher.retry(protectedRoute('/self/friends'),
       request({
         method: 'GET', credentials: true
       }))
         .then(data => {
-          if (data && Object.keys(data).length) {
+          if (Fetcher.isNonEmpty(data)) {
             setCandidates(data.friends);
           }
         });
+
+    return () => fetcher.abort();
   }, []);
 
   const compareUsers = (lhs, rhs) => lhs.id === rhs.id;

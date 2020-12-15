@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import { fetchRetry, protectedRoute, request, socket } from '../api';
+import { Fetcher, protectedRoute, request, socket } from '../api';
 
 import { StoreContext } from '../store';
 import Chats from './chat/chats';
@@ -16,10 +16,11 @@ export default function ProtectedApp() {
 
   useEffect(() => {
     socket.open();
+    const fetcher = new Fetcher();
 
-    fetchRetry(protectedRoute('/self'), request({method: 'GET', credentials: true}))
+    fetcher.retry(protectedRoute('/self'), request({method: 'GET', credentials: true}))
       .then(data => {
-        if (data && Object.keys(data).length) {
+        if (Fetcher.isNonEmpty(data)) {
           dispatch({
             type: 'SET_USER',
             payload: data.user
@@ -27,7 +28,10 @@ export default function ProtectedApp() {
         }
       });
 
-    return () => socket.disconnect();
+    return () => {
+      socket.disconnect();
+      fetcher.abort();
+    };
   }, [dispatch]);
 
   return (
