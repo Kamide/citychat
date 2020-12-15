@@ -18,7 +18,7 @@ export default function User(props) {
     }
     else {
       if (props.userID !== undefined) {
-        fetcher.retry.retry(protectedRoute('/user/id/', props.userID),
+        fetcher.retry(protectedRoute('/user/id/', props.userID),
           request({
             method: 'GET',
             credentials: true
