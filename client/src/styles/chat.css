@@ -10,7 +10,7 @@
     padding-left: 0;
 }
 
-    .Chats .Preview .Author {
+    .Chats .Preview .Heading {
         font-weight: 500;
     }
 
@@ -46,9 +46,16 @@
             flex-direction: column-reverse;
         }
 
+        .Chat .Message .Heading {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
         .Chat .Message .Author {
             align-items: center;
             display: flex;
+            flex-wrap: wrap;
         }
 
         .Chat .Message .Timestamp {
@@ -60,6 +67,11 @@
         .Chat .Message .Timestamp::before {
             content: '\2014';
             margin-right: calc(var(--spacing-unit-x) / 2);
+        }
+
+        .Chat .Message .Commands {
+            color: var(--tertiary-fg-color);
+            margin-left: calc(var(--spacing-unit-x) / 2);
         }
 
         .Chat .Message .Parent {
@@ -81,13 +93,14 @@
             width: calc(var(--message-content-spacing-unit) - var(--user-picture-size) / 2);
         }
 
-            .Chat .Message .Parent a {
+            .Chat .Message .Parent {
                 color: inherit;
+                font-size: 0.8em;
                 opacity: 0.75;
                 text-decoration: none;
             }
 
-            .Chat .Message .Parent a:hover {
+            .Chat .Message .Parent:hover {
                 opacity: 1;
             }
 
@@ -116,6 +129,15 @@
     border-top: var(--border);
     padding: var(--spacing-unit-y) var(--spacing-unit-x);
 }
+
+    .ChatBoxContainer .Parent, .ChatBoxContainer .Message {
+        margin: 0;
+        padding: 0;
+    }
+
+        .ChatBoxContainer .Message .Content {
+            margin-bottom: var(--spacing-unit-y);
+        }
 
     .ChatBoxContainer .Combined.Field {
         display: flex;

@@ -7,12 +7,16 @@ from citychat_server.cityform.fields import (
     SubmitField
 )
 from citychat_server.cityform.form import Form
-from citychat_server.cityform.validators import Length, Required
+from citychat_server.cityform.validators import Length, NoneOrInt, Required
 from citychat_server.models.user import UserProfile
 
 
 def strip(s):
     return s.strip()
+
+
+def parseInt(s):
+    return int(s) if s else None
 
 
 email = EmailField(
@@ -74,6 +78,11 @@ class MessageForm(Form):
         label='Message',
         validators=[Required()],
         pre_filters=[strip]
+    )
+    parent_id = StringField(
+        label='Parent ID',
+        validators=[NoneOrInt()],
+        post_filters=[parseInt]
     )
 
     def __init__(self):

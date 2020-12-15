@@ -112,6 +112,13 @@ def send_message(chat_id, chat, current_user):
         return jsonify(sent=False), status.HTTP_400_BAD_REQUEST
 
     message = Message(chat_id=chat_id, author_id=current_user.id)
+
+    if (
+        form.values['parent_id']
+        and Message.has_row(id=form.values['parent_id'])
+    ):
+        message.parent_id = form.values['parent_id']
+
     db.session.add(message)
     db.session.flush()
 

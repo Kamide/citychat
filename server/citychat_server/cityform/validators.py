@@ -92,3 +92,18 @@ class Pattern(Validator):
     def validate(self, label=None, value=None):
         if not re.fullmatch(self.pattern, value or ''):
             return [self.title]
+
+
+class NoneOrInt(Validator):
+    def __init__(self, _attributes=None):
+        self._attributes = _attributes or {}
+
+    def validate(self, label=None, value=None):
+        if not value:
+            return []
+
+        try:
+            int(value)
+            return []
+        except ValueError:
+            return [self.field(label) + ' must be None or int']

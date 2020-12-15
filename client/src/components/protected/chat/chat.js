@@ -5,7 +5,10 @@ import { Fetcher, protectedRoute, request, socket } from '../../api';
 import User from '../user/user';
 import history from '../../history';
 
+import closeIcon from '../../../images/close-icon.svg';
+import replyIcon from '../../../images/reply-icon.svg';
 import sendIcon from '../../../images/send-icon.svg'
+import scrollUpIcon from '../../../images/scroll-up-icon.svg';
 
 export default function Chat(props) {
   const [fetcherObj, setFetcherObj] = useState(null);
@@ -18,10 +21,17 @@ export default function Chat(props) {
   const [chat, setChat] = useState({});
   const [participants, setParticipants] = useState({});
   const [messages, setMessages] = useState([]);
+  const [replyMessage, setReplyMessage] = useState(null);
 
   const KEY = {
     ENTER: 13
   };
+
+  const focusOnChatBox = () => {
+    if (chatBox.current) {
+      chatBox.current.focus();
+    }
+  }
 
   const resizeChatBox = () => {
     if (chatBox.current) {
@@ -108,14 +118,12 @@ export default function Chat(props) {
 
     return (
       <blockquote className="Parent">
-        <a href={'#message-' + m.parent_id}>
-          {renderMessage(findMessage(m.parent_id), false, true)}
-        </a>
+        {renderMessage(findMessage(m.parent_id), false, true, false)}
       </blockquote>
     );
   };
 
-  const renderMessage = (m, isLeaf, hideLink) => {
+  const renderMessage = (m, isLeaf, hideLink, isReply) => {
     if (!(m && Object.keys(m).length)) {
       return null;
     }
@@ -123,9 +131,32 @@ export default function Chat(props) {
     return (
       <section key={m.id} id={'message-' + m.id} className="Message">
         <header className="Header">
-          <div className="Author">
-            <User user={participants[String(m.author_id)]} hideLink={hideLink} />
-            <time className="Timestamp">{m.timestamp}</time>
+          <div className="Heading">
+            <div className="Author">
+              <User user={participants[String(m.author_id)]} hideLink={hideLink} />
+              <time className="Timestamp">{m.timestamp}</time>
+            </div>
+
+            <div className="Commands">
+              {
+                isReply
+                  ? <button aria-label="Cancel reply" className="tertiary Icon Button Field">
+                      <ReactSVG aria-hidden="true" src={closeIcon} onClick={() => setReplyMessage(null)} />
+                    </button>
+                  : <button aria-label="Reply" className="tertiary Icon Button Field">
+                      <ReactSVG aria-hidden="true" src={replyIcon} onClick={() => {
+                        setReplyMessage(m);
+                        chatBox.current.focus();
+                      }} />
+                    </button>
+              }
+              {
+                !isLeaf &&
+                   <a aria-label="Go to message" className="tertiary Icon Button Field" href={'#message-' + m.id}>
+                    <ReactSVG aria-hidden="true" src={scrollUpIcon} />
+                  </a>
+              }
+            </div>
           </div>
 
           {isLeaf && renderParentMessage(m)}
@@ -139,10 +170,24 @@ export default function Chat(props) {
   const renderMessages = () => {
     return (
       <article className="MessageContainer">
-        {messages.map(m => renderMessage(m, true, false))}
+        {messages.map(m => renderMessage(m, true, false, false))}
         <span aria-hidden="true" ref={lastMessagePointer} />
       </article>
     )
+  };
+
+  const renderReplyMessage = () => {
+    if  (replyMessage && Object.keys(replyMessage).length) {
+      return (
+        <blockquote className="Parent">
+          {renderMessage(replyMessage, false, true, true)}
+        </blockquote>
+      );
+    }
+    else {
+      return null;
+    }
+
   };
 
   const sendMessage = () => {
@@ -150,8 +195,13 @@ export default function Chat(props) {
       return;
     }
 
+    const pid = (replyMessage && Object.keys(replyMessage).length)
+      ? { parent_id: replyMessage.id }
+      : {}
+
     const values = {
-      text: chatBox.current.value
+      text: chatBox.current.value,
+      ...pid
     }
 
     if (fetcherObj !== null && values.text) {
@@ -166,11 +216,12 @@ export default function Chat(props) {
             if (chatBox.current && data && data.sent) {
               chatBox.current.value = '';
               chatBox.current.rows = 1;
+              setReplyMessage(null);
             }
           });
     }
 
-    chatBox.current.focus();
+    focusOnChatBox();
   };
 
   const handleShortcuts = (event) => {
@@ -201,22 +252,26 @@ export default function Chat(props) {
       <div className="tertiary Grid Chat">
         {renderMessages()}
 
-        <form className="ChatBoxContainer" onSubmit={handleSubmit}>
-          <div className="Combined Field">
-            <textarea
-              ref={chatBox}
-              id="messageText"
-              className="ChatBox Input Field"
-              type="text"
-              placeholder={'Message ' + (chat.name || 'CityChat User')}
-              onInput={resizeChatBox}
-              onKeyDown={handleShortcuts}>
-            </textarea>
-            <button aria-label="Send message" className="primary Icon Button Field" type="submit">
-              <ReactSVG aria-hidden="true" src={sendIcon} />
-            </button>
-          </div>
-        </form>
+        <div className="ChatBoxContainer">
+          {renderReplyMessage()}
+
+          <form onSubmit={handleSubmit}>
+            <div className="Combined Field">
+              <textarea
+                ref={chatBox}
+                id="messageText"
+                className="ChatBox Input Field"
+                type="text"
+                placeholder={'Message ' + (chat.name || 'CityChat User')}
+                onInput={resizeChatBox}
+                onKeyDown={handleShortcuts}>
+              </textarea>
+              <button aria-label="Send message" className="primary Icon Button Field" type="submit">
+                <ReactSVG aria-hidden="true" src={sendIcon} />
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </main>
   );
