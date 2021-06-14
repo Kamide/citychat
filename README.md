@@ -2,6 +2,8 @@
 
 CCNY Fall 2020 CSc 59976 Final Project
 
+![Screenshot](src/screenshot.png)
+
 
 ## Overview
 
